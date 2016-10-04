@@ -53,13 +53,13 @@ def generate_minibatch(image_dict, data_directory, index_name, batch_size):
             counter += 1
     return np.expand_dims(batch_data, axis=4), batch_labels, dims
 
-
+# size=math.ceil(batch_size * factor[i])).tolist()
 def generate_minibatch_dict(data_directory, dict_name, batch_size):
     batch_data = []
     batch_labels = []
     factor = [0.75, 0.25]
     for i in range(2):
-        batch_ind = np.random.randint(low=0, high=len(dict_name[i]) - 1, size=math.ceil(batch_size * factor[i])).tolist()
+        batch_ind = np.random.randint(low=0, high=len(dict_name[i]) - 1, size=[1])
         for b in batch_ind:
             inds = dict_name[i][b]
             image_path = data_directory + '/' + inds[0] + '_' + ('%d' % inds[1]) + '.pickle'
