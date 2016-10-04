@@ -21,7 +21,7 @@ flags = {
     'save_processed_jpeg': False,
     'save_original_jpeg': False,
     'save_pickled_dictionary': True,
-    'save_pickled_images': True,
+    'save_pickled_images': False,
     'sub_challenge': '1',
 }
 

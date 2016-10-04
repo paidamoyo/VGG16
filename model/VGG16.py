@@ -20,7 +20,7 @@ params = {
     'pyramid_pool_layers': [1, 2],
     'lr': 0.001,
     'training_iters': 200000,
-    'batch_size': 16,
+    'batch_size': 4,
     'display_step': 10,
     'dropout': 0.75
 }
