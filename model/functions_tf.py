@@ -59,15 +59,12 @@ def spp_layer(mapstack, dims, poolnum):
                     flattened.append(tf.reduce_max(tf.slice(maps[0], begin=begin, size=size)))
     return tf.reshape(tf.convert_to_tensor(flattened), [1,2560])
 
-
-def spp_layer_samesize(mapstack, params):
-    print(mapstack.get_shape())
-    flatten = tf.reshape(tf.nn.max_pool(mapstack, ksize=[1, 204, 96, 1], strides=[1,  204, 96, 1], padding='SAME'),
-                         [params['batch_size'], 512])
-    flatten2 = tf.reshape(tf.nn.max_pool(mapstack, ksize=[1, 102, 48, 1], strides=[1, 102, 48, 1], padding='SAME'),
-                          [params['batch_size'], 512 * 4])
-    #flatten3 = tf.reshape(tf.nn.max_pool(mapstack, ksize=[1, 68, 32, 1], strides=[1, 68, 32, 1], padding='SAME'), [1, 512 * 9])
-    return tf.concat(1, [flatten, flatten2])
+# 1536 (12) x 3264 (12) = 128 (16) x 272 (16) = 8 *17
+def max_flatten(mapstack, params):
+    pool = tf.nn.max_pool(mapstack, ksize=[1, 17, 8, 1], strides=[1, 17, 8, 1], padding='SAME')
+    mapmax = tf.reshape(pool,[params['batch_size'], 512])
+    flatten = tf.reduce_max(mapmax, reduction_indices=[0])
+    return tf.reshape(flatten, [1, 512])
 
 
 def fc_layer(flattened, weights, biases, dropout):
@@ -80,14 +77,13 @@ def fc_layer(flattened, weights, biases, dropout):
 
 def define_parameters(flags):
     weights, biases = load_pretrained_parameters(filename=
-                                                 flags['code_directory'] + 'aux/weights/vgg16_ImageNet_tf.h5')
+                                                 flags['code_directory'] + 'aux/vgg16_ImageNet_tf.h5')
 
-    weights['fc1'] = tf.Variable(tf.random_normal([2560, 1024]))
-    weights['out'] = tf.Variable(tf.random_normal([1024, 2]))
-    biases['fc1'] = tf.Variable(tf.random_normal([1024]))
+    weights['fc1'] = tf.Variable(tf.random_normal([512, 256]))
+    weights['out'] = tf.Variable(tf.random_normal([256, 2]))
+    biases['fc1'] = tf.Variable(tf.random_normal([256]))
     biases['out'] = tf.Variable(tf.random_normal([2]))
     return weights, biases
-
 
 def load_pretrained_parameters(filename):
     pretrained = h5py.File(filename, 'r')
@@ -111,9 +107,9 @@ def load_pretrained_parameters(filename):
     return weights, biases
 
 
-def build_model(x, keep_prob, flags, params):
+def build_model(x, flags, params):
     weights, biases = define_parameters(flags)
     mapstack = vgg16(x=x, weights=weights, biases=biases)
-    flattened = spp_layer_samesize(mapstack=mapstack, params=params)
-    model = fc_layer(flattened=flattened, weights=weights, biases=biases, dropout=keep_prob)
-    return model
+    flat = max_flatten(mapstack, params)
+    output = fc_layer(flattened=flat, weights=weights, biases=biases, dropout=params['dropout'])
+    return output
