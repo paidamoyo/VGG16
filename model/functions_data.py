@@ -53,6 +53,25 @@ def generate_minibatch(image_dict, data_directory, index_name, batch_size):
             counter += 1
     return np.expand_dims(batch_data, axis=4), batch_labels, dims
 
+# 1536 (16) x 3264 (12) = 96 x 272 = max(6 x 17) ==> 1
+def generate_minibatch_small(data_directory, dict_name, pos_neg):
+    batch_data = []
+    batch_labels = []
+    l = pos_neg
+    batch_ind = np.random.randint(low=0, high=len(dict_name[l]) - 1, size=math.ceil(batch_size * factor[i])).tolist()
+    for b in batch_ind:
+        inds = dict_name[l][b]
+        image_path = data_directory + '/' + inds[0] + '_' + ('%d' % inds[1]) + '.pickle'
+        with open(image_path, 'rb') as basefile:
+            image = pickle.load(basefile)
+            for i in range(16):
+                for j in range(12):
+                    img = image[i*16:(i+1)*16, j*12:(j+1)*12]
+                    img = np.expand_dims(img, axis=2)
+                    batch_data.append(np.concatenate((img, img, img), axis=2))
+                    batch_labels.append(l)
+    return batch_data, batch_labels
+
 
 def generate_minibatch_dict(data_directory, dict_name, batch_size):
     batch_data = []
@@ -68,6 +87,4 @@ def generate_minibatch_dict(data_directory, dict_name, batch_size):
                 img = np.expand_dims(image,axis=2)
                 batch_data.append(np.concatenate((img,img,img),axis=2))
                 batch_labels.append(i)
-    a = np.asarray(batch_data)
-    b = np.asarray(batch_labels)
     return batch_data, batch_labels
