@@ -10,7 +10,7 @@ from functions_tf import build_model
 
 # Global Dictionary of Flags
 flags = {
-    'save_directory': '../../../Data/Processed/SAGE/',
+    'save_directory': '../../../../Data/Processed/SAGE/',
     'aux_directory': '../aux/',
     'code_directory': '../',
 }
