@@ -56,8 +56,8 @@ with tf.Session() as sess:
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
                 save_path = flags['save_directory'] + check_str(dict_train[i][b][0]) + '_' + check_str(dict_train[i][b][1]) + '_vgg.pickle'
-                with open(save_path, "wb") as f:
-                    pickle.dump(image, f, protocol=2)
+                f = open(save_path, "wb")
+                pickle.dump(image, f, protocol=2)
             counter += 1
             print("Processed Image %d" % b + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
         for b in range(len(dict_test[i])):
@@ -66,15 +66,15 @@ with tf.Session() as sess:
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
                 save_path = flags['save_directory'] + check_str(dict_test[i][b][0]) + '_' + check_str(dict_test[i][b][1]) + '_vgg.pickle'
-                with open(save_path, "wb") as f:
-                    pickle.dump(image, f, protocol=2)
+                f = open(save_path, "wb")
+                pickle.dump(image, f, protocol=2)
             counter += 1
             print("Processed Image %d" % b + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
 
 if flags['save_pickled_dictionary'] is True:
     save_path = '../aux/vgg_train_dict.pickle'
-    with open(save_path, "wb") as f:
-        pickle.dump(dict_train, f, protocol=2)
+    f= open(save_path, "wb")
+    pickle.dump(dict_train, f, protocol=2)
     save_path = '../aux/vgg_test_dict.pickle'
-    with open(save_path, "wb") as f:
-        pickle.dump(dict_test, f, protocol=2)
+    f= open(save_path, "wb")
+    pickle.dump(dict_test, f, protocol=2)
