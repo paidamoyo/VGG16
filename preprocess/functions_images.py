@@ -20,18 +20,15 @@ def smart_crop(image):
                 return image[:, 0:i]
     return image
 
-def dumb_crop(image):
-    return image[0:3264, 0:1536] #  total size of 1536 x 3264
+
+def dumb_crop(image, x, y):
+    return image[0:y, 0:x] #  total size of 1536 x 3264
 
 
 def adjust_gamma(image, gamma):
-    # build a lookup table mapping the pixel values [0, 255] to
-    # their adjusted gamma values
     invgamma = 1.0 / gamma
     table = np.array([((i / 255.0) ** invgamma) * 255
                       for i in np.arange(0, 256)]).astype('uint8')
-
-    # apply gamma correction using the lookup table
     return cv2.LUT(image, table)
 
 

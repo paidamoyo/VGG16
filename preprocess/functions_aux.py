@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-
+import pickle
 
 def make_directory(folder_path):
     if not os.path.exists(folder_path):
@@ -45,3 +45,21 @@ def find_dicom_files(flags):  # currently not used but may be useful later.
             if ".dcm.gz" in filename.lower():  # check whether the file's DICOM
                 list_of_dicom_files.append(os.path.join(dirName, filename))
     return list_of_dicom_files
+
+
+def save_image(flags, dataset, image_original, image_processed, d):
+    if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
+        save_path = flags['data_directory'] + 'Preprocessed/' + dataset + '/' + flags['processed_directory'] + \
+                    check_str(d[0]) + '_' + check_str(d[1]) + '.pickle'
+        with open(save_path, "wb") as file:
+            pickle.dump(image_processed, file, protocol=2)
+
+    if flags['save_original_jpeg'] is True:  # save processed and cropped jpeg
+        save_path = flags['data_directory'] + 'Preprocessed/' + dataset + '/' + flags['processed_directory'] + \
+                    check_str(d[0]) + '_' + check_str(d[1]) + '.jpg'
+        scipy.misc.imsave(save_path, image_original)
+
+    if flags['save_processed_jpeg'] is True:  # save large jpeg file for viewing/presentation purposes
+        save_path = flags['data_directory'] + 'Preprocessed/' + dataset + '/' + flags['processed_directory'] + \
+                    check_str(d[0]) + '_' + check_str(d[1]) + '.jpg'
+        scipy.misc.imsave(save_path, image_processed)

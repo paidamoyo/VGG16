@@ -76,16 +76,14 @@ def fc_layer(flattened, weights, biases, dropout):
 
 
 def define_parameters(flags):
-    weights, biases = load_pretrained_parameters(filename=
-                                                 flags['code_directory'] + 'aux/vgg16_ImageNet_tf.h5')
-
     weights['fc1'] = tf.Variable(tf.random_normal([512, 256]))
     weights['out'] = tf.Variable(tf.random_normal([256, 2]))
     biases['fc1'] = tf.Variable(tf.random_normal([256]))
     biases['out'] = tf.Variable(tf.random_normal([2]))
     return weights, biases
 
-def load_pretrained_parameters(filename):
+def load_pretrained_parameters_VGG(flags):
+    filename = flags['code_directory'] + 'aux/vgg16_ImageNet_tf.h5'
     pretrained = h5py.File(filename, 'r')
     weights = {}
     biases = {}
@@ -108,13 +106,13 @@ def load_pretrained_parameters(filename):
 
 
 def build_model(x, flags, params):
-    weights, biases = define_parameters(flags)
+    weights, biases = load_pretrained_parameters_VGG(flags)
     mapstack = vgg16(x=x, weights=weights, biases=biases)
     flat = max_flatten(mapstack, params)
     output = fc_layer(flattened=flat, weights=weights, biases=biases, dropout=params['dropout'])
     return output
 
 def compute_VGG(x, flags):
-    weights, biases = define_parameters(flags)
+    weights, biases = load_pretrained_parameters_VGG(flags)
     mapstack = vgg16(x=x, weights=weights, biases=biases)
     return mapstack
