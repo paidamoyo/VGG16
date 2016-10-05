@@ -90,7 +90,7 @@ def generate_minibatch_dict_small(data_directory, dict_name, pos_neg):
     return batch_data, batch_labels
 
 
-def generate_minibatch_test_small(data_directory, dict_name, pos_neg, batch_ind):
+def one_tiled_image(data_directory, dict_name, pos_neg, batch_ind):
     batch_data = []
     l = pos_neg
     batch_labels = [l]
@@ -104,3 +104,22 @@ def generate_minibatch_test_small(data_directory, dict_name, pos_neg, batch_ind)
                 img = np.expand_dims(img, axis=2)
                 batch_data.append(np.concatenate((img, img, img), axis=2))
     return batch_data, batch_labels
+
+def reconstruct(volume):
+    image_list = []
+    # reconstruct images
+    for j in range(12):
+        for i in range(12):
+            if i == 0:
+                image_list.append(volume[i + j * 12, :, :, :])
+                continue
+            additive = volume[i + j * 12, :, :, :]
+            print(additive.shape)
+            print(image_list[j].shape)
+            image_list[j] = np.concatenate((image_list[j], additive), axis=0)
+    for l in range(12):
+        if l == 0:
+            image = image_list[l]
+            continue
+        image = np.concatenate((image, image_list[l]), axis=1)
+    return image
