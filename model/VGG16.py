@@ -19,7 +19,7 @@ flags = {
 params = {
     'pyramid_pool_layers': [1, 2],
     'lr': 0.001,
-    'training_iters': 144*1500,
+    'training_iters': 4000,
     'batch_size': 12*12,
     'display_step': 10,
     'dropout': 0.5
@@ -60,20 +60,21 @@ def main():
         sess.run(init)
         step = 1
         pos_neg = 1
-        while step * params['batch_size'] < params['training_iters']:
+        while step < params['training_iters']:
+            if step < 1000
             batch_x, batch_y = generate_minibatch_dict_small(flags['save_directory'], dict_train, pos_neg)
             if pos_neg == 1:
                 pos_neg = 0
             else:
                 pos_neg = 1
-
             sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
             loss, acc = sess.run([cost, train_prediction], feed_dict={x: batch_x,
                                                               y: batch_y,
                                                               keep_prob: 1.})
-            print("Iter " + str(step * params['batch_size']) + ", Minibatch Loss= " + \
-                  "{:.6f}".format(loss) + ", Training Accuracy= " + \
-                  'Minibatch error: %.1f%%' % error_rate(acc, batch_y))
+            print("Image Number " + str(step) + ", Image Loss= " + \
+                  "{:.6f}".format(loss) + 'Error: %.1f%%' % error_rate(acc, batch_y) + \
+                    ", Label= " + 'Error: %d' % batch_y)
+
             if step % params['display_step'] == 0:
                 # Calculate batch loss and accuracy
                 save_path = saver.save(sess, '../aux/model.ckpt')
