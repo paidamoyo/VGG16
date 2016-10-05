@@ -84,7 +84,7 @@ def main():
         labels = {}
         for i in range(2):
             labels[i] = []
-            for b in dict_test[i]:
+            for b in range(len(dict_test[i])):
                 X_test, y_test = generate_minibatch_test_small(flags['save_directory'], dict_test, pos_neg=i, batch_ind=b)
                 acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test, keep_prob: 1.})
                 labels[i].append(error_rate(acc, y_test))
