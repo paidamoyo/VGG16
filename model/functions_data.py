@@ -95,7 +95,7 @@ def one_tiled_image(data_directory, dict_name, pos_neg, batch_ind):
     l = pos_neg
     batch_labels = [l]
     inds = dict_name[l][batch_ind]
-    image_path = data_directory + '/' + inds[0] + '_' + ('%d' % inds[1]) + '.pickle'
+    image_path = data_directory + inds[0] + '_' + ('%d' % inds[1]) + '.pickle'
     with open(image_path, 'rb') as basefile:
         image = pickle.load(basefile)
         for i in range(12):
