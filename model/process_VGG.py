@@ -11,6 +11,7 @@ from functions_tf import compute_VGG
 # Global Dictionary of Flags
 flags = {
     'save_directory': '../../../../Data/Processed/SAGE_VGG/',
+    'saved_directory': '../../../../Data/Processed/SAGE/',
     'aux_directory': '../aux/',
     'code_directory': '../',
     'save_pickled_dictionary': True,
@@ -50,7 +51,7 @@ with tf.Session() as sess:
     counter = 0
     for i in range(2):
         for b in range(len(dict_train[i])):
-            batch_x, batch_y = one_tiled_image(flags['save_directory'], dict_test, pos_neg=i, batch_ind=b)
+            batch_x, batch_y = one_tiled_image(flags['saved_directory'], dict_test, pos_neg=i, batch_ind=b)
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
