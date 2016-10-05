@@ -17,7 +17,6 @@ flags = {
 
 
 params = {
-    'pyramid_pool_layers': [1, 2],
     'lr': 0.001,
     'training_iters': 4,
     'batch_size': 12*12,
@@ -84,7 +83,9 @@ def main():
         labels = {}
         for i in range(2):
             labels[i] = []
+            print("Processing %d total images " % len(dict_test[i]) + "for label %d" % i)
             for b in range(len(dict_test[i])):
+                print("Image %d" % b + " of %d" % len(dict_test[i]))
                 X_test, y_test = generate_minibatch_test_small(flags['save_directory'], dict_test, pos_neg=i, batch_ind=b)
                 acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test, keep_prob: 1.})
                 labels[i].append(error_rate(acc, y_test))
