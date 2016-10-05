@@ -21,7 +21,7 @@ params = {
     'lr': 0.001,
     'training_iters': 144*1500,
     'batch_size': 12*12,
-    'display_step': 100,
+    'display_step': 10,
     'dropout': 0.5
 }
 
@@ -51,16 +51,9 @@ def main():
     train_prediction = tf.nn.softmax(logits)
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
 
-    # Evaluate model
-    correct_pred = tf.equal(model[0][tf.to_int32(y[0])], tf.cast(y[0], tf.float32))
-    accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
-
     # Initializing the variables
     init = tf.initialize_all_variables()
     saver = tf.train.Saver()
-
-
-
 
     # Launch the graph
     with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
@@ -83,7 +76,7 @@ def main():
                   'Minibatch error: %.1f%%' % error_rate(acc, batch_y))
             if step % params['display_step'] == 0:
                 # Calculate batch loss and accuracy
-                save_path = saver.save(sess, '../aux/model' + str(step) +'.ckpt')
+                save_path = saver.save(sess, '../aux/model.ckpt')
                 print("Model saved in file: %s" % save_path)
             step += 1
         print("Optimization Finished!")
