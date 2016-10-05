@@ -10,7 +10,7 @@ from functions_tf import compute_VGG
 
 # Global Dictionary of Flags
 flags = {
-    'save_directory': '../../../../Data/Processed/SAGE/',
+    'save_directory': '../../../../Data/Processed/SAGE_VGG/',
     'aux_directory': '../aux/',
     'code_directory': '../',
     'save_pickled_dictionary': True,
@@ -47,23 +47,28 @@ init = tf.initialize_all_variables()
 with tf.Session() as sess:
     sess.run(init)
     # Construct model
+    counter = 0
     for i in range(2):
         for b in range(len(dict_train[i])):
             batch_x, batch_y = one_tiled_image(flags['save_directory'], dict_test, pos_neg=i, batch_ind=b)
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-                save_path = flags['save_directory'] + '/' + check_str(dict_train[i][b]) + '_' + check_str(dict_train[i][b]) + '.pickle'
+                save_path = flags['save_directory'] + '/' + check_str(dict_train[i][b][0]) + '_' + check_str(dict_train[i][b][1]) + '_vgg.pickle'
                 with open(save_path, "wb") as f:
                     pickle.dump(image, f, protocol=2)
+            counter += 1
+            print("Processed Image %d" % b + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
         for b in range(len(dict_test[i])):
             batch_x, batch_y = one_tiled_image(flags['save_directory'], dict_test, pos_neg=i, batch_ind=b)
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-                save_path = flags['save_directory'] + '/' + check_str(dict_test[i][b]) + '_' + check_str(dict_test[i][b]) + '.pickle'
+                save_path = flags['save_directory'] + '/' + check_str(dict_test[i][b][0]) + '_' + check_str(dict_test[i][b][1]) + '_vgg.pickle'
                 with open(save_path, "wb") as f:
                     pickle.dump(image, f, protocol=2)
+            counter += 1
+            print("Processed Image %d" % b + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
 
 if flags['save_pickled_dictionary'] is True:
     save_path = '../aux/vgg_train_dict.pickle'

@@ -114,8 +114,6 @@ def reconstruct(volume):
                 image_list.append(volume[i + j * 12, :, :, :])
                 continue
             additive = volume[i + j * 12, :, :, :]
-            print(additive.shape)
-            print(image_list[j].shape)
             image_list[j] = np.concatenate((image_list[j], additive), axis=0)
     for l in range(12):
         if l == 0:
