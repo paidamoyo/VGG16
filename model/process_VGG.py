@@ -34,7 +34,11 @@ def check_str(obj):
 
 image_dict = pickle.load(open(flags['aux_directory'] + 'vgg_image_dict.pickle', 'rb'))
 dict_train, dict_test, index_train, index_test = split_data(image_dict)
-
+print(len(dict_train[0]))
+print(len(dict_train[1]))
+print(len(dict_test[0]))
+print(len(dict_test[1]))
+exit()
 # tf Graph input
 x = tf.placeholder(tf.float32, [params['batch_size'], 272, 128, 3])
 y = tf.placeholder(tf.int64, shape=(1,))
@@ -51,6 +55,7 @@ with tf.Session() as sess:
     counter = 0
     for i in range(2):
         for b in range(len(dict_train[i])):
+            print("Processing Training Images with label %d" % i)
             batch_x, batch_y = one_tiled_image(flags['saved_directory'], dict_test, pos_neg=i, batch_ind=b)
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
@@ -59,8 +64,9 @@ with tf.Session() as sess:
                 with open(save_path, "wb") as f:
                     pickle.dump(image, f, protocol=2)
             counter += 1
-            print("Processed Image %d" % b + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
+            print("Processed Image %d" % (b + 1) + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
         for b in range(len(dict_test[i])):
+            print("Processing Test Images with label %d" % i)
             batch_x, batch_y = one_tiled_image(flags['saved_directory'], dict_test, pos_neg=i, batch_ind=b)
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
@@ -69,7 +75,7 @@ with tf.Session() as sess:
                 with open(save_path, "wb") as f:
                     pickle.dump(image, f, protocol=2)
             counter += 1
-            print("Processed Image %d" % b + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
+            print("Processed Image %d" % (b + 1) + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
 
 if flags['save_pickled_dictionary'] is True:
     save_path = '../aux/vgg_train_dict.pickle'

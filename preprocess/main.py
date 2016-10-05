@@ -1,23 +1,21 @@
 #!/usr/bin/env python
 
 """
-Preprocessing Code for Pilot Images of SAGE Competition Mammogram dataset.
-Summary: Given the path of the folder contataining the image and text data, generate
-python structures to organize and hold the data. JPEG images can be saved from the
-dicom images (adjusted by changing the global dictionary flags).
+Preprocessing Code for Mammograms
+Summary: Reads, crops, image processing, pickles dicom Images
 Author: Dan Salo
 Created: 9/12/16
-Last Edit: DCS, 9/12/16
+Last Edit: DCS, 10/05/16
 """
-
 
 from functions import process_text, process_images
 
 # Global Dictionary of Flags
 flags = {
-    'data_directory': '../../../Data/Raw/SAGE/',
-    'save_directory': '../../../Data/Processed/SAGE',
-    'code_directory': '.',
+    'data_directory': '../../../Data/',
+    'datasets': ['SAGE'],
+    'code_directory': '../',
+    'processed_directory': '1_Cropped',
     'save_processed_jpeg': False,
     'save_original_jpeg': False,
     'save_pickled_dictionary': True,
@@ -27,8 +25,10 @@ flags = {
 
 
 def main():
-    image_data_dict = process_text(flags)
-    process_images(image_data_dict, flags)
+    for d in flags['datasets']:
+        if d == 'SAGE':
+            image_data_dict = process_text_SAGE(flags, d)
+            process_images_SAGE(image_data_dict, flags, d)
 
 if __name__ == "__main__":
     main()

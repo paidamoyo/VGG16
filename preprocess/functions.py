@@ -6,10 +6,10 @@ import scipy.misc
 import csv
 
 from functions_images import clean_image, read_image
-from functions_aux import check_directory, check_str
+from functions_aux import check_directory, check_str, save_image
 
 
-def process_images(image_data_dict, flags):
+def process_images_SAGE(image_data_dict, flags, dataset):
     """
     Args: image_data_dict, folder_path
         image_data_dict: Dictionary keyed by a tuple containing (subjectId, image#). Each value is a list of:
@@ -22,27 +22,14 @@ def process_images(image_data_dict, flags):
     check_directory(flags)
 
     for d in image_data_dict:  # loop through all images in dictionary.
-        filename = flags['data_directory'] + '/' + image_data_dict[d][4]  # extract image filename
-        filename = filename  + '.gz'
+        filename = flags['data_directory'] + '/' + image_data_dict[d][4] + '.gz' # extract image filename
         with gzip.open(filename) as f:  # open gzipped images, only in pilot image set
             image_original = read_image(f)
             if image_original is None:
                 print("File Type Cannot be Read! Skipping Image...")
                 continue
             image_processed = clean_image(image_original, image_data_dict[d])
-
-            if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-                save_path = flags['save_directory'] + '/' + check_str(d[0]) + '_' + check_str(d[1]) + '.pickle'
-                f = open(save_path, "wb")
-                pickle.dump(image_processed, f, protocol=2)
-
-            if flags['save_original_jpeg'] is True:  # save processed and cropped jpeg
-                save_path = flags['save_directory'] + '/original_jpeg_images/' + check_str(d[0]) + '_' + check_str(d[1]) + '.jpg'
-                scipy.misc.imsave(save_path, image_original)
-
-            if flags['save_processed_jpeg'] is True:  # save large jpeg file for viewing/presentation purposes
-                save_path = flags['save_directory'] + '/processed_jpeg_images/' + check_str(d[0]) + '_' + check_str(d[1]) + '.jpg'
-                scipy.misc.imsave(save_path, image_processed)
+            save_image(flags, dataset, image_original, image_processed, d)
 
             if counter % 25 == 0 and counter != 0:
                 print('Finished processing %d images' % counter)
@@ -59,8 +46,8 @@ def process_text(flags):
     """
     # hardwired filenames for .tsv files
     folder_path = flags['data_directory']
-    crosswalk_tsv_path = folder_path + "/metadata/images_crosswalk.tsv"
-    metadata_tsv_path = folder_path + "/metadata/exams_metadata.tsv"
+    crosswalk_tsv_path = folder_path + "metadata/images_crosswalk.tsv"
+    metadata_tsv_path = folder_path + "metadata/exams_metadata.tsv"
 
     with open(crosswalk_tsv_path) as tsvfile:
         tsvreader = csv.reader(tsvfile, delimiter="\t")
@@ -94,7 +81,7 @@ def process_text(flags):
 
     if flags['save_pickled_dictionary'] is True:
         save_path = '../aux/vgg_image_dict.pickle'
-        f = open(save_path, "wb")
-        pickle.dump(image_data_dict, f, protocol=2)
+        with open(save_path, "wb") as f:
+            pickle.dump(image_data_dict, f, protocol=2)
 
     return image_data_dict
