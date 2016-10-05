@@ -85,9 +85,10 @@ def main():
             labels[i] = []
             print("Processing %d total images " % len(dict_test[i]) + "for label %d" % i)
             for b in range(len(dict_test[i])):
-                print("Image %d" % b + " of %d" % len(dict_test[i]))
                 X_test, y_test = generate_minibatch_test_small(flags['save_directory'], dict_test, pos_neg=i, batch_ind=b)
                 acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test, keep_prob: 1.})
+                print("Image %d" % b + " of %d" % len(dict_test[i]) + ", Error: %.1f%%" % error_rate(acc, y_test) + \
+                      ", Label= %d" % y_test[0])
                 labels[i].append(error_rate(acc, y_test))
         print("True Positive: %f" % np.mean(labels[1]) + ", True Negative: %f" % np.mean(labels[0]))
 
