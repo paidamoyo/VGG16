@@ -94,7 +94,7 @@ def generate_minibatch_dict_small(data_directory, dict_name, pos_neg):
 def generate_minibatch_test_small(data_directory, dict_name, pos_neg, batch_ind):
     batch_data = []
     l = pos_neg
-    batch_labels = l
+    batch_labels = [l]
     inds = dict_name[l][batch_ind]
     image_path = data_directory + '/' + inds[0] + '_' + ('%d' % inds[1]) + '.pickle'
     with open(image_path, 'rb') as basefile:
