@@ -4,7 +4,7 @@ import pickle as cp
 import numpy as np
 import tensorflow as tf
 
-from functions_data import split_data, generate_minibatch_dict_small, get_image_data
+from functions_data import split_data, generate_minibatch_dict_small, generate_minibatch_test_small, get_image_data
 from functions_tf import build_model
 
 
@@ -19,7 +19,7 @@ flags = {
 params = {
     'pyramid_pool_layers': [1, 2],
     'lr': 0.001,
-    'training_iters': 4000,
+    'training_iters': 4,
     'batch_size': 12*12,
     'display_step': 10,
     'dropout': 0.5
@@ -81,11 +81,14 @@ def main():
             step += 1
         print("Optimization Finished!")
 
-        X_test, y_test = get_image_data(index_train, flags['save_directory'], image_dict)
-        print("Testing Accuracy:",
-              sess.run(accuracy, feed_dict={x: X_test,
-                                            y: y_test,
-                                            keep_prob: 1.}))
+        labels = {}
+        for i in range(2):
+            labels[i] = []
+            for b in dict_test[i]:
+                X_test, y_test = generate_minibatch_test_small(flags['save_directory'], dict_test, pos_neg=i, batch_ind=b)
+                acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test, keep_prob: 1.})
+                labels[i].append(error_rate(acc, y_test))
+        print("True Positive: %f" % np.mean(labels[1]) + ", True Negative: %f" % np.mean(labels[0]))
 
 
 if __name__ == "__main__":

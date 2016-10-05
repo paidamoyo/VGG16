@@ -89,3 +89,20 @@ def generate_minibatch_dict_small(data_directory, dict_name, pos_neg):
                 img = np.expand_dims(img, axis=2)
                 batch_data.append(np.concatenate((img, img, img), axis=2))
     return batch_data, batch_labels
+
+
+def generate_minibatch_test_small(data_directory, dict_name, pos_neg, batch_ind):
+    batch_data = []
+    l = pos_neg
+    batch_labels = l
+    inds = dict_name[l][batch_ind]
+    image_path = data_directory + '/' + inds[0] + '_' + ('%d' % inds[1]) + '.pickle'
+    with open(image_path, 'rb') as basefile:
+        image = pickle.load(basefile)
+        print(image.shape)
+        for i in range(12):
+            for j in range(12):
+                img = image[i*(3264/12):(i+1)*(3264/12), j*(1536/12):(j+1)*(1536/12)]
+                img = np.expand_dims(img, axis=2)
+                batch_data.append(np.concatenate((img, img, img), axis=2))
+    return batch_data, batch_labels
