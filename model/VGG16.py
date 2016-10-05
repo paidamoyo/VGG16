@@ -74,7 +74,7 @@ def main():
                                                               keep_prob: 1.})
             print("Image Number " + str(step) + ", Image Loss= " + \
                   "{:.6f}".format(loss) + 'Error: %.1f%%' % error_rate(acc, batch_y) + \
-                    ", Label= " + 'Error: %d' % batch_y)
+                    ", Label= " + 'Error: %d' % batch_y[0])
 
             if step % params['display_step'] == 0:
                 # Calculate batch loss and accuracy
