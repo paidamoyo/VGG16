@@ -41,7 +41,20 @@ with tf.Session() as sess:
         for b in range(len(dict_train[i])):
             batch_x, batch_y = generate_minibatch_test_small(flags['save_directory'], dict_test, pos_neg=i, batch_ind=b)
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
-            print(volume.shape)
+            print(type(volume))
+            image_list = []
+            # reconstruct images
+            for j in range(12):
+                for i in range(12):
+                    if i == 0:
+                        image_list[j] = volume[0, :, :, :]
+                        continue
+                    image_list[j] = np.concatenate((image_list[j], volume[i+j*12,:,:,:]), axis=0)
+            for l in range(12):
+                if l == 0:
+                    image = image_list[l]
+                image = np.concatenate((image, image_list[l]), axis=1)
+            print(image.shape)
         for b in range(len(dict_test[i])):
             batch_x, batch_y = generate_minibatch_test_small(flags['save_directory'], dict_test, pos_neg=i, batch_ind=b)
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
