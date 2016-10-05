@@ -48,7 +48,7 @@ def main():
     print(model[0][tf.to_int32(y[0])])
     correct_pred = tf.equal(tf.argmax(model, 1), tf.argmax(y, 1))
     accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
-s
+
     # Initializing the variables
     init = tf.initialize_all_variables()
     saver = tf.train.Saver()
