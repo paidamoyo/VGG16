@@ -27,7 +27,7 @@ def split_data(image_dict):
     labels = dict_image.iloc[5]
     for i in ['0', '1']:
         patients = labels[labels == i].index.values
-        partition = int(math.floor(len(patients) * .81))  # 70% of data goes to training
+        partition = int(math.floor(len(patients) * .85))  # 70% of data goes to training
         indexes = np.random.choice(range(len(patients)), size=len(patients))
         dict_test[int(i)] = list(patients[indexes[partition:]])
         dict_train[int(i)] = list(patients[indexes[:partition]])

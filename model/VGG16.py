@@ -34,7 +34,7 @@ def error_rate(predictions, labels):
 
 def main():
     image_dict = cp.load(open(flags['aux_directory'] + 'vgg_image_dict.pickle', 'rb'))
-    dict_test, dict_train, index_test, index_train = split_data(image_dict)
+    dict_train, dict_test, index_train, index_test = split_data(image_dict)
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [params['batch_size'], 272, 128, 3])
