@@ -47,8 +47,10 @@ with tf.Session() as sess:
             for j in range(12):
                 for i in range(12):
                     if i == 0:
-                        image_list.append(volume[i+j*12, :, :, :])
+                        image_list.append(volume[i+j*12, :, :, :]
                         continue
+                    print(len(image_list))
+                    print(image_list[j].shape)
                     image_list[j] = np.concatenate((image_list[j], volume[i+j*12,:,:,:]), axis=0)
             for l in range(12):
                 if l == 0:
