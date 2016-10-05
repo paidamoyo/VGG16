@@ -113,3 +113,8 @@ def build_model(x, flags, params):
     flat = max_flatten(mapstack, params)
     output = fc_layer(flattened=flat, weights=weights, biases=biases, dropout=params['dropout'])
     return output
+
+def compute_VGG(x, flags):
+    weights, biases = define_parameters(flags)
+    mapstack = vgg16(x=x, weights=weights, biases=biases)
+    return mapstack
