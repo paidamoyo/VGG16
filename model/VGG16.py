@@ -17,7 +17,7 @@ flags = {
 
 
 params = {
-    'lr': 0.000001,
+    'lr': 0.0001,
     'training_iters': 4000,
     'batch_size': 12*12,
     'display_step': 10,
