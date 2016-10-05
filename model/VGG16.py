@@ -59,13 +59,11 @@ def main():
     with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
         sess.run(init)
         step = 1
-        pos_neg = 1
         while step < params['training_iters']:
-            if step > 1000:
-                if pos_neg == 1:
-                    pos_neg = 0
-                else:
-                    pos_neg = 1
+            if step % 3 == 0:
+                pos_neg = 0
+            else:
+                pos_neg = 1
             batch_x, batch_y = generate_minibatch_dict_small(flags['save_directory'], dict_train, pos_neg)
 
             sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
@@ -73,8 +71,8 @@ def main():
                                                               y: batch_y,
                                                               keep_prob: 1.})
             print("Image Number " + str(step) + ", Image Loss= " + \
-                  "{:.6f}".format(loss) + 'Error: %.1f%%' % error_rate(acc, batch_y) + \
-                    ", Label= " + 'Error: %d' % batch_y[0])
+                  "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) + \
+                    ", Label= %d" % batch_y[0])
 
             if step % params['display_step'] == 0:
                 # Calculate batch loss and accuracy
