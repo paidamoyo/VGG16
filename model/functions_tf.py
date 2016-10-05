@@ -99,7 +99,7 @@ def load_pretrained_parameters(filename):
                         tf.Variable(pretrained[layer_key][nums_key].value, trainable=False)
                 if exp.group(1) == 'b':
                     biases['b' + m.group(1) + '_c' + m.group(2)] = \
-                        tf.Variable(pretrained[layer_key][nums_key].value)
+                        tf.Variable(pretrained[layer_key][nums_key].value, trainable=False)
                 else:
                     ValueError('Could not locate weights in pretrained dictionary!')
         else:
