@@ -76,15 +76,16 @@ def generate_minibatch_dict(data_directory, dict_name, batch_size):
 def generate_minibatch_dict_small(data_directory, dict_name, pos_neg):
     batch_data = []
     l = pos_neg
-    batch_labels = l
+    batch_labels = [l]
     batch_ind = np.random.randint(low=0, high=len(dict_name[l]) - 1, size=1)
     inds = dict_name[l][batch_ind]
     image_path = data_directory + '/' + inds[0] + '_' + ('%d' % inds[1]) + '.pickle'
     with open(image_path, 'rb') as basefile:
         image = pickle.load(basefile)
+        print(image.shape)
         for i in range(12):
             for j in range(12):
-                img = image[i*(1536/12):(i+1)*(1536/12), j*(3264/12):(j+1)*(3264/12)]
+                img = image[i*(3264/12):(i+1)*(3264/12), j*(1536/12):(j+1)*(1536/12)]
                 img = np.expand_dims(img, axis=2)
                 batch_data.append(np.concatenate((img, img, img), axis=2))
     return batch_data, batch_labels

@@ -20,8 +20,7 @@ params = {
     'pyramid_pool_layers': [1, 2],
     'lr': 0.001,
     'training_iters': 200000,
-    'batch_size': 12*12
-    ,
+    'batch_size': 12*12,
     'display_step': 10,
     'dropout': 0.75
 }
@@ -32,7 +31,7 @@ def main():
     dict_test, dict_train, index_test, index_train = split_data(image_dict)
 
     # tf Graph input
-    x = tf.placeholder(tf.float32, [params['batch_size'], 3264/12, 1536/12, 3])
+    x = tf.placeholder(tf.float32, [params['batch_size'], 272, 128, 3])
     y = tf.placeholder(tf.int64, shape=(1,))
     keep_prob = tf.placeholder(tf.float32)  # dropout (keep probability)
 
