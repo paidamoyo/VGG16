@@ -43,8 +43,7 @@ def main():
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
 
     # Evaluate model
-    correct_pred = tf.equal(tf.argmax(model, 1), tf.argmax(y, 1))
-    accuracy = tf.reduce_mean(tf.cast(correct_pred, tf.float32))
+    accuracy = tf.equal(model[tf.to_int32(y)] - y)
 
     # Initializing the variables
     init = tf.initialize_all_variables()
