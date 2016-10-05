@@ -18,7 +18,7 @@ flags = {
 
 params = {
     'lr': 0.00001,
-    'training_iters': 1000,
+    'training_iters': 500,
     'batch_size': 12*12,
     'display_step': 10,
     'dropout': 0.5
@@ -60,9 +60,9 @@ def main():
         step = 1
         while step < params['training_iters']:
             if step % 3 == 0:
-                pos_neg = 0
-            else:
                 pos_neg = 1
+            else:
+                pos_neg = 0
             batch_x, batch_y = generate_minibatch_dict_small(flags['save_directory'], dict_train, pos_neg)
 
             sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
