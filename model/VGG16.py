@@ -61,12 +61,13 @@ def main():
         step = 1
         pos_neg = 1
         while step < params['training_iters']:
-            if step < 1000
+            if step > 1000:
+                if pos_neg == 1:
+                    pos_neg = 0
+                else:
+                    pos_neg = 1
             batch_x, batch_y = generate_minibatch_dict_small(flags['save_directory'], dict_train, pos_neg)
-            if pos_neg == 1:
-                pos_neg = 0
-            else:
-                pos_neg = 1
+
             sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
             loss, acc = sess.run([cost, train_prediction], feed_dict={x: batch_x,
                                                               y: batch_y,
