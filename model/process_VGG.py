@@ -53,7 +53,7 @@ with tf.Session() as sess:
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-                save_path = flags['save_directory'] + '/' + check_str(dict_train[b]) + '_' + check_str(dict_train[b]) + '.pickle'
+                save_path = flags['save_directory'] + '/' + check_str(dict_train[i][b]) + '_' + check_str(dict_train[i][b]) + '.pickle'
                 with open(save_path, "wb") as f:
                     pickle.dump(image, f, protocol=2)
         for b in range(len(dict_test[i])):
@@ -61,7 +61,7 @@ with tf.Session() as sess:
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-                save_path = flags['save_directory'] + '/' + check_str(dict_test[b]) + '_' + check_str(dict_test[b]) + '.pickle'
+                save_path = flags['save_directory'] + '/' + check_str(dict_test[i][b]) + '_' + check_str(dict_test[i][b]) + '.pickle'
                 with open(save_path, "wb") as f:
                     pickle.dump(image, f, protocol=2)
 
