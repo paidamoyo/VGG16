@@ -47,6 +47,7 @@ def main():
     print(type(model))
     print(y.get_shape())
     print(model[0][0])
+    print(y[0])
     accuracy = tf.equal(model[tf.to_int32(y)], y)
 
     # Initializing the variables
