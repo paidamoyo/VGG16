@@ -2,11 +2,9 @@
 
 import gzip
 import pickle
-import scipy.misc
 import csv
 
-from functions_images import clean_image, read_image
-from functions_aux import check_directory, check_str, save_image
+from functions_images import read_image, clean_image, save_image
 
 
 def process_images_SAGE(image_data_dict, flags, dataset):
@@ -19,16 +17,15 @@ def process_images_SAGE(image_data_dict, flags, dataset):
     """
     print('Processing all %d images' % len(image_data_dict))
     counter = 0
-    check_directory(flags)
 
     for d in image_data_dict:  # loop through all images in dictionary.
-        filename = flags['data_directory'] + '/' + image_data_dict[d][4] + '.gz' # extract image filename
+        filename = flags['data_directory'] + dataset + '/Originals/' + image_data_dict[d][4] + '.gz'
         with gzip.open(filename) as f:  # open gzipped images, only in pilot image set
             image_original = read_image(f)
             if image_original is None:
                 print("File Type Cannot be Read! Skipping Image...")
                 continue
-            image_processed = clean_image(image_original, image_data_dict[d])
+            image_processed = clean_image(image_original, image_data_dict[d], dumb_crop_dims=[3264, 1536])
             save_image(flags, dataset, image_original, image_processed, d)
 
             if counter % 25 == 0 and counter != 0:
@@ -37,7 +34,7 @@ def process_images_SAGE(image_data_dict, flags, dataset):
 
 
 # Text Processing Functions
-def process_text(flags):
+def process_text_SAGE(flags, dataset):
     """
     Args: folder_path
         folder_path: Folder location of SAGE competition files
@@ -45,9 +42,9 @@ def process_text(flags):
             [Exam Number, Image Index (not used), View, Side,  DCM Filename, Binary Label]
     """
     # hardwired filenames for .tsv files
-    folder_path = flags['data_directory']
-    crosswalk_tsv_path = folder_path + "metadata/images_crosswalk.tsv"
-    metadata_tsv_path = folder_path + "metadata/exams_metadata.tsv"
+    metadata_path = flags['data_directory'] + dataset + "/Metadata/"
+    crosswalk_tsv_path = metadata_path + "images_crosswalk.tsv"
+    metadata_tsv_path = metadata_path + "exams_metadata.tsv"
 
     with open(crosswalk_tsv_path) as tsvfile:
         tsvreader = csv.reader(tsvfile, delimiter="\t")

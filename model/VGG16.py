@@ -74,7 +74,6 @@ def main():
                     ", Label= %d" % batch_y[0])
 
             if step % params['display_step'] == 0:
-                # Calculate batch loss and accuracy
                 save_path = saver.save(sess, '../aux/model.ckpt')
                 print("Model saved in file: %s" % save_path)
             step += 1
