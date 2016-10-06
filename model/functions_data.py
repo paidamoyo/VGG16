@@ -20,14 +20,15 @@ def get_image_data(index_name, data_directory, image_dict):
 def split_data(image_dict):
     np.random.seed(seed=1234)
     index_test = []
-    index_train = index_test
+    index_train = []
     dict_test = {}
-    dict_train = dict_test
+    dict_train = {}
     dict_image = pd.DataFrame(image_dict)
     labels = dict_image.iloc[5]
     for i in ['0', '1']:
         patients = labels[labels == i].index.values
         partition = int(math.floor(len(patients) * .15))  # 70% of data goes to training
+        print(partition)
         indexes = np.random.choice(range(len(patients)), size=len(patients))
         dict_test[int(i)] = list(patients[indexes[partition:]])
         dict_train[int(i)] = list(patients[indexes[:partition]])

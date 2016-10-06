@@ -39,6 +39,11 @@ def check_str(obj):
 check_directories(flags)
 image_dict = pickle.load(open(flags['aux_directory'] + 'vgg_image_dict.pickle', 'rb'))
 dict_train, dict_test, index_train, index_test = split_data(image_dict)
+print(len(dict_train[0]))
+print(len(dict_test[0]))
+print(len(dict_train[1]))
+print(len(dict_test[1]))
+
 
 # tf Graph input
 x = tf.placeholder(tf.float32, [params['batch_size'], 272, 128, 3])
@@ -62,7 +67,7 @@ with tf.Session() as sess:
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-                save_path =  image_dump_path + check_str(dict_train[i][b][0]) + '_' + check_str(dict_train[i][b][1]) + '_vgg.pickle'
+                save_path = image_dump_path + check_str(dict_train[i][b][0]) + '_' + check_str(dict_train[i][b][1]) + '_vgg.pickle'
                 with open(save_path, "wb") as f:
                     pickle.dump(image, f, protocol=2)
             counter += 1
