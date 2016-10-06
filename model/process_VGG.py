@@ -68,7 +68,7 @@ with tf.Session() as sess:
             print("Processed Image %d" % (b + 1) + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
         for b in range(len(dict_test[i])):
             print("Processing Test Images with label %d" % i)
-            batch_x, batch_y = one_tiled_image(flags['saved_directory'], dict_test, pos_neg=i, batch_ind=b)
+            batch_x, batch_y = one_tiled_image(flags, dict_test, pos_neg=i, batch_ind=b)
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
@@ -79,9 +79,9 @@ with tf.Session() as sess:
             print("Processed Image %d" % (b + 1) + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
 
 if flags['save_pickled_dictionary'] is True:
-    save_path = '../aux/vgg_train_dict.pickle'
+    save_path = flags['aux_directory'] + 'vgg_train_dict.pickle'
     with open(save_path, "wb") as f:
         pickle.dump(dict_train, f, protocol=2)
-    save_path = '../aux/vgg_test_dict.pickle'
+    save_path = flags['aux_directory'] + 'vgg_test_dict.pickle'
     with open(save_path, "wb") as f:
         pickle.dump(dict_test, f, protocol=2)
