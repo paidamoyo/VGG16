@@ -6,14 +6,17 @@ import tensorflow as tf
 
 from functions_data import split_data, one_tiled_image, get_image_data, reconstruct
 from functions_tf import compute_VGG
+from functions_aux import check_directories
 
 
 # Global Dictionary of Flags
 flags = {
-    'save_directory': '../../../../Data/Processed/SAGE_VGG/',
-    'saved_directory': '../../../../Data/Processed/SAGE/',
+    'data_directory': '../../../../Data/', # in relationship to the code_directory
     'aux_directory': '../aux/',
-    'code_directory': '../',
+    'dataset': ['SAGE'],
+    'previous_processed_directory': '1_Cropped/',
+    'processed_directory': '2_VGG',
+    'datasets': ['SAGE'],
     'save_pickled_dictionary': True,
     'save_pickled_images': True,
 }
@@ -32,13 +35,10 @@ def check_str(obj):
         return str(obj)
 
 
+check_directories(flags)
 image_dict = pickle.load(open(flags['aux_directory'] + 'vgg_image_dict.pickle', 'rb'))
 dict_train, dict_test, index_train, index_test = split_data(image_dict)
-print(len(dict_train[0]))
-print(len(dict_train[1]))
-print(len(dict_test[0]))
-print(len(dict_test[1]))
-exit()
+
 # tf Graph input
 x = tf.placeholder(tf.float32, [params['batch_size'], 272, 128, 3])
 y = tf.placeholder(tf.int64, shape=(1,))
