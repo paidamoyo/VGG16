@@ -48,6 +48,7 @@ logits = compute_VGG(x=x, flags=flags)
 
 # Initializing the variables
 init = tf.initialize_all_variables()
+image_dump_path = flags['data_directory'] + 'SAGE/Preprocessed/' + flags['processed_directory']
 
 # Launch the graph
 with tf.Session() as sess:
@@ -61,7 +62,7 @@ with tf.Session() as sess:
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-                save_path = flags['save_directory'] + check_str(dict_train[i][b][0]) + '_' + check_str(dict_train[i][b][1]) + '_vgg.pickle'
+                save_path =  image_dump_path + check_str(dict_train[i][b][0]) + '_' + check_str(dict_train[i][b][1]) + '_vgg.pickle'
                 with open(save_path, "wb") as f:
                     pickle.dump(image, f, protocol=2)
             counter += 1
@@ -72,7 +73,7 @@ with tf.Session() as sess:
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-                save_path = flags['save_directory'] + check_str(dict_test[i][b][0]) + '_' + check_str(dict_test[i][b][1]) + '_vgg.pickle'
+                save_path = image_dump_path + check_str(dict_test[i][b][0]) + '_' + check_str(dict_test[i][b][1]) + '_vgg.pickle'
                 with open(save_path, "wb") as f:
                     pickle.dump(image, f, protocol=2)
             counter += 1
