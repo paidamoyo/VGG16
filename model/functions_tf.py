@@ -83,7 +83,7 @@ def define_parameters(flags):
     return weights, biases
 
 def load_pretrained_parameters_VGG(flags):
-    filename = flags['code_directory'] + 'aux/vgg16_ImageNet_tf.h5'
+    filename = flags['weights_directory'] + 'vgg16_ImageNet_tf.h5'
     pretrained = h5py.File(filename, 'r')
     weights = {}
     biases = {}

@@ -13,6 +13,7 @@ from functions_aux import check_directories
 flags = {
     'data_directory': '../../../../Data/', # in relationship to the code_directory
     'aux_directory': '../aux/',
+    'weights_directory': '../weights/'
     'dataset': ['SAGE'],
     'previous_processed_directory': '1_Cropped/',
     'processed_directory': '2_VGG',

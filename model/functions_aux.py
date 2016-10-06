@@ -20,12 +20,5 @@ def check_directories(flags):
     make_directory(flags['aux_directory'])
     for dataset in flags['datasets']:
         preprocessed_directory = flags['data_directory'] + dataset + '/Preprocessed/' + flags['processed_directory']
-        make_directory(preprocessed_directory)
-        if flags['save_pickled_dictionary'] is True:  # ensure jpeg directory exists. if not, create it.
-            make_directory(preprocessed_directory + 'processed_jpeg_images')
-
-        if flags['save_original_jpeg'] is True:  # ensure jpeg directory exists. if not, create it.
-            make_directory(preprocessed_directory + 'original_jpeg_images')
-
         if flags['save_pickled_images'] is True:  # ensure pickle directory exists. if not, create it.
             make_directory(preprocessed_directory)
