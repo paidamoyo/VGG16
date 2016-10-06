@@ -57,7 +57,7 @@ with tf.Session() as sess:
     for i in range(2):
         for b in range(len(dict_train[i])):
             print("Processing Training Images with label %d" % i)
-            batch_x, batch_y = one_tiled_image(flags['saved_directory'], dict_test, pos_neg=i, batch_ind=b)
+            batch_x, batch_y = one_tiled_image(flags, dict_test, pos_neg=i, batch_ind=b)
             volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
             image = reconstruct(volume)
             if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
