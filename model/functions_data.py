@@ -95,7 +95,7 @@ def one_tiled_image(flags, dict_name, pos_neg, batch_ind):
     l = pos_neg
     batch_labels = [l]
     inds = dict_name[l][batch_ind]
-    path = flags['dataset'] + flags['dataset'][0] + 'Preprocessed/' + flags['previous_processed_directory']
+    path = flags['data_directory'] + 'SAGE/' + 'Preprocessed/' + flags['previous_processed_directory']
     image_path = path + inds[0] + '_' + ('%d' % inds[1]) + '.pickle'
     with open(image_path, 'rb') as basefile:
         image = pickle.load(basefile)
