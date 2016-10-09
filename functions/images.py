@@ -6,7 +6,7 @@ import dicom as di
 import scipy.misc
 import pickle
 
-from functions_aux import check_str
+from functions.aux import check_str
 
 
 def smart_crop(image):
@@ -26,7 +26,7 @@ def smart_crop(image):
 
 
 def dumb_crop(image, rows, cols):
-    return image[0:rows, 0:cols] #  total size of 1536 x 3264
+    return image[0:rows, 0:cols]
 
 
 def adjust_gamma(image, gamma):
@@ -65,10 +65,7 @@ def clean_image(image, dict_entry, dumb_crop_dims):
 def save_image(flags, dataset, image_original, image_processed, d):
     preprocessed_directory = flags['data_directory'] + dataset + '/Preprocessed/' + flags['processed_directory']
     original_directory = flags['data_directory'] + dataset + '/Originals/'
-    if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-        save_path = preprocessed_directory + check_str(d[0]) + '_' + check_str(d[1]) + '.pickle'
-        with open(save_path, "wb") as file:
-            pickle.dump(image_processed, file, protocol=2)
+    image_filename = check_str(d[1]) + '_' + check_str(d[2]) + '.pickle'
 
     if flags['save_original_jpeg'] is True:  # save processed and cropped jpeg
         save_path = original_directory + '/original_jpeg_images/' + check_str(d[0]) + '_' + check_str(d[1]) + '.jpg'
@@ -77,3 +74,9 @@ def save_image(flags, dataset, image_original, image_processed, d):
     if flags['save_processed_jpeg'] is True:  # save large jpeg file for viewing/presentation purposes
         save_path = preprocessed_directory + '/processed_jpeg_images/' + check_str(d[0]) + '_' + check_str(d[1]) + '.jpg'
         scipy.misc.imsave(save_path, image_processed)
+
+    if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
+        save_path = preprocessed_directory + image_filename
+        with open(save_path, "wb") as file:
+            pickle.dump(image_processed, file, protocol=2)
+    return image_filename

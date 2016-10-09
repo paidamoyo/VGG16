@@ -1,10 +1,32 @@
 #!/usr/bin/env python
 
-import gzip
-import pickle
-import csv
+"""
+Preprocessing Code for Mammograms
+Summary: Reads, crops, image processing, pickles dicom Images
+Author: Dan Salo
+Created: 9/12/16
+Last Edit: DCS, 10/05/16
+"""
 
-from functions_images import read_image, clean_image, save_image
+import gzip
+import csv
+import pickle
+
+from functions.images import read_image, clean_image, save_image
+from functions.aux import check_directories
+
+# Global Dictionary of Flags
+flags = {
+    'data_directory': '../../../Data/', # in relationship to the code_directory
+    'aux_directory': 'aux/',
+    'processed_directory': '1_Cropped/',
+    'datasets': ['SAGE'],
+    'save_processed_jpeg': True,
+    'save_original_jpeg': False,
+    'save_pickled_dictionary': True,
+    'save_pickled_images': True,
+}
+
 
 
 def process_images_SAGE(image_data_dict, flags, dataset):
@@ -26,7 +48,8 @@ def process_images_SAGE(image_data_dict, flags, dataset):
                 print("File Type Cannot be Read! Skipping Image...")
                 continue
             image_processed = clean_image(image_original, image_data_dict[d], dumb_crop_dims=[3264, 1536])
-            save_image(flags, dataset, image_original, image_processed, d)
+            new_filename = save_image(flags, dataset, image_original, image_processed, d)
+            image_data_dict[d][4] = new_filename
 
             if counter % 25 == 0 and counter != 0:
                 print('Finished processing %d images' % counter)
@@ -41,16 +64,15 @@ def process_text_SAGE(flags, dataset):
     Returns: image_data_dict: Dictionary keyed by a tuple containing (subjectId, image#). Each value is a list of:
             [Exam Number, Image Index (not used), View, Side,  DCM Filename, Binary Label]
     """
-    # hardwired filenames for .tsv files
-    metadata_path = flags['data_directory'] + dataset + "/Metadata/"
+    metadata_path = flags['data_directory'] + 'SAGE' + "/Metadata/"
     crosswalk_tsv_path = metadata_path + "images_crosswalk.tsv"
-    metadata_tsv_path = metadata_path + "exams_metadata.tsv"
 
     with open(crosswalk_tsv_path) as tsvfile:
         tsvreader = csv.reader(tsvfile, delimiter="\t")
         next(tsvreader, None)  # skip the one headerline
         bol = False
         counter = 0
+        patient_num = 0
         image_data_dict = {}
         for line in tsvreader:
             if bol is True:
@@ -58,27 +80,32 @@ def process_text_SAGE(flags, dataset):
                     counter += 1
                 else:
                     subjectId = line[0]
+                    patient_num += 1
                     counter = 0
-                image_data_dict[(subjectId, counter)] = line[1:]
+                line2 = line[1:]
+                del line2[1]
+                image_data_dict[('SAGE', patient_num, counter)] = line2
             else:
                 subjectId = line[0]
-                image_data_dict[(subjectId, counter)] = line[1:]
+                line2 = line[1:]
+                del line2[1]
+                image_data_dict[('SAGE', patient_num, counter)] = line2
                 bol = True
+    return image_data_dict
 
-    with open(metadata_tsv_path) as tsvfile:
-        tsvreader = csv.reader(tsvfile, delimiter="\t")
-        next(tsvreader, None)  # skip the one headerline
-        for line in tsvreader:
-            for c in image_data_dict:
-                if line[0] == c[0] and line[1] == image_data_dict[c][0]:  # match patient ID and exam number
-                    if image_data_dict[c][3] == 'R':
-                        image_data_dict[c].append(line[4])
-                    if image_data_dict[c][3] == 'L':
-                        image_data_dict[c].append(line[3])
+
+def main():
+    check_directories(flags)
+    for d in flags['datasets']:
+        if d == 'SAGE':
+            image_data_dict = process_text_SAGE(flags, d)
+            process_images_SAGE(image_data_dict, flags, d)
 
     if flags['save_pickled_dictionary'] is True:
-        save_path = '../aux/vgg_image_dict.pickle'
+        save_path = flags['aux_directory'] + '1_cropped_image_dict.pickle'
         with open(save_path, "wb") as f:
             pickle.dump(image_data_dict, f, protocol=2)
 
-    return image_data_dict
+
+if __name__ == "__main__":
+    main()

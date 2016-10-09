@@ -2,7 +2,6 @@ import numpy as np
 import math
 import pandas as pd
 import pickle
-import tensorflow as tf
 
 def get_image_data(index_name, data_directory, image_dict):
     data = []
@@ -17,8 +16,8 @@ def get_image_data(index_name, data_directory, image_dict):
     return data, labels
 
 
-def split_data(image_dict):
-    np.random.seed(seed=1234)
+def split_data(image_dict, seed):
+    np.random.seed(seed=seed)
     index_test = []
     index_train = []
     dict_test = {}
@@ -33,27 +32,11 @@ def split_data(image_dict):
         dict_train[int(i)] = list(patients[indexes[:partition]])
         index_test = index_test + list(patients[indexes[partition:]])
         index_train = index_train + list(patients[indexes[:partition]])
+        print("Training split has %d mammograms" % len(dict_train[int(i)]) + " with label %d" % int(i))
+        print("Testing split has %d mammograms" % len(dict_train[int(i)]) + " with label %d" % int(i))
     return dict_train, dict_test, index_train, index_test
 
 
-def generate_minibatch(image_dict, data_directory, index_name, batch_size):
-    batch_ind = np.random.randint(low=0, high=len(index_name) - 1, size=batch_size).tolist()
-    batch_data = []
-    batch_labels = []
-    dims = []
-    counter = 0
-    for b in batch_ind:
-        inds = index_name[b]
-        image_path = data_directory + '/' + ('%d' % inds[0]) + '_' + ('%d' % inds[1]) + '.pickle'
-        with open(image_path, 'rb') as basefile:
-            image = pickle.load(basefile)
-            dims.append(image.size)
-            batch_data.append(image)
-            batch_labels.append(int(image_dict[inds][5]))
-            counter += 1
-    return np.expand_dims(batch_data, axis=4), batch_labels, dims
-
-# size=math.ceil(batch_size * factor[i])).tolist()
 def generate_minibatch_dict(data_directory, dict_name, batch_size):
     batch_data = []
     batch_labels = []
@@ -72,7 +55,7 @@ def generate_minibatch_dict(data_directory, dict_name, batch_size):
     b = np.asarray(batch_labels)
     return batch_data, batch_labels
 
-# size=math.ceil(batch_size * factor[i])).tolist()
+
 def generate_minibatch_dict_small(data_directory, dict_name, pos_neg):
     batch_data = []
     l = pos_neg
@@ -90,11 +73,9 @@ def generate_minibatch_dict_small(data_directory, dict_name, pos_neg):
     return batch_data, batch_labels
 
 
-def one_tiled_image(flags, dict_name, pos_neg, batch_ind):
+def one_tiled_image(flags, inds):
     batch_data = []
-    l = pos_neg
     batch_labels = [l]
-    inds = dict_name[l][batch_ind]
     path = flags['data_directory'] + 'SAGE/' + 'Preprocessed/' + flags['previous_processed_directory']
     image_path = path + inds[0] + '_' + ('%d' % inds[1]) + '.pickle'
     with open(image_path, 'rb') as basefile:

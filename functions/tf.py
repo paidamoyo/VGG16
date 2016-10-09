@@ -1,8 +1,17 @@
+#!/usr/bin/env python
+
+"""
+Preprocessing Code for Mammograms
+Summary: Reads, crops, image processing, pickles dicom Images
+Author: Dan Salo
+Created: 9/12/16
+Last Edit: DCS, 10/05/16
+"""
+
 import tensorflow as tf
 import re
 import h5py
 
-# Create some wrappers for simplicity
 def conv2d(img, w, b, strides=1):
     img = tf.nn.conv2d(img, w, strides=[1, strides, strides, 1], padding='SAME')
     img = tf.nn.bias_add(img, b)

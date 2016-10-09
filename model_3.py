@@ -4,8 +4,8 @@ import pickle as cp
 import numpy as np
 import tensorflow as tf
 
-from functions_data import split_data, generate_minibatch_dict_small, generate_minibatch_test_small, get_image_data
-from functions_tf import build_model
+from functions.data import split_data, generate_minibatch_dict_small, generate_minibatch_test_small, get_image_data
+from functions.tf import build_model
 
 
 # Global Dictionary of Flags
@@ -90,6 +90,31 @@ def main():
                       ", Label= %d" % y_test[0])
                 labels[i].append(error_rate(acc, y_test))
         print("True Positive: %f" % np.mean(labels[1]) + ", True Negative: %f" % np.mean(labels[0]))
+
+
+for d in range(len(image_dict)):
+    batch_x, batch_y = one_tiled_image(flags, dict_test, pos_neg=i, batch_ind=b)
+    volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
+    image = reconstruct(volume)
+    if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
+        save_path = image_dump_path + check_str(dict_train[i][b][0]) + '_' + check_str(
+            dict_train[i][b][1]) + '_vgg.pickle'
+        with open(save_path, "wb") as f:
+            pickle.dump(image, f, protocol=2)
+    counter += 1
+    print("Processed Image %d" % (b + 1) + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
+print("Processing Test Images with label %d" % i)
+for b in range(len(dict_test[i])):
+    batch_x, batch_y = one_tiled_image(flags, dict_test, pos_neg=i, batch_ind=b)
+    volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
+    image = reconstruct(volume)
+    if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
+        save_path = image_dump_path + check_str(dict_test[i][b][0]) + '_' + check_str(
+            dict_test[i][b][1]) + '_vgg.pickle'
+        with open(save_path, "wb") as f:
+            pickle.dump(image, f, protocol=2)
+    counter += 1
+    print("Processed Image %d" % (b + 1) + " of %d" % len(dict_test[i]) + ". %d total images" % counter)
 
 
 if __name__ == "__main__":

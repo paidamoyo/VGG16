@@ -16,18 +16,27 @@ def check_str(obj):
         return str(obj)
 
 
+def check_exist(variable):
+    try:
+        variable
+    except KeyError:
+        return False
+    else:
+        return True
+
+
 def check_directories(flags):
     make_directory(flags['aux_directory'])
     for dataset in flags['datasets']:
         preprocessed_directory = flags['data_directory'] + dataset + '/Preprocessed/' + flags['processed_directory']
         make_directory(preprocessed_directory)
-        if flags['save_processed_jpeg'] is True:  # ensure jpeg directory exists. if not, create it.
+        if check_exist(flags['save_processed_jpeg']) and flags['save_processed_jpeg'] is True:
             make_directory(preprocessed_directory + 'processed_jpeg_images')
 
-        if flags['save_original_jpeg'] is True:  # ensure jpeg directory exists. if not, create it.
+        if check_exist(flags['save_original_jpeg']) and flags['save_original_jpeg'] is True:
             make_directory(preprocessed_directory + 'original_jpeg_images')
 
-        if flags['save_pickled_images'] is True:  # ensure pickle directory exists. if not, create it.
+        if check_exist(flags['save_pickled_images']) and flags['save_pickled_images'] is True:
             make_directory(preprocessed_directory)
 
 
