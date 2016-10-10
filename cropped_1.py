@@ -91,11 +91,13 @@ def process_text_INbreast(flags):
         csvreader = csv.reader(tsvfile, delimiter=';')
         next(csvreader, None)  # skip the one headerline
         img_counter = 0
+        total = 0
         patient_num = -1
         subjectId = -1
         image_data_dict = {}
         for line in csvreader:
             file = line[5]
+            print(file)
             new_subjectId = names[names[1] == file].values[0][0]
             if subjectId == new_subjectId:
                 img_counter += 1
@@ -113,7 +115,8 @@ def process_text_INbreast(flags):
             else:
                 line[7] = 1
             image_data_dict[('INbreast', patient_num, img_counter)] = ['0'] + [line[i] for i in indices]
-        print('Successfully organized %d images from the INbreast dataset.' % img_counter)
+            total += 1
+        print('Successfully organized %d patients and %d images from the INbreast dataset.' % (patient_num, total))
     return image_data_dict
 
 
