@@ -108,25 +108,23 @@ def reconstruct(volume):
     return image
 
 
-def save_image(flags, dataset, image_original, image_processed, d):
+def save_image(flags, dataset, image_original, image_processed, inds):
     preprocessed_directory = flags['data_directory'] + dataset + '/Preprocessed/' + flags['processed_directory']
     original_directory = flags['data_directory'] + dataset + '/Originals/'
-    image_filename = check_str(d[1]) + '_' + check_str(d[2]) + '.pickle'
+    image_filename = check_str(inds[1]) + '_' + check_str(inds[2])
 
     if flags['save_original_jpeg'] is True:  # save processed and cropped jpeg
-        save_path = original_directory + '/original_jpeg_images/' + check_str(d[0]) + '_' + check_str(d[1]) + '.jpg'
+        save_path = original_directory + '/original_jpeg_images/' + image_filename + '.jpg'
         scipy.misc.imsave(save_path, image_original)
 
     if flags['save_processed_jpeg'] is True:  # save large jpeg file for viewing/presentation purposes
-        save_path = preprocessed_directory + '/processed_jpeg_images/' + check_str(d[0]) + '_' + check_str(d[1]) + '.jpg'
+        save_path = preprocessed_directory + '/processed_jpeg_images/' + image_filename + '.jpg'
         scipy.misc.imsave(save_path, image_processed)
 
     if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-        save_path = preprocessed_directory + image_filename
+        save_path = preprocessed_directory + image_filename + '.pickle'
         with open(save_path, "wb") as file:
             pickle.dump(image_processed, file, protocol=2)
-
-
     return image_filename
 
 
