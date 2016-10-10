@@ -41,24 +41,25 @@ def process_images(image_data_dict, flags, dataset):
     counter = 0
 
     for d in image_data_dict:  # loop through all images in dictionary.
-        filename = flags['data_directory'] + dataset + '/Originals/' + image_data_dict[d][3]
-        print('Processing %s' % filename)
-        image_original = read_image(filename)
-        if image_original is None:
-            print("File Type Cannot be Read! Skipping Image...")
-            continue
-        image_processed = clean_image(image_original, image_data_dict[d], dumb_crop_dims=[3264, 1536])
-        new_filename = save_image(flags, dataset, image_original, image_processed, d)
-        image_data_dict[d][3] = new_filename
+        if d[0] == dataset:
+            filename = flags['data_directory'] + dataset + '/Originals/' + image_data_dict[d][3]
+            print('Processing %s' % filename)
+            image_original = read_image(filename)
+            if image_original is None:
+                print("File Type Cannot be Read! Skipping Image...")
+                continue
+            image_processed = clean_image(image_original, image_data_dict[d], dumb_crop_dims=[3264, 1536])
+            new_filename = save_image(flags, dataset, image_original, image_processed, d)
+            image_data_dict[d][3] = new_filename
 
-        if counter % 25 == 0 and counter != 0:
-            print('Finished processing %d images' % counter)
-        counter += 1
+            if counter % 25 == 0 and counter != 0:
+                print('Finished processing %d images' % counter)
+            counter += 1
 
 
 def process_text_SAGE(flags):
     crosswalk_tsv_path = flags['data_directory'] + 'SAGE' + "/Metadata/images_crosswalk.tsv"
-    indices = [1,3,4,5,6]
+    indices = [1, 3, 4, 5, 6]
 
     with open(crosswalk_tsv_path) as tsvfile:
         tsvreader = csv.reader(tsvfile, delimiter="\t")
