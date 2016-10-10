@@ -27,7 +27,6 @@ check_directories(flags)
 previous = str.split(flags['previous_processed_directory'],'/')[0]
 image_dict = pickle.load(open(flags['aux_directory'] + previous + '_image_dict.pickle', 'rb'))
 
-# tf Graph input
 x = tf.placeholder(tf.float32, [12*12, 272, 128, 3])
 y = tf.placeholder(tf.int64, shape=(1,))
 
