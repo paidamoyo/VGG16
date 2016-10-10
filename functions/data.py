@@ -3,6 +3,7 @@ import math
 import pandas as pd
 import pickle
 import scipy.misc
+import os
 
 from functions.aux import check_str
 
