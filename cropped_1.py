@@ -97,8 +97,9 @@ def process_text_INbreast(flags):
         for line in csvreader:
             print(line)
             file = line[5]
-            new_subjectId = names[names[1] == file][0]
+            new_subjectId = names[names[1] == file][0][0]
             print(new_subjectId)
+            print(type(new_subjectId))
             if subjectId == new_subjectId:
                 img_counter += 1
             else:
