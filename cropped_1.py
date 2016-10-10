@@ -84,11 +84,7 @@ def process_text_INbreast(flags):
     originals_directory = flags['data_directory'] + 'INbreast' + '/Originals'
     list_dicom_files = find_dicom_files(originals_directory)
     print('Found a total of %d DICOM Images.' % len(list_dicom_files))
-    list_file_pat_names = []
-    for l in list_dicom_files:
-        a = str.split(l, '_')
-        print(a)
-        list_file_pat_names.append((str.split(l, '_')[2], str.split(l, '_')[0]))
+    list_file_pat_names = [(str.split(l, '_')[2], str.split(l, '_')[1]) for l in list_dicom_files]
     names = pd.DataFrame(list_file_pat_names)
 
     with open(crosswalk_tsv_path) as tsvfile:
@@ -102,6 +98,7 @@ def process_text_INbreast(flags):
             print(line)
             file = line[5]
             new_subjectId = names[names[1] == file][0]
+            print(new_subjectId)
             if subjectId == new_subjectId:
                 img_counter += 1
             else:
