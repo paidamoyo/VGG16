@@ -67,7 +67,7 @@ def main():
         step = 1
         while step < params['training_iters']:
             batch_x, batch_y = generate_minibatch(flags['save_directory'], dict_train, params['batch_size'])
-
+            print(batch_x[0].shape)
             sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
             if step % params['display_step'] == 0:
                 loss, acc = sess.run([cost, train_prediction], feed_dict={x: batch_x,

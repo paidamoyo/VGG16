@@ -88,8 +88,8 @@ def cnn2(x, weights, biases):
     return pool2
 
 
-def fc1(conv2, weights, biases, dropout):
-    flattened = tf.reshape(conv2, [-1, 4352])
+def fc1(pool2, weights, biases, dropout):
+    flattened = tf.reshape(pool2, [-1, 4352])
     fc1 = tf.add(tf.matmul(flattened, weights['fc1']), biases['fc1'])
     fc1 = tf.nn.relu(fc1)
     fc1 = tf.nn.dropout(fc1, dropout)
