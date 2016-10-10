@@ -39,13 +39,9 @@ def error_rate(predictions, labels):
 
 def main():
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
-    len(image_dict)
-    a = pd.DataFrame(image_dict)
-    print(a.iloc(4))
     dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=1234)
     batch_x, batch_y = generate_minibatch(flags, dict_train)
-    print(batch_x[0].shape)
-    exit()
+    print('Imported Images have dimension: $s' % str(batch_x[0].shape))
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [params['batch_size'], 204, 96, 512])
