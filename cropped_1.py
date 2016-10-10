@@ -66,6 +66,7 @@ def process_text_SAGE(flags):
         img_counter = 0
         patient_num = -1
         subjectId = -1
+        total = 0
         image_data_dict = {}
         for line in tsvreader:
             if subjectId == line[0]:
@@ -75,6 +76,8 @@ def process_text_SAGE(flags):
                 patient_num += 1
                 img_counter = 0
             image_data_dict[('SAGE', patient_num, img_counter)] = [line[i] for i in indices]
+            total += 1
+        print('Collated organized %d patients and %d images from the %s dataset.' % (patient_num, total,'SAGE'))
     return image_data_dict
 
 
@@ -97,7 +100,6 @@ def process_text_INbreast(flags):
         image_data_dict = {}
         for line in csvreader:
             file = line[5]
-            print(file)
             new_subjectId = names[names[1] == file].values[0][0]
             if subjectId == new_subjectId:
                 img_counter += 1
@@ -116,7 +118,7 @@ def process_text_INbreast(flags):
                 line[7] = 1
             image_data_dict[('INbreast', patient_num, img_counter)] = ['0'] + [line[i] for i in indices]
             total += 1
-        print('Successfully organized %d patients and %d images from the INbreast dataset.' % (patient_num, total))
+        print('Collated %d patients and %d images from the %s dataset.' % (patient_num, total,'INbreast'))
     return image_data_dict
 
 
