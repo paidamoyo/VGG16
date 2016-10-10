@@ -49,7 +49,7 @@ def main():
     keep_prob = tf.placeholder(tf.float32)  # dropout (keep probability)
 
     # Construct model
-    logits = model_CNN_FC(x=x, flags=flags, params=params)
+    logits = model_CNN_FC(x=x, params=params)
 
     # Define loss and optimizer
 
