@@ -4,8 +4,8 @@ import pickle
 import numpy as np
 import tensorflow as tf
 
-from functions.data import split_data, one_tiled_image, reconstruct
-from functions.tf import compute_VGG
+from functions.data import one_tiled_image, reconstruct
+from functions.tf import model_VGG16
 from functions.aux import check_directories, check_str
 
 
@@ -22,23 +22,16 @@ flags = {
 }
 
 
-params = {
-    'mapstack_dims': [],
-}
-
-
 check_directories(flags)
-image_dict = pickle.load(open(flags['aux_directory'] + 'vgg_image_dict.pickle', 'rb'))
+previous = str.split(flags['previous_processed_directory'],'/')[0]
+image_dict = pickle.load(open(flags['aux_directory'] + previous + '_image_dict.pickle', 'rb'))
 
 # tf Graph input
-x = tf.placeholder(tf.float32, params['mapstack_dims'])
+x = tf.placeholder(tf.float32, [12*12, 3264, 1536, 3])
 y = tf.placeholder(tf.int64, shape=(1,))
 
-logits = compute_VGG(x=x, flags=flags)
-
-# Initializing the variables
+logits = model_VGG16(x=x, flags=flags)
 init = tf.initialize_all_variables()
-image_dump_path = flags['data_directory'] + 'SAGE/Preprocessed/' + flags['processed_directory']
 
 # Launch the graph
 with tf.Session() as sess:
@@ -49,7 +42,9 @@ with tf.Session() as sess:
         volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
         image = reconstruct(volume)
         if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-            save_path = image_dump_path + check_str(d[1]) + '_' + check_str(d[2]) + '_vgg.pickle'
+            save_path = image_dump_path = flags['data_directory'] + check_str(d[0]) + '/Preprocessed/' + \
+                                          flags['processed_directory'] + check_str(d[1]) + '_' + check_str(d[2]) + \
+                                          '_vgg.pickle'
             with open(save_path, "wb") as f:
                 pickle.dump(image, f, protocol=2)
         counter += 1
@@ -57,6 +52,7 @@ with tf.Session() as sess:
 
 
 if flags['save_pickled_dictionary'] is True:
-    save_path = flags['aux_directory'] + 'vgg_train_dict.pickle'
+    current = str.split(flags['processed_directory'], '/')[0]
+    save_path = flags['aux_directory'] + current + '_image_dict.pickle'
     with open(save_path, "wb") as f:
         pickle.dump(image_dict, f, protocol=2)
