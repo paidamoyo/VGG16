@@ -82,7 +82,7 @@ def spp_layer(mapstack, dims, poolnum):
 
 def cnn2(x, weights, biases):
     conv1 = conv2d(x, w=weights['conv1'], b=biases['conv1'], strides=1)
-    pool1 = maxpool2d(conv1, k=3)
+    pool1 = maxpool2d(conv1, k=2)
     conv2 = conv2d(pool1, w=weights['conv2'], b=biases['conv2'], strides=1)
     pool2 = maxpool2d(conv2, k=3)
     return pool2
