@@ -87,7 +87,7 @@ def process_text_INbreast(flags):
     originals_directory = flags['data_directory'] + 'INbreast' + '/Originals'
     list_dicom_files = find_dicom_files(originals_directory)
     print('Found a total of %d DICOM Images.' % len(list_dicom_files))
-    list_file_pat_names = [(str.split(l, '_')[1], str.split(l, '_')[0]) for l in list_dicom_files]
+    list_file_pat_names = [(str.split(l, '_')[1], str.split(str.split(l, '_')[0],'/')[-1]) for l in list_dicom_files]
     print(list_file_pat_names)
     names = pd.DataFrame(list_file_pat_names)
 
