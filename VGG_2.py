@@ -38,7 +38,7 @@ with tf.Session() as sess:
     sess.run(init)
     counter = 0
     for d in image_dict:
-        batch_x, batch_y = one_tiled_image(flags, image_dict, d)
+        batch_x, batch_y = one_tiled_image(flags, d)
         volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
         image = reconstruct(volume)
         if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
