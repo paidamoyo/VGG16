@@ -89,7 +89,7 @@ def find_dicom_files(path):  # currently not used but may be useful later.
         folder_path: Folder location of SAGE competition files
     Returns: A list of all file names with ".dcm.gz" in the name
     """
-    print('Searching for DICOM images in %s' % folder_path)
+    print('Searching for DICOM images in %s' % path)
     list_of_dicom_files = []  # create an empty list
     for dirName, subdirList, fileList in os.walk(path):
         for filename in fileList:
