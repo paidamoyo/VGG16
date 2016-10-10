@@ -75,9 +75,9 @@ def generate_minibatch_dict_small(data_directory, dict_name, pos_neg):
     return batch_data, batch_labels
 
 
-def one_tiled_image(flags, inds):
+def one_tiled_image(flags, image_dict, inds):
     batch_data = []
-    batch_labels = [l]
+    batch_labels = image_dict[inds][4]
     path = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
     image_path = path + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
     with open(image_path, 'rb') as basefile:
