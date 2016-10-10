@@ -11,10 +11,10 @@ from functions.aux import check_directories, check_str
 
 # Global Dictionary of Flags
 flags = {
-    'data_directory': '../../../../Data/',  # in relationship to the code_directory
-    'aux_directory': '../aux/',
-    'weights_directory': '../weights/',
-    'datasets': ['SAGE','INbreast'],
+    'data_directory': '../../../Data/',  # in relationship to the code_directory
+    'aux_directory': 'aux/',
+    'weights_directory': 'weights/',
+    'datasets': ['SAGE', 'INbreast'],
     'previous_processed_directory': '1_Cropped/',
     'processed_directory': '2_VGG/',
     'save_pickled_dictionary': True,
