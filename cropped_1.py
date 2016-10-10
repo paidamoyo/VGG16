@@ -83,6 +83,9 @@ def process_text_INbreast(flags):
     crosswalk_tsv_path = flags['data_directory'] + 'INbreast' + "/Metadata/images_crosswalk.csv"
     originals_directory = flags['data_directory'] + 'INbreast' + '/Originals'
     list_dicom_files = find_dicom_files(originals_directory)
+    print('Found a total of %d DICOM Images.' % len(list_dicom_files))
+    a = str.split(list_dicom_files[0], '_')
+    print(a)
     list_file_pat_names = [(str.split(l, '_')[1], str.split(l, '_')[0]) for l in list_dicom_files]
     names = pd.DataFrame(list_file_pat_names)
 

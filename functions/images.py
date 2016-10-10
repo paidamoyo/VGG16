@@ -93,11 +93,10 @@ def find_dicom_files(path):  # currently not used but may be useful later.
     list_of_dicom_files = []  # create an empty list
     bol = False
     for dirName, subdirList, fileList in os.walk(path):
+        print('Found a total of %d files.' % len(fileList))
         for filename in fileList:
-            print(filename.lower())
             if ".dcm" in filename.lower():  # check whether the file's DICOM\
                 bol = True
-                print('Found file: %s' % filename.lower())
                 list_of_dicom_files.append(os.path.join(dirName, filename))
     if bol is False:
         print('Warning! No Dicom Files found in %s' % path + '!')
