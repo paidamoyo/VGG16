@@ -80,20 +80,20 @@ def process_text_SAGE(flags):
 
 def process_text_INbreast(flags):
     indices = [None, 3, 2, 5, 7]
-    crosswalk_tsv_path = flags['data_directory'] + 'INbreast' + "/Metadata/images_crosswalk.tsv"
+    crosswalk_tsv_path = flags['data_directory'] + 'INbreast' + "/Metadata/images_crosswalk.csv"
     originals_directory = flags['data_directory'] + 'INbreast' + '/Originals'
     list_dicom_files = find_dicom_files(originals_directory)
     list_file_pat_names = [(str.split(l, '_')[1], str.split(l, '_')[0]) for l in list_dicom_files]
     names = pd.DataFrame(list_file_pat_names)
 
     with open(crosswalk_tsv_path) as tsvfile:
-        tsvreader = csv.reader(tsvfile, delimiter="\t")
-        next(tsvreader, None)  # skip the one headerline
+        csvreader = csv.reader(tsvfile)
+        next(csvreader, None)  # skip the one headerline
         img_counter = 0
         patient_num = -1
         subjectId = -1
         image_data_dict = {}
-        for line in tsvreader:
+        for line in csvreader:
             file = line[5]
             new_subjectId = names[names[1] == file][0]
             if subjectId == new_subjectId:
