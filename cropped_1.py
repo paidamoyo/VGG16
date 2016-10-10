@@ -78,7 +78,7 @@ def process_text_SAGE(flags):
     return image_data_dict
 
 
-def process_text_INbreast(flags)
+def process_text_INbreast(flags):
     indices = [None, 3, 2, 5, 7]
     crosswalk_tsv_path = flags['data_directory'] + 'INbreast' + "/Metadata/images_crosswalk.tsv"
     originals_directory = flags['data_directory'] + 'INbreast' + '/Originals'
