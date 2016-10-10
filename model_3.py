@@ -4,6 +4,7 @@ import pickle as cp
 import numpy as np
 import tensorflow as tf
 import pickle
+import pandas as pd
 
 from functions.data import split_data, generate_minibatch
 from functions.tf import model_CNN_FC
@@ -39,13 +40,16 @@ def error_rate(predictions, labels):
 def main():
     previous = str.split(flags['previous_processed_directory'], '/')[0]
     image_dict = pickle.load(open(flags['aux_directory'] + previous + '_image_dict.pickle', 'rb'))
+    len(image_dict)
+    a = pd.DataFrame(image_dict)
+    print(a)
     dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=1234)
     batch_x, batch_y = generate_minibatch(flags, dict_train)
     print(batch_x[0].shape)
     exit()
 
     # tf Graph input
-    x = tf.placeholder(tf.float32, [params['batch_size'], 272, 128, 3])
+    x = tf.placeholder(tf.float32, [params['batch_size'], 204, 96, 512])
     y = tf.placeholder(tf.int64, shape=(1,))
     keep_prob = tf.placeholder(tf.float32)  # dropout (keep probability)
 
