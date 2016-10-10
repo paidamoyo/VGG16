@@ -122,6 +122,11 @@ def main():
     dict_SAGE = [process_text_SAGE(flags) for d in flags['datasets'] if d == 'SAGE']
     dict_INbreast = [process_text_INbreast(flags) for d in flags['datasets'] if d == 'INbreast']
     image_data_dict = {**dict_SAGE[0], **dict_INbreast[0]}
+    example = pd.DataFrame(image_data_dict, index=['ExamNumber', 'View', 'Laterality', 'Filename', 'Label'])
+    pd.set_option('display.multi_sparse', False)
+    print(example['SAGE'][0][0])
+    print(example['INbreast'][0][0])
+
     if flags['save_pickled_images'] is True:
         [process_images(image_data_dict, flags, d) for d in flags['datasets']]
 
