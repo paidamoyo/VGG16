@@ -101,4 +101,5 @@ def find_dicom_files(path):  # currently not used but may be useful later.
                 list_of_dicom_files.append(os.path.join(dirName, filename))
     if bol is False:
         print('Warning! No Dicom Files found in %s' % path + '!')
+        exit()
     return list_of_dicom_files
