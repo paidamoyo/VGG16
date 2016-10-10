@@ -23,10 +23,10 @@ flags = {
     'aux_directory': 'aux/',
     'processed_directory': '1_Cropped/',
     'datasets': ['SAGE', 'INbreast'],
-    'save_processed_jpeg': True,
+    'save_processed_jpeg': False,
     'save_original_jpeg': False,
     'save_pickled_dictionary': True,
-    'save_pickled_images': True,
+    'save_pickled_images': False,
 }
 
 

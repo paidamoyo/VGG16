@@ -77,16 +77,17 @@ def spp_layer(mapstack, dims, poolnum):
                     begin = tf.reshape(
                         tf.pack([tf.constant([0], dtype=tf.int32), tf.to_int32(i * x), tf.to_int32(j * y)]), [3, ])
                     flattened.append(tf.reduce_max(tf.slice(maps[0], begin=begin, size=size)))
-    return tf.reshape(tf.convert_to_tensor(flattened), [1,2560])
+    return tf.reshape(tf.convert_to_tensor(flattened), [1, 2560])
 
 
-def cnn2(x, weights, biases, params):
-    conv1 = conv2d(x, w=weights['conv1'], b=biases['conv2'])
-    conv2 = conv2d(conv1, w=weights['conv2'], b=biases['conv2'])
+def cnn2(x, weights, biases):
+    conv1 = conv2d(x, w=weights['conv1'], b=biases['conv2'], strides=3)
+    conv2 = conv2d(conv1, w=weights['conv2'], b=biases['conv2'], strides=3)
     return conv2
 
 
-def fc1(flattened, weights, biases, dropout):
+def fc1(conv2, weights, biases, dropout):
+    flattened = tf.reshape(conv2, [-1, ])
     fc1 = tf.add(tf.matmul(flattened, weights['fc1']), biases['fc1'])
     fc1 = tf.nn.relu(fc1)
     fc1 = tf.nn.dropout(fc1, dropout)
@@ -97,13 +98,15 @@ def fc1(flattened, weights, biases, dropout):
 def define_parameters():
     weights = {}
     biases = {}
-    weights['conv1'] = weight_variable()
-    weights['conv2'] = weight_variable()
-    weights['fc1'] = weight_variable()
-    biases['conv1'] = bias_variable()
-    biases['conv2'] = bias_variable()
-    biases['fc1'] = bias_variable()
+    # (204 / 6) * (96 / 6) * 8 = 4352
+    weights['conv1'] = weight_variable([3, 3, 512, 64])
+    weights['conv2'] = weight_variable([3, 3, 64, 8])
+    weights['fc1'] = weight_variable([4352, 2])
+    biases['conv1'] = bias_variable([64])
+    biases['conv2'] = bias_variable([8])
+    biases['fc1'] = bias_variable([2])
     return weights, biases
+
 
 def load_pretrained_parameters_VGG(flags):
     filename = flags['weights_directory'] + 'vgg16_ImageNet_tf.h5'
@@ -130,10 +133,9 @@ def load_pretrained_parameters_VGG(flags):
 
 def model_CNN_FC(x, flags, params):
     weights, biases = define_parameters()
-    output = cnn2(x=x, weights=weights, biases=biases)
-    fc1()
-
-    return output
+    conv2 = cnn2(x=x, weights=weights, biases=biases)
+    logits = fc1(conv2, weights=weights, biases=biases, dropout=params['dropout'])
+    return logits
 
 def model_VGG16(x, flags):
     weights, biases = load_pretrained_parameters_VGG(flags)
