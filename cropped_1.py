@@ -96,7 +96,6 @@ def process_text_INbreast(flags):
         image_data_dict = {}
         for line in csvreader:
             file = line[5]
-            print(file)
             new_subjectId = names[names[1] == file].values[0][0]
             if subjectId == new_subjectId:
                 img_counter += 1
@@ -114,7 +113,9 @@ def process_text_INbreast(flags):
             else:
                 line[7] = 1
             image_data_dict[('INbreast', patient_num, img_counter)] = ['0'] + [line[i] for i in indices]
+        print('Successfully organized %d images from the INbreast dataset.' % img_counter)
     return image_data_dict
+
 
 def main():
     check_directories(flags)
@@ -122,7 +123,7 @@ def main():
     dict_INbreast = [process_text_INbreast(flags) for d in flags['datasets'] if d == 'INbreast']
     image_data_dict = {**dict_SAGE[0], **dict_INbreast[0]}
     if flags['save_pickled_images'] is True:
-        process_images(image_data_dict, flags)
+        [process_images(image_data_dict, flags, d) for d in flags['datasets']]
 
     if flags['save_pickled_dictionary'] is True:
         save_path = flags['aux_directory'] + '1_cropped_image_dict.pickle'
