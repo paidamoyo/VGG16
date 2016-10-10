@@ -109,7 +109,7 @@ def process_text_INbreast(flags):
 
 def main():
     check_directories(flags)
-    dict_SAGE = [process_text_SAGE(flags, d) for d in flags['datasets'] if d == 'SAGE']
+    dict_SAGE = [process_text_SAGE(flags) for d in flags['datasets'] if d == 'SAGE']
     dict_INbreast = [process_text_INbreast(flags) for d in flags['datasets'] if d == 'INbreast']
     image_data_dict = {**dict_SAGE[0], **dict_INbreast[0]}
     process_images(image_data_dict, flags)
