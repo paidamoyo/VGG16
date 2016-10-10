@@ -43,7 +43,7 @@ def process_images(image_data_dict, flags, dataset):
     for d in image_data_dict:  # loop through all images in dictionary.
         if d[0] == dataset:
             filename = flags['data_directory'] + dataset + '/Originals/' + image_data_dict[d][3]
-            print('Processing %s' % filename)
+            print('Processing %s' % image_data_dict[d][3])
             image_original = read_image(filename)
             if image_original is None:
                 print("File Type Cannot be Read! Skipping Image...")
