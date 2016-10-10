@@ -39,7 +39,7 @@ def error_rate(predictions, labels):
 def main():
     previous = str.split(flags['previous_processed_directory'], '/')[0]
     image_dict = pickle.load(open(flags['aux_directory'] + previous + '_image_dict.pickle', 'rb'))
-    dict_train, dict_test, index_train, index_test = split_data(image_dict)
+    dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=1234)
     batch_x, batch_y = generate_minibatch(flags, dict_train)
     print(batch_x.shape)
     exit()
