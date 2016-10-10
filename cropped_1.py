@@ -81,7 +81,7 @@ def process_text_SAGE(flags):
 def process_text_INbreast(flags):
     indices = [None, 3, 2, 5, 7]
     crosswalk_tsv_path = flags['data_directory'] + 'INbreast' + "/Metadata/images_crosswalk.csv"
-    originals_directory = flags['data_directory'] + 'SAGE' + '/Originals'
+    originals_directory = flags['data_directory'] + 'INbreast' + '/Originals'
     list_dicom_files = find_dicom_files(originals_directory)
     list_file_pat_names = [(str.split(l, '_')[1], str.split(l, '_')[0]) for l in list_dicom_files]
     names = pd.DataFrame(list_file_pat_names)
