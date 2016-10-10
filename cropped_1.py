@@ -112,7 +112,10 @@ def process_text_INbreast(flags):
             if len(index) == 0:
                 IndexError('No DICOM Files match the line in the CSV file! Exiting...')
                 exit()
-            line[5] = list_dicom_files[index[0]]
+            print(list_dicom_files[index[0]])
+            print(line[5])
+            line[5] = str.split(list_dicom_files[index[0]],'/')[-1]
+            print(line[5])
             if line[7] in {'0', '1', '2', '3'}:
                 line[7] = 0
             else:
