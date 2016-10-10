@@ -35,7 +35,7 @@ def generate_minibatch(flags, dict_name, batch_size):
     batch_labels = []
     for i in range(2):
         batch_ind = np.random.randint(low=0, high=len(dict_name[i]) - 1, size=batch_size / 2)
-        for b in range(batch_ind):
+        for b in range(len(batch_ind)):
             inds = dict_name[0][b]
             data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
             image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
