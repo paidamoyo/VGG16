@@ -79,7 +79,7 @@ def process_text_SAGE(flags):
 
 
 def process_text_INbreast(flags):
-    indices = [None, 3, 2, 5, 7]
+    indices = [3, 2, 5, 7]  # add 0 for all
     crosswalk_tsv_path = flags['data_directory'] + 'INbreast' + "/Metadata/images_crosswalk.csv"
     originals_directory = flags['data_directory'] + 'INbreast' + '/Originals'
     list_dicom_files = find_dicom_files(originals_directory)
@@ -113,7 +113,7 @@ def process_text_INbreast(flags):
                 line[7] = 0
             else:
                 line[7] = 1
-            image_data_dict[('INbreast', patient_num, img_counter)] = [line[i] for i in indices]
+            image_data_dict[('INbreast', patient_num, img_counter)] = ['0'] + [line[i] for i in indices]
     return image_data_dict
 
 def main():
@@ -121,7 +121,8 @@ def main():
     dict_SAGE = [process_text_SAGE(flags) for d in flags['datasets'] if d == 'SAGE']
     dict_INbreast = [process_text_INbreast(flags) for d in flags['datasets'] if d == 'INbreast']
     image_data_dict = {**dict_SAGE[0], **dict_INbreast[0]}
-    process_images(image_data_dict, flags)
+    if flags['save_pickled_images'] is True:
+        process_images(image_data_dict, flags)
 
     if flags['save_pickled_dictionary'] is True:
         save_path = flags['aux_directory'] + '1_cropped_image_dict.pickle'
