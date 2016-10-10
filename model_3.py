@@ -14,7 +14,7 @@ from functions.tf import model_CNN_FC
 flags = {
     'data_directory': '../../../Data/', # in relationship to the code_directory
     'aux_directory': 'aux/',
-    'processed_directory': '2_VGG/',
+    'previous_processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
 }
 

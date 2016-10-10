@@ -35,7 +35,7 @@ def generate_minibatch(flags, dict_name, batch_size=1):
     # batch_ind = np.random.randint(low=0, high=len(dict_name[i]) - 1, size=batch_size)
     for b in range(batch_size):
         inds = dict_name[0][b]
-        data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['processed_directory']
+        data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
         image_path = data_directory + '/' + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
         with open(image_path, 'rb') as basefile:
             image = pickle.load(basefile)
