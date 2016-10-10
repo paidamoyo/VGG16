@@ -87,13 +87,14 @@ def process_text_INbreast(flags):
     names = pd.DataFrame(list_file_pat_names)
 
     with open(crosswalk_tsv_path) as tsvfile:
-        csvreader = csv.reader(tsvfile)
+        csvreader = csv.reader(tsvfile, delimiter=';')
         next(csvreader, None)  # skip the one headerline
         img_counter = 0
         patient_num = -1
         subjectId = -1
         image_data_dict = {}
         for line in csvreader:
+            print(line)
             file = line[5]
             new_subjectId = names[names[1] == file][0]
             if subjectId == new_subjectId:
@@ -104,6 +105,10 @@ def process_text_INbreast(flags):
                 img_counter = 0
             index = [i for i, x in enumerate(list_file_pat_names) if x == (subjectId, file)]
             line[5] = list_dicom_files[index[0]]
+            if line[7] in {'0', '1', '2', '3'}:
+                line[7] = 0
+            else:
+                line[7] = 1
             image_data_dict[('INbreast', patient_num, img_counter)] = [line[i] for i in indices]
     return image_data_dict
 
