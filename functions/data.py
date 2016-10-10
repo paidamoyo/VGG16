@@ -4,6 +4,7 @@ import pandas as pd
 import pickle
 import scipy.misc
 import os
+from random import shuffle
 
 from functions.aux import check_str
 
@@ -29,19 +30,19 @@ def split_data(image_dict, seed):
     return dict_train, dict_test, index_train, index_test
 
 
-def generate_minibatch(flags, dict_name, batch_size=1):
+def generate_minibatch(flags, dict_name, batch_size):
     batch_data = []
     batch_labels = []
-    # batch_ind = np.random.randint(low=0, high=len(dict_name[i]) - 1, size=batch_size)
-    for b in range(batch_size):
-        inds = dict_name[0][b]
-        data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
-        image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
-        with open(image_path, 'rb') as basefile:
-            image = pickle.load(basefile)
-            img = np.expand_dims(image, axis=2)
-            batch_data.append(image)
-            batch_labels.append(0)
+    for i in range(2):
+        batch_ind = np.random.randint(low=0, high=len(dict_name[i]) - 1, size=batch_size / 2)
+        for b in range(batch_ind):
+            inds = dict_name[0][b]
+            data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
+            image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
+            with open(image_path, 'rb') as basefile:
+                image = pickle.load(basefile)
+                batch_data.append(image)
+                batch_labels.append(i)
     return batch_data, batch_labels
 
 
