@@ -3,16 +3,23 @@
 import pickle as cp
 import numpy as np
 import tensorflow as tf
+import pickle
 
-from functions.data import split_data, generate_minibatch_dict_small, generate_minibatch_test_small, get_image_data
-from functions.tf import build_model
+from functions.data import split_data, generate_minibatch_dict_small
+from functions.tf import model_CNN_FC
+
 
 
 # Global Dictionary of Flags
 flags = {
-    'save_directory': '../../../../Data/Processed/SAGE/',
-    'aux_directory': '../aux/',
-    'code_directory': '../',
+    'data_directory': '../../../Data/', # in relationship to the code_directory
+    'aux_directory': 'aux/',
+    'processed_directory': '2_VGG/',
+    'datasets': ['SAGE', 'INbreast'],
+    'save_processed_jpeg': True,
+    'save_original_jpeg': False,
+    'save_pickled_dictionary': True,
+    'save_pickled_images': True,
 }
 
 
@@ -32,9 +39,12 @@ def error_rate(predictions, labels):
         np.sum(np.argmax(predictions, 1) == labels) /
         predictions.shape[0])
 
+
 def main():
-    image_dict = cp.load(open(flags['aux_directory'] + 'vgg_image_dict.pickle', 'rb'))
+    previous = str.split(flags['previous_processed_directory'], '/')[0]
+    image_dict = pickle.load(open(flags['aux_directory'] + previous + '_image_dict.pickle', 'rb'))
     dict_train, dict_test, index_train, index_test = split_data(image_dict)
+    exit()
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [params['batch_size'], 272, 128, 3])
@@ -90,32 +100,6 @@ def main():
                       ", Label= %d" % y_test[0])
                 labels[i].append(error_rate(acc, y_test))
         print("True Positive: %f" % np.mean(labels[1]) + ", True Negative: %f" % np.mean(labels[0]))
-
-
-for d in range(len(image_dict)):
-    batch_x, batch_y = one_tiled_image(flags, dict_test, pos_neg=i, batch_ind=b)
-    volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
-    image = reconstruct(volume)
-    if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-        save_path = image_dump_path + check_str(dict_train[i][b][0]) + '_' + check_str(
-            dict_train[i][b][1]) + '_vgg.pickle'
-        with open(save_path, "wb") as f:
-            pickle.dump(image, f, protocol=2)
-    counter += 1
-    print("Processed Image %d" % (b + 1) + " of %d" % len(dict_train[i]) + ". %d total images" % counter)
-print("Processing Test Images with label %d" % i)
-for b in range(len(dict_test[i])):
-    batch_x, batch_y = one_tiled_image(flags, dict_test, pos_neg=i, batch_ind=b)
-    volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
-    image = reconstruct(volume)
-    if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-        save_path = image_dump_path + check_str(dict_test[i][b][0]) + '_' + check_str(
-            dict_test[i][b][1]) + '_vgg.pickle'
-        with open(save_path, "wb") as f:
-            pickle.dump(image, f, protocol=2)
-    counter += 1
-    print("Processed Image %d" % (b + 1) + " of %d" % len(dict_test[i]) + ". %d total images" % counter)
-
 
 if __name__ == "__main__":
     main()
