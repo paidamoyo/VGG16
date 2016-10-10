@@ -112,10 +112,7 @@ def process_text_INbreast(flags):
             if len(index) == 0:
                 IndexError('No DICOM Files match the line in the CSV file! Exiting...')
                 exit()
-            print(list_dicom_files[index[0]])
-            print(line[5])
-            line[5] = str.split(list_dicom_files[index[0]],'/')[-1]
-            print(line[5])
+            line[5] = str.split(list_dicom_files[index[0]], '/')[-1]
             if line[7] in {'0', '1', '2', '3'}:
                 line[7] = 0
             else:
@@ -133,8 +130,7 @@ def main():
     image_data_dict = {**dict_SAGE[0], **dict_INbreast[0]}
     example = pd.DataFrame(image_data_dict, index=['ExamNumber', 'View', 'Laterality', 'Filename', 'Label'])
     pd.set_option('display.multi_sparse', False)
-    print(example['SAGE'][0][0])
-    print(example['INbreast'][0][0])
+    print(example)
 
     if flags['save_pickled_images'] is True:
         [process_images(image_data_dict, flags, d) for d in flags['datasets']]
