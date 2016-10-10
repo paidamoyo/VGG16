@@ -96,7 +96,7 @@ def process_text_INbreast(flags):
         image_data_dict = {}
         for line in csvreader:
             file = line[5]
-            print(names[names[1] == file].get_value(0,0))
+            print(names[names[1] == file].values)
             new_subjectId = str(int((names[names[1] == file].index.values)))
             print(new_subjectId)
             print(type(new_subjectId))
