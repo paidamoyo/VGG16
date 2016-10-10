@@ -30,12 +30,15 @@ def check_directories(flags):
     for dataset in flags['datasets']:
         preprocessed_directory = flags['data_directory'] + dataset + '/Preprocessed/' + flags['processed_directory']
         make_directory(preprocessed_directory)
-        if check_exist(flags['save_processed_jpeg']) and flags['save_processed_jpeg'] is True:
-            make_directory(preprocessed_directory + 'processed_jpeg_images')
+        if check_exist(flags['save_processed_jpeg']) is True:
+            if flags['save_processed_jpeg'] is True:
+                make_directory(preprocessed_directory + 'processed_jpeg_images')
 
-        if check_exist(flags['save_original_jpeg']) and flags['save_original_jpeg'] is True:
-            make_directory(preprocessed_directory + 'original_jpeg_images')
+        if check_exist(flags['save_original_jpeg']) is True:
+            if flags['save_original_jpeg'] is True:
+                make_directory(preprocessed_directory + 'original_jpeg_images')
 
-        if check_exist(flags['save_pickled_images']) and flags['save_pickled_images'] is True:
-            make_directory(preprocessed_directory)
+        if check_exist(flags['save_pickled_images']) is True:
+            if flags['save_pickled_images'] is True:
+                make_directory(preprocessed_directory)
 
