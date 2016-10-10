@@ -41,7 +41,7 @@ def main():
     image_dict = pickle.load(open(flags['aux_directory'] + previous + '_image_dict.pickle', 'rb'))
     dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=1234)
     batch_x, batch_y = generate_minibatch(flags, dict_train)
-    print(batch_x.shape)
+    print(batch_x[0].shape)
     exit()
 
     # tf Graph input

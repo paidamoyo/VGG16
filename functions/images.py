@@ -3,11 +3,6 @@
 import cv2
 import numpy as np
 import dicom as di
-import scipy.misc
-import pickle
-import os
-
-from functions.aux import check_str
 
 
 def smart_crop(image):
