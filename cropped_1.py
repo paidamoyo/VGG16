@@ -106,7 +106,8 @@ def process_text_INbreast(flags):
                 subjectId = new_subjectId
                 patient_num += 1
                 img_counter = 0
-            index = [i for i, x in enumerate(list_file_pat_names) if x == (subjectId, file)]
+            index = [i for i, x in enumerate(list_file_pat_names) if x == (file, subjectId)]
+            print(index)
             line[5] = list_dicom_files[index[0]]
             if line[7] in {'0', '1', '2', '3'}:
                 line[7] = 0
