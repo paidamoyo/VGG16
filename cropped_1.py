@@ -116,9 +116,9 @@ def process_text_INbreast(flags):
                 exit()
             line[5] = str.split(list_dicom_files[index[0]], '/')[-1]
             if line[7] in {'0', '1', '2', '3'}:
-                line[7] = 0
+                line[7] = '0'
             else:
-                line[7] = 1
+                line[7] = '1'
             image_data_dict[('INbreast', patient_num, img_counter)] = ['0'] + [line[i] for i in indices]
             total += 1
         print('Collated %d patients and %d images from the %s dataset.' % (patient_num, total,'INbreast'))
@@ -138,7 +138,7 @@ def main():
         [process_images(image_data_dict, flags, d) for d in flags['datasets']]
 
     if flags['save_pickled_dictionary'] is True:
-        save_path = flags['aux_directory'] + str.split(flags['processed_directory'], '/')[0] + '_image_dict.pickle'
+        save_path = flags['aux_directory'] + 'preprocessed_image_dict.pickle'
         with open(save_path, "wb") as f:
             pickle.dump(image_data_dict, f, protocol=2)
 

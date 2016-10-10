@@ -15,7 +15,6 @@ def split_data(image_dict, seed):
     dict_train = {}
     dict_image = pd.DataFrame(image_dict)
     labels = dict_image.iloc[4]
-    print(labels)
     for i in ['0', '1']:
         patients = labels[labels == i].index.values
         partition = int(math.floor(len(patients) * .85))  # 70% of data goes to training

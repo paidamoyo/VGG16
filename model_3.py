@@ -23,7 +23,7 @@ flags = {
 params = {
     'lr': 0.0001,
     'training_iters': 3000,
-    'batch_size': 12*12,
+    'batch_size': 32,
     'display_step': 10,
     'dropout': 0.5
 }
@@ -38,11 +38,10 @@ def error_rate(predictions, labels):
 
 
 def main():
-    previous = str.split(flags['previous_processed_directory'], '/')[0]
-    image_dict = pickle.load(open(flags['aux_directory'] + previous + '_image_dict.pickle', 'rb'))
+    image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
     len(image_dict)
     a = pd.DataFrame(image_dict)
-    print(a)
+    print(a.iloc(4))
     dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=1234)
     batch_x, batch_y = generate_minibatch(flags, dict_train)
     print(batch_x[0].shape)

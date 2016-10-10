@@ -44,9 +44,3 @@ with tf.Session() as sess:
         save_image(flags, dataset=d[0], image_processed=image, image_original=None, inds=d)
         counter += 1
         print("Processed Image %d" % counter + ' of %d total images' % len(image_dict))
-
-if flags['save_pickled_dictionary'] is True:
-    current = str.split(flags['processed_directory'], '/')[0]
-    save_path = flags['aux_directory'] + current + '_image_dict.pickle'
-    with open(save_path, "wb") as f:
-        pickle.dump(image_dict, f, protocol=2)
