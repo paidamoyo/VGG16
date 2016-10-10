@@ -23,8 +23,8 @@ def bias_variable(shape):
     return tf.Variable(initial)
 
 
-def conv2d(img, w, b, strides=1):
-    img = tf.nn.conv2d(img, w, strides=[1, strides, strides, 1], padding='SAME')
+def conv2d(img, w, b, strides=1, padding='SAME'):
+    img = tf.nn.conv2d(img, w, strides=[1, strides, strides, 1], padding=padding)
     img = tf.nn.bias_add(img, b)
     return tf.nn.relu(img)
 
@@ -81,8 +81,8 @@ def spp_layer(mapstack, dims, poolnum):
 
 
 def cnn2(x, weights, biases):
-    conv1 = conv2d(x, w=weights['conv1'], b=biases['conv1'], strides=3)
-    conv2 = conv2d(conv1, w=weights['conv2'], b=biases['conv2'], strides=3)
+    conv1 = conv2d(x, w=weights['conv1'], b=biases['conv1'], strides=3, padding='VALID')
+    conv2 = conv2d(conv1, w=weights['conv2'], b=biases['conv2'], strides=3, padding='VALID')
     return conv2
 
 
