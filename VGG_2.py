@@ -16,6 +16,8 @@ flags = {
     'datasets': ['SAGE', 'INbreast'],
     'previous_processed_directory': '1_Cropped/',
     'processed_directory': '2_VGG/',
+    'save_processed_jpeg': False,
+    'save_original_jpeg': False,
     'save_pickled_dictionary': True,
     'save_pickled_images': True,
 }
