@@ -11,8 +11,9 @@ Last Edit: DCS, 10/05/16
 import gzip
 import csv
 import pickle
+import pandas as pd
 
-from functions.images import read_image, clean_image, save_image
+from functions.images import read_image, clean_image, save_image, find_dicom_files
 from functions.aux import check_directories
 
 # Global Dictionary of Flags
@@ -20,7 +21,7 @@ flags = {
     'data_directory': '../../../Data/', # in relationship to the code_directory
     'aux_directory': 'aux/',
     'processed_directory': '1_Cropped/',
-    'datasets': ['SAGE'],
+    'datasets': ['SAGE', 'INbreast'],
     'save_processed_jpeg': True,
     'save_original_jpeg': False,
     'save_pickled_dictionary': True,
@@ -28,8 +29,7 @@ flags = {
 }
 
 
-
-def process_images_SAGE(image_data_dict, flags, dataset):
+def process_images(image_data_dict, flags, dataset):
     """
     Args: image_data_dict, folder_path
         image_data_dict: Dictionary keyed by a tuple containing (subjectId, image#). Each value is a list of:
@@ -41,65 +41,78 @@ def process_images_SAGE(image_data_dict, flags, dataset):
     counter = 0
 
     for d in image_data_dict:  # loop through all images in dictionary.
-        filename = flags['data_directory'] + dataset + '/Originals/' + image_data_dict[d][4] + '.gz'
-        with gzip.open(filename) as f:  # open gzipped images, only in pilot image set
-            image_original = read_image(f)
-            if image_original is None:
-                print("File Type Cannot be Read! Skipping Image...")
-                continue
-            image_processed = clean_image(image_original, image_data_dict[d], dumb_crop_dims=[3264, 1536])
-            new_filename = save_image(flags, dataset, image_original, image_processed, d)
-            image_data_dict[d][4] = new_filename
+        filename = flags['data_directory'] + dataset + '/Originals/' + image_data_dict[d][3]
+        print('Processing %s' % filename)
+        image_original = read_image(filename)
+        if image_original is None:
+            print("File Type Cannot be Read! Skipping Image...")
+            continue
+        image_processed = clean_image(image_original, image_data_dict[d], dumb_crop_dims=[3264, 1536])
+        new_filename = save_image(flags, dataset, image_original, image_processed, d)
+        image_data_dict[d][3] = new_filename
 
-            if counter % 25 == 0 and counter != 0:
-                print('Finished processing %d images' % counter)
-            counter += 1
+        if counter % 25 == 0 and counter != 0:
+            print('Finished processing %d images' % counter)
+        counter += 1
 
 
-# Text Processing Functions
-def process_text_SAGE(flags, dataset):
-    """
-    Args: folder_path
-        folder_path: Folder location of SAGE competition files
-    Returns: image_data_dict: Dictionary keyed by a tuple containing (subjectId, image#). Each value is a list of:
-            [Exam Number, Image Index (not used), View, Side,  DCM Filename, Binary Label]
-    """
-    metadata_path = flags['data_directory'] + 'SAGE' + "/Metadata/"
-    crosswalk_tsv_path = metadata_path + "images_crosswalk.tsv"
+def process_text_SAGE(flags):
+    crosswalk_tsv_path = flags['data_directory'] + 'SAGE' + "/Metadata/images_crosswalk.tsv"
+    indices = [1,3,4,5,6]
 
     with open(crosswalk_tsv_path) as tsvfile:
         tsvreader = csv.reader(tsvfile, delimiter="\t")
         next(tsvreader, None)  # skip the one headerline
-        bol = False
-        counter = 0
-        patient_num = 0
+        img_counter = 0
+        patient_num = -1
+        subjectId = -1
         image_data_dict = {}
         for line in tsvreader:
-            if bol is True:
-                if subjectId == line[0]:
-                    counter += 1
-                else:
-                    subjectId = line[0]
-                    patient_num += 1
-                    counter = 0
-                line2 = line[1:]
-                del line2[1]
-                image_data_dict[('SAGE', patient_num, counter)] = line2
+            if subjectId == line[0]:
+                img_counter += 1
             else:
                 subjectId = line[0]
-                line2 = line[1:]
-                del line2[1]
-                image_data_dict[('SAGE', patient_num, counter)] = line2
-                bol = True
+                patient_num += 1
+                img_counter = 0
+            image_data_dict[('SAGE', patient_num, img_counter)] = [line[i] for i in indices]
     return image_data_dict
 
 
+def process_text_INbreast(flags)
+    indices = [None, 3, 2, 5, 7]
+    crosswalk_tsv_path = flags['data_directory'] + 'INbreast' + "/Metadata/images_crosswalk.tsv"
+    originals_directory = flags['data_directory'] + 'INbreast' + '/Originals'
+    list_dicom_files = find_dicom_files(originals_directory)
+    list_file_pat_names = [(str.split(l, '_')[1], str.split(l, '_')[0]) for l in list_dicom_files]
+    names = pd.DataFrame(list_file_pat_names)
+
+    with open(crosswalk_tsv_path) as tsvfile:
+        tsvreader = csv.reader(tsvfile, delimiter="\t")
+        next(tsvreader, None)  # skip the one headerline
+        img_counter = 0
+        patient_num = -1
+        subjectId = -1
+        image_data_dict = {}
+        for line in tsvreader:
+            file = line[5]
+            new_subjectId = names[names[1] == file][0]
+            if subjectId == new_subjectId:
+                img_counter += 1
+            else:
+                subjectId = new_subjectId
+                patient_num += 1
+                img_counter = 0
+            index = [i for i, x in enumerate(list_file_pat_names) if x == (subjectId, file)]
+            line[5] = list_dicom_files[index[0]]
+            image_data_dict[('INbreast', patient_num, img_counter)] = [line[i] for i in indices]
+    return image_data_dict
+
 def main():
     check_directories(flags)
-    for d in flags['datasets']:
-        if d == 'SAGE':
-            image_data_dict = process_text_SAGE(flags, d)
-            process_images_SAGE(image_data_dict, flags, d)
+    dict_SAGE = [process_text_SAGE(flags, d) for d in flags['datasets'] if d == 'SAGE']
+    dict_INbreast = [process_text_INbreast(flags) for d in flags['datasets'] if d == 'INbreast']
+    image_data_dict = {**dict_SAGE[0], **dict_INbreast[0]}
+    process_images(image_data_dict, flags)
 
     if flags['save_pickled_dictionary'] is True:
         save_path = flags['aux_directory'] + '1_cropped_image_dict.pickle'

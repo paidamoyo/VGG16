@@ -39,18 +39,3 @@ def check_directories(flags):
         if check_exist(flags['save_pickled_images']) and flags['save_pickled_images'] is True:
             make_directory(preprocessed_directory)
 
-
-def find_dicom_files(flags):  # currently not used but may be useful later.
-    """
-    Args: folder
-        folder_path: Folder location of SAGE competition files
-    Returns: A list of all file names with ".dcm.gz" in the name
-    """
-    folder_path = flags['project_directory']
-    print('Searching for DICOM images in %s' % folder_path)
-    list_of_dicom_files = []  # create an empty list
-    for dirName, subdirList, fileList in os.walk(folder_path + '/trainingData'):
-        for filename in fileList:
-            if ".dcm.gz" in filename.lower():  # check whether the file's DICOM
-                list_of_dicom_files.append(os.path.join(dirName, filename))
-    return list_of_dicom_files

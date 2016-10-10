@@ -23,7 +23,7 @@ flags = {
 
 
 params = {
-    'batch_size': 12*12,
+    'mapstack_dims': [],
 }
 
 
@@ -31,7 +31,7 @@ check_directories(flags)
 image_dict = pickle.load(open(flags['aux_directory'] + 'vgg_image_dict.pickle', 'rb'))
 
 # tf Graph input
-x = tf.placeholder(tf.float32, [params['batch_size'], 272, 128, 3])
+x = tf.placeholder(tf.float32, params['mapstack_dims'])
 y = tf.placeholder(tf.int64, shape=(1,))
 
 logits = compute_VGG(x=x, flags=flags)

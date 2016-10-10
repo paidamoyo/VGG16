@@ -5,6 +5,7 @@ import numpy as np
 import dicom as di
 import scipy.misc
 import pickle
+import os
 
 from functions.aux import check_str
 
@@ -80,3 +81,18 @@ def save_image(flags, dataset, image_original, image_processed, d):
         with open(save_path, "wb") as file:
             pickle.dump(image_processed, file, protocol=2)
     return image_filename
+
+
+def find_dicom_files(path):  # currently not used but may be useful later.
+    """
+    Args: folder
+        folder_path: Folder location of SAGE competition files
+    Returns: A list of all file names with ".dcm.gz" in the name
+    """
+    print('Searching for DICOM images in %s' % folder_path)
+    list_of_dicom_files = []  # create an empty list
+    for dirName, subdirList, fileList in os.walk(path):
+        for filename in fileList:
+            if ".dcm." in filename.lower():  # check whether the file's DICOM
+                list_of_dicom_files.append(os.path.join(dirName, filename))
+    return list_of_dicom_files

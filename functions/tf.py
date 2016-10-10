@@ -12,6 +12,17 @@ import tensorflow as tf
 import re
 import h5py
 
+
+def weight_variable(shape):
+    initial = tf.truncated_normal(shape, stddev=0.1)
+    return tf.Variable(initial)
+
+
+def bias_variable(shape):
+    initial = tf.constant(0.1, shape=shape)
+    return tf.Variable(initial)
+
+
 def conv2d(img, w, b, strides=1):
     img = tf.nn.conv2d(img, w, strides=[1, strides, strides, 1], padding='SAME')
     img = tf.nn.bias_add(img, b)
@@ -68,15 +79,14 @@ def spp_layer(mapstack, dims, poolnum):
                     flattened.append(tf.reduce_max(tf.slice(maps[0], begin=begin, size=size)))
     return tf.reshape(tf.convert_to_tensor(flattened), [1,2560])
 
-# 1536 (12) x 3264 (12) = 128 (16) x 272 (16) = 8 *17
-def max_flatten(mapstack, params):
-    pool = tf.nn.max_pool(mapstack, ksize=[1, 17, 8, 1], strides=[1, 17, 8, 1], padding='SAME')
-    mapmax = tf.reshape(pool,[params['batch_size'], 512])
-    flatten = tf.reduce_max(mapmax, reduction_indices=[0])
-    return tf.reshape(flatten, [1, 512])
+
+def cnn2(x, weights, biases, params):
+    conv1 = conv2d(x, w=weights['conv1'], b=biases['conv2'])
+    conv2 = conv2d(conv1, w=weights['conv2'], b=biases['conv2'])
+    return conv2
 
 
-def fc_layer(flattened, weights, biases, dropout):
+def fc1(flattened, weights, biases, dropout):
     fc1 = tf.add(tf.matmul(flattened, weights['fc1']), biases['fc1'])
     fc1 = tf.nn.relu(fc1)
     fc1 = tf.nn.dropout(fc1, dropout)
@@ -84,11 +94,15 @@ def fc_layer(flattened, weights, biases, dropout):
     return output
 
 
-def define_parameters(flags):
-    weights['fc1'] = tf.Variable(tf.random_normal([512, 256]))
-    weights['out'] = tf.Variable(tf.random_normal([256, 2]))
-    biases['fc1'] = tf.Variable(tf.random_normal([256]))
-    biases['out'] = tf.Variable(tf.random_normal([2]))
+def define_parameters():
+    weights = {}
+    biases = {}
+    weights['conv1'] = weight_variable()
+    weights['conv2'] = weight_variable()
+    weights['fc1'] = weight_variable()
+    biases['conv1'] = bias_variable()
+    biases['conv2'] = bias_variable()
+    biases['fc1'] = bias_variable()
     return weights, biases
 
 def load_pretrained_parameters_VGG(flags):
@@ -114,14 +128,14 @@ def load_pretrained_parameters_VGG(flags):
     return weights, biases
 
 
-def build_model(x, flags, params):
-    weights, biases = load_pretrained_parameters_VGG(flags)
-    mapstack = vgg16(x=x, weights=weights, biases=biases)
-    flat = max_flatten(mapstack, params)
-    output = fc_layer(flattened=flat, weights=weights, biases=biases, dropout=params['dropout'])
+def model_CNN_FC(x, flags, params):
+    weights, biases = define_parameters()
+    output = cnn2(x=x, weights=weights, biases=biases)
+    fc1()
+
     return output
 
-def compute_VGG(x, flags):
+def model_VGG16(x, flags):
     weights, biases = load_pretrained_parameters_VGG(flags)
     mapstack = vgg16(x=x, weights=weights, biases=biases)
     return mapstack
