@@ -66,7 +66,7 @@ def main():
         sess.run(init)
         step = 1
         while step < params['training_iters']:
-            batch_x, batch_y = generate_minibatch(flags['save_directory'], dict_train, params['batch_size'])
+            batch_x, batch_y = generate_minibatch(flags, dict_train, params['batch_size'])
             print('Begin batch number: %d' % step)
             sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
             if step % params['display_step'] == 0:
