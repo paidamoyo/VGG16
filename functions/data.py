@@ -18,14 +18,14 @@ def split_data(image_dict, seed):
     print(labels)
     for i in ['0', '1']:
         patients = labels[labels == i].index.values
-        partition = int(math.floor(len(patients) * .15))  # 70% of data goes to training
+        partition = int(math.floor(len(patients) * .85))  # 70% of data goes to training
         indexes = np.random.choice(range(len(patients)), size=len(patients))
         dict_test[int(i)] = list(patients[indexes[partition:]])
         dict_train[int(i)] = list(patients[indexes[:partition]])
         index_test = index_test + list(patients[indexes[partition:]])
         index_train = index_train + list(patients[indexes[:partition]])
         print("Training split has %d mammograms" % len(dict_train[int(i)]) + " with label %d" % int(i))
-        print("Testing split has %d mammograms" % len(dict_train[int(i)]) + " with label %d" % int(i))
+        print("Testing split has %d mammograms" % len(dict_test[int(i)]) + " with label %d" % int(i))
     return dict_train, dict_test, index_train, index_test
 
 
@@ -36,7 +36,7 @@ def generate_minibatch(flags, dict_name, batch_size=1):
     for b in range(batch_size):
         inds = dict_name[0][b]
         data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
-        image_path = data_directory + '/' + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
+        image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
         with open(image_path, 'rb') as basefile:
             image = pickle.load(basefile)
             img = np.expand_dims(image, axis=2)
