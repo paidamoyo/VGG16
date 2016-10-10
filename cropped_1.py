@@ -96,9 +96,8 @@ def process_text_INbreast(flags):
         image_data_dict = {}
         for line in csvreader:
             file = line[5]
+            print(file)
             new_subjectId = names[names[1] == file].values[0][0]
-            print(new_subjectId)
-            print(type(new_subjectId))
             if subjectId == new_subjectId:
                 img_counter += 1
             else:
@@ -109,7 +108,6 @@ def process_text_INbreast(flags):
             if len(index) == 0:
                 IndexError('No DICOM Files match the line in the CSV file! Exiting...')
                 exit()
-            print(index)
             line[5] = list_dicom_files[index[0]]
             if line[7] in {'0', '1', '2', '3'}:
                 line[7] = 0
