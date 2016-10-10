@@ -14,7 +14,7 @@ flags = {
     'data_directory': '../../../../Data/',  # in relationship to the code_directory
     'aux_directory': '../aux/',
     'weights_directory': '../weights/',
-    'datasets': ['SAGE/'],
+    'datasets': ['SAGE','INbreast'],
     'previous_processed_directory': '1_Cropped/',
     'processed_directory': '2_VGG/',
     'save_pickled_dictionary': True,
@@ -43,7 +43,6 @@ image_dump_path = flags['data_directory'] + 'SAGE/Preprocessed/' + flags['proces
 # Launch the graph
 with tf.Session() as sess:
     sess.run(init)
-    # Construct model
     counter = 0
     for d in image_dict:
         batch_x, batch_y = one_tiled_image(flags, image_dict, d)

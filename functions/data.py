@@ -3,6 +3,8 @@ import math
 import pandas as pd
 import pickle
 
+from functions.aux import check_str
+
 def get_image_data(index_name, data_directory, image_dict):
     data = []
     labels = []
@@ -76,8 +78,8 @@ def generate_minibatch_dict_small(data_directory, dict_name, pos_neg):
 def one_tiled_image(flags, inds):
     batch_data = []
     batch_labels = [l]
-    path = flags['data_directory'] + 'SAGE/' + 'Preprocessed/' + flags['previous_processed_directory']
-    image_path = path + inds[0] + '_' + ('%d' % inds[1]) + '.pickle'
+    path = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
+    image_path = path + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
     with open(image_path, 'rb') as basefile:
         image = pickle.load(basefile)
         for i in range(12):

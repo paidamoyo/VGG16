@@ -78,7 +78,7 @@ def process_text_SAGE(flags):
                 img_counter = 0
             image_data_dict[('SAGE', patient_num, img_counter)] = [line[i] for i in indices]
             total += 1
-        print('Collated organized %d patients and %d images from the %s dataset.' % (patient_num, total,'SAGE'))
+        print('Collated organized %d patients and %d images from the %s dataset.' % (patient_num, total, 'SAGE'))
     return image_data_dict
 
 
@@ -137,7 +137,7 @@ def main():
         [process_images(image_data_dict, flags, d) for d in flags['datasets']]
 
     if flags['save_pickled_dictionary'] is True:
-        save_path = flags['aux_directory'] + '1_cropped_image_dict.pickle'
+        save_path = flags['aux_directory'] + str.split(flags['processed_directory'], '/')[0] + '_image_dict.pickle'
         with open(save_path, "wb") as f:
             pickle.dump(image_data_dict, f, protocol=2)
 
