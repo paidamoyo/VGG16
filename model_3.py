@@ -45,7 +45,7 @@ def main():
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [params['batch_size'], 204, 96, 512])
-    y = tf.placeholder(tf.int64, shape=(1,))
+    y = tf.placeholder(tf.int64, shape=(32,))
     keep_prob = tf.placeholder(tf.float32)  # dropout (keep probability)
 
     # Construct model
@@ -67,13 +67,13 @@ def main():
         step = 1
         while step < params['training_iters']:
             batch_x, batch_y = generate_minibatch(flags['save_directory'], dict_train, params['batch_size'])
-            print(batch_x[0].shape)
+            print('Begin batch number: %d' % step)
             sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
             if step % params['display_step'] == 0:
                 loss, acc = sess.run([cost, train_prediction], feed_dict={x: batch_x,
                                                                           y: batch_y,
                                                                           keep_prob: 1.})
-                print("Image Number " + str(step) + ", Image Loss= " +
+                print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", Label= %d" % batch_y[0])
                 save_path = saver.save(sess, flags['aux_directory'] + 'model.ckpt')
