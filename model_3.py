@@ -5,7 +5,7 @@ import numpy as np
 import tensorflow as tf
 import pickle
 
-from functions.data import split_data, generate_minibatch_dict_small
+from functions.data import split_data, generate_minibatch
 from functions.tf import model_CNN_FC
 
 
@@ -16,10 +16,6 @@ flags = {
     'aux_directory': 'aux/',
     'processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
-    'save_processed_jpeg': True,
-    'save_original_jpeg': False,
-    'save_pickled_dictionary': True,
-    'save_pickled_images': True,
 }
 
 
@@ -44,6 +40,8 @@ def main():
     previous = str.split(flags['previous_processed_directory'], '/')[0]
     image_dict = pickle.load(open(flags['aux_directory'] + previous + '_image_dict.pickle', 'rb'))
     dict_train, dict_test, index_train, index_test = split_data(image_dict)
+    batch_x, batch_y = generate_minibatch(flags, dict_train)
+    print(batch_x.shape)
     exit()
 
     # tf Graph input
@@ -52,7 +50,7 @@ def main():
     keep_prob = tf.placeholder(tf.float32)  # dropout (keep probability)
 
     # Construct model
-    logits = build_model(x=x, flags=flags, params=params)
+    logits = model_CNN_FC(x=x, flags=flags, params=params)
 
     # Define loss and optimizer
 
@@ -73,7 +71,7 @@ def main():
                 pos_neg = 1
             else:
                 pos_neg = 0
-            batch_x, batch_y = generate_minibatch_dict_small(flags['save_directory'], dict_train, pos_neg)
+            batch_x, batch_y = generate_minibatch(flags['save_directory'], dict_train, pos_neg)
 
             sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
             loss, acc = sess.run([cost, train_prediction], feed_dict={x: batch_x,
@@ -94,7 +92,7 @@ def main():
             labels[i] = []
             print("Processing %d total images " % len(dict_test[i]) + "for label %d" % i)
             for b in range(len(dict_test[i])):
-                X_test, y_test = generate_minibatch_test_small(flags['save_directory'], dict_test, pos_neg=i, batch_ind=b)
+                X_test, y_test = generate_minibatch_test(flags['save_directory'], dict_test, pos_neg=i, batch_ind=b)
                 acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test, keep_prob: 1.})
                 print("Image %d" % b + " of %d" % len(dict_test[i]) + ", Error: %.1f%%" % error_rate(acc, y_test) + \
                       ", Label= %d" % y_test[0])
