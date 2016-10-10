@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 
 import pickle
-import numpy as np
 import tensorflow as tf
 
-from functions.data import one_tiled_image, reconstruct
+from functions.data import one_tiled_image, reconstruct, save_image
 from functions.tf import model_VGG16
-from functions.aux import check_directories, check_str
+from functions.aux import check_directories
 
 
 # Global Dictionary of Flags
@@ -41,15 +40,9 @@ with tf.Session() as sess:
         batch_x, batch_y = one_tiled_image(flags, image_dict, d)
         volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
         image = reconstruct(volume)
-        if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
-            save_path = image_dump_path = flags['data_directory'] + check_str(d[0]) + '/Preprocessed/' + \
-                                          flags['processed_directory'] + check_str(d[1]) + '_' + check_str(d[2]) + \
-                                          '_vgg.pickle'
-            with open(save_path, "wb") as f:
-                pickle.dump(image, f, protocol=2)
+        save_image(image)
         counter += 1
         print("Processed Image %d" % counter + ' of %d total images' % len(image_dict))
-
 
 if flags['save_pickled_dictionary'] is True:
     current = str.split(flags['processed_directory'], '/')[0]

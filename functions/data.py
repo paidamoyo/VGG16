@@ -2,6 +2,7 @@ import numpy as np
 import math
 import pandas as pd
 import pickle
+import scipy.misc
 
 from functions.aux import check_str
 
@@ -105,3 +106,47 @@ def reconstruct(volume):
             continue
         image = np.concatenate((image, image_list[l]), axis=1)
     return image
+
+
+def save_image(flags, dataset, image_original, image_processed, d):
+    preprocessed_directory = flags['data_directory'] + dataset + '/Preprocessed/' + flags['processed_directory']
+    original_directory = flags['data_directory'] + dataset + '/Originals/'
+    image_filename = check_str(d[1]) + '_' + check_str(d[2]) + '.pickle'
+
+    try:
+        if flags['save_original_jpeg'] is True:  # save processed and cropped jpeg
+            save_path = original_directory + '/original_jpeg_images/' + check_str(d[0]) + '_' + check_str(d[1]) + '.jpg'
+            scipy.misc.imsave(save_path, image_original)
+
+    try:
+        if flags['save_processed_jpeg'] is True:  # save large jpeg file for viewing/presentation purposes
+            save_path = preprocessed_directory + '/processed_jpeg_images/' + check_str(d[0]) + '_' + check_str(d[1]) + '.jpg'
+            scipy.misc.imsave(save_path, image_processed)
+
+    try:
+        if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
+            save_path = preprocessed_directory + image_filename
+            with open(save_path, "wb") as file:
+                pickle.dump(image_processed, file, protocol=2)
+    return image_filename
+
+
+def find_dicom_files(path):  # currently not used but may be useful later.
+    """
+    Args: folder
+        folder_path: Folder location of SAGE competition files
+    Returns: A list of all file names with ".dcm.gz" in the name
+    """
+    print('Searching for DICOM images in %s' % path)
+    list_of_dicom_files = []  # create an empty list
+    bol = False
+    for dirName, subdirList, fileList in os.walk(path):
+        print('Found a total of %d files.' % len(fileList))
+        for filename in fileList:
+            if ".dcm" in filename.lower():  # check whether the file's DICOM\
+                bol = True
+                list_of_dicom_files.append(os.path.join(dirName, filename))
+    if bol is False:
+        print('Warning! No Dicom Files found in %s' % path + '!')
+        exit()
+    return list_of_dicom_files

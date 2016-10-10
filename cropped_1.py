@@ -13,7 +13,8 @@ import csv
 import pickle
 import pandas as pd
 
-from functions.images import read_image, clean_image, save_image, find_dicom_files
+from functions.images import read_image, clean_image
+from functions.data import save_image, find_dicom_files
 from functions.aux import check_directories
 
 # Global Dictionary of Flags
