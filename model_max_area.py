@@ -90,7 +90,7 @@ def main():
                 print("True Labels: ", batch_y)
                 print("Training Split: ", split)
                 print("Fraction of Positive Predictions: %d / %d" %
-                      (np.count_nonzero(np.argmax(acc, 1)), flags['batch_size']))
+                      (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
                 save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] + 'model.ckpt')
                 print("Model saved in file: %s" % save_path)
                 if bol is True:
