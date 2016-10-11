@@ -127,8 +127,8 @@ def process_text_INbreast(flags):
 def main():
     check_directories(flags)
     list_dict = list()
-    list_dict.append([process_text_SAGE(flags) for d in flags['datasets'] if d == 'SAGE'])
-    list_dict.append([process_text_INbreast(flags) for d in flags['datasets'] if d == 'INbreast'])
+    list_dict.extend([process_text_SAGE(flags) for d in flags['datasets'] if d == 'SAGE'])
+    list_dict.extend([process_text_INbreast(flags) for d in flags['datasets'] if d == 'INbreast'])
     if len(list_dict) == 2:
         image_data_dict = {**list_dict[0], **list_dict[1]}
     else:
