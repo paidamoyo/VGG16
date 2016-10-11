@@ -91,7 +91,7 @@ def cnn2(x, weights, biases):
 def fc1(pool2, weights, biases):
     flattened = tf.reshape(pool2, [-1, 4352])
     fc1 = tf.add(tf.matmul(flattened, weights['fc1']), biases['fc1'])
-    fc1 = tf.nn.relu(fc1)
+    fc1 = tf.nn.sigmoid(fc1)
     return fc1
 
 
@@ -101,10 +101,10 @@ def define_parameters():
     # (204 / 6) * (96 / 6) * 8 = 4352
     weights['conv1'] = weight_variable([3, 3, 512, 8])
     # weights['conv2'] = weight_variable([3, 3, 64, 8])
-    weights['fc1'] = weight_variable([4352, 1])
+    weights['fc1'] = weight_variable([4352, 2])
     biases['conv1'] = bias_variable([8])
     # biases['conv2'] = bias_variable([8])
-    biases['fc1'] = bias_variable([1])
+    biases['fc1'] = bias_variable([2])
     return weights, biases
 
 
