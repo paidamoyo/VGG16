@@ -36,7 +36,7 @@ def error_rate(predictions, labels):
 
 
 def auc_roc(predictions, labels):
-    return sklearn.metrics.roc_auc_score(labels, predictions, average='macro', sample_weight=None)
+    return sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1), average='macro', sample_weight=None)
 
 
 def main():
@@ -56,7 +56,7 @@ def main():
 
     # Define loss and optimizer
     cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, y))
-    train_prediction = tf.round(tf.log(logits))
+    train_prediction = tf.softmax(tf.log(logits))
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
     tf.scalar_summary("cost", cost)
 
