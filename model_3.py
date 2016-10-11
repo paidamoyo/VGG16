@@ -14,17 +14,17 @@ from models.cnn_fc import CnnFc
 flags = {
     'data_directory': '../../../Data/',  # in relationship to the code_directory
     'aux_directory': 'aux/',
-    'model_directory': 'max_area/',
+    'model_directory': 'cnn_fc',
     'previous_processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
 }
 
 
 params = {
-    'lr': 0.0001,
-    'training_iters': 500,
+    'lr': 0.00001,
+    'training_iters': 5000,
     'batch_size': 8,  # must be divisible by 2
-    'display_step': 10
+    'display_step': 5
 }
 
 
