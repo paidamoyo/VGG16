@@ -55,7 +55,7 @@ def generate_minibatch_dict(flags, dict_name, batch_size, split):
 def organize_test_index(flags, index_name, image_dict):
     unshuffled_batch = []
     for inds in index_name:
-        i = image_dict[inds][5]
+        i = image_dict[inds][4]
         data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
         image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
         with open(image_path, 'rb') as basefile:
@@ -63,7 +63,7 @@ def organize_test_index(flags, index_name, image_dict):
             unshuffled_batch.append((map_stack, i))
     shuffle(unshuffled_batch)
     batch_data = [map_stack for (map_stack, i) in unshuffled_batch]
-    batch_labels = [i for (map_stack, i) in unshuffled_batch]
+    batch_labels = [int(i) for (map_stack, i) in unshuffled_batch]
     return batch_data, batch_labels
 
 
