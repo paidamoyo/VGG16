@@ -37,7 +37,7 @@ class Vgg16:
                 continue  # skip fc weights and pool layers
         return weights, biases
 
-    def model_vgg16(self, x):
+    def model_vgg16(self, x, block_num):
         weights = self.weights
         biases = self.biases
         block1_conv1 = conv2d(x, weights['b1_c1'], biases['b1_c1'])
@@ -51,11 +51,15 @@ class Vgg16:
         block3_conv1 = conv2d(block2_pool, weights['b3_c1'], biases['b3_c1'])
         block3_conv2 = conv2d(block3_conv1, weights['b3_c2'], biases['b3_c2'])
         block3_conv3 = conv2d(block3_conv2, weights['b3_c3'], biases['b3_c3'])
+        if block_num == 3:
+            return block3_conv3
         block3_pool = maxpool2d(block3_conv3, k=2)
 
         block4_conv1 = conv2d(block3_pool, weights['b4_c1'], biases['b4_c1'])
         block4_conv2 = conv2d(block4_conv1, weights['b4_c2'], biases['b4_c2'])
         block4_conv3 = conv2d(block4_conv2, weights['b4_c3'], biases['b4_c3'])
+        if block_num == 4:
+            return block4_conv3
         block4_pool = maxpool2d(block4_conv3, k=2)
 
         block5_conv1 = conv2d(block4_pool, weights['b5_c1'], biases['b5_c1'])
@@ -63,8 +67,8 @@ class Vgg16:
         block5_conv3 = conv2d(block5_conv2, weights['b5_c3'], biases['b5_c3'])
         return block5_conv3
 
-    def run(self, x):
-        map_stack = self.model_vgg16(x=x)
+    def run(self, x, block_num=5):
+        map_stack = self.model_vgg16(x=x, block_num=block_num)
         return map_stack
 
 if __name__ == '__main__':
