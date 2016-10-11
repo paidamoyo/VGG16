@@ -20,11 +20,10 @@ flags = {
 
 
 params = {
-    'lr': 0.001,
+    'lr': 0.0001,
     'training_iters': 1000,
-    'batch_size': 32,
-    'display_step': 1,
-    'dropout': 0.5
+    'batch_size': 16,
+    'display_step': 1
 }
 
 
@@ -84,13 +83,15 @@ def main():
             writer.add_summary(summary=summary, global_step=step)
 
             if step % params['display_step'] == 0:
-                loss, acc = sess.run([cost, train_prediction], feed_dict={x: batch_x,
+                loss, acc, login = sess.run([cost, train_prediction, logits], feed_dict={x: batch_x,
                                                                           y: batch_y,
                                                                           keep_prob: 1.})
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
-                print(acc)
+                print(login)
+                print(type(acc))
+                print(np.argmax(acc, 1))
                 print(batch_y)
                 print(loss)
                 save_path = saver.save(sess, flags['aux_directory'] + 'model.ckpt')
