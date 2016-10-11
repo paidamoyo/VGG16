@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import numpy as np
 import math
 import pandas as pd
@@ -11,10 +13,10 @@ from functions.aux import check_str
 
 def split_data(image_dict, seed):
     np.random.seed(seed=seed)
-    index_test = []
-    index_train = []
-    dict_test = {}
-    dict_train = {}
+    index_test = list()
+    index_train = list()
+    dict_test = dict()
+    dict_train = dict()
     dict_image = pd.DataFrame(image_dict)
     labels = dict_image.iloc[4]
     for i in ['0', '1']:

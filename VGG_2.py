@@ -4,7 +4,7 @@ import pickle
 import tensorflow as tf
 
 from functions.data import one_tiled_image, reconstruct, save_image
-from functions.tf import model_VGG16
+from models.vgg16 import Vgg16
 from functions.aux import check_directories
 
 
@@ -22,7 +22,6 @@ flags = {
     'save_pickled_images': True,
 }
 
-
 check_directories(flags)
 previous = str.split(flags['previous_processed_directory'], '/')[0]
 image_dict = pickle.load(open(flags['aux_directory'] + previous + '_image_dict.pickle', 'rb'))
@@ -30,7 +29,8 @@ image_dict = pickle.load(open(flags['aux_directory'] + previous + '_image_dict.p
 x = tf.placeholder(tf.float32, [12*12, 272, 128, 3])
 y = tf.placeholder(tf.int64, shape=(1,))
 
-logits = model_VGG16(x=x, flags=flags)
+model = Vgg16()
+logits = model.run(x=x)
 init = tf.initialize_all_variables()
 
 # Launch the graph

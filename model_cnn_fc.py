@@ -6,7 +6,7 @@ import pickle
 import sklearn.metrics
 
 from functions.data import split_data, generate_minibatch_dict, generate_minibatch_index
-from functions.tf import model_CNN_FC
+from models.cnn_fc import CnnFc
 
 
 
@@ -23,7 +23,7 @@ flags = {
 params = {
     'lr': 0.001,
     'training_iters': 100,
-    'batch_size': 16,  # must be divisible by 2
+    'batch_size': 64,  # must be divisible by 2
     'display_step': 3
 }
 
@@ -37,7 +37,7 @@ def error_rate(predictions, labels):
 
 
 def auc_roc(predictions, labels):
-    return sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1), average='macro', sample_weight=None)
+    return sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1).tolist())
 
 
 def main():
@@ -49,11 +49,8 @@ def main():
     y = tf.placeholder(tf.int64, shape=[None], name='Labels')
 
     # Construct model
-    logits, weights, biases = model_CNN_FC(x=x)
-    tf.histogram_summary("weights_conv1", weights['conv1'])
-    tf.histogram_summary("weights_fc1", weights['fc1'])
-    tf.histogram_summary("biases_conv1", biases['conv1'])
-    tf.histogram_summary("biases_fc1", biases['fc1'])
+    model = CnnFc()
+    logits = model.run(x=x)
 
     # Define loss and optimizer
     cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, y))
@@ -89,19 +86,18 @@ def main():
                 print("Model saved in file: %s" % save_path)
             step += 1
         print("Optimization Finished!")
-
+        '''
         labels = {}
         for i in range(2):
             labels[i] = []
             print("Processing %d total images " % len(dict_test[i]) + "for label %d" % i)
-            for b in range(len(dict_test[i])):
-                X_test, y_test = generate_minibatch_index(flags['save_directory'], dict_test)
-                acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
-                print("Image %d" % b + " of %d" % len(dict_test[i]) + ", Error: %.1f%%" % error_rate(acc, y_test) + \
-                      ", Label= %d" % y_test[0])
-                labels[i].append(error_rate(acc, y_test))
+            X_test, y_test = generate_minibatch_index(flags['save_directory'], dict_test)
+            acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
+            print("Image %d" % b + " of %d" % len(dict_test[i]) + ", Error: %.1f%%" % error_rate(acc, y_test) + \
+                  ", Label= %d" % y_test[0])
+            labels[i].append(error_rate(acc, y_test))
         print("True Positive: %f" % np.mean(labels[1]) + ", True Negative: %f" % np.mean(labels[0]))
-
+            '''
 
 if __name__ == "__main__":
     main()
