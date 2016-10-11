@@ -65,12 +65,13 @@ def main():
     cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, y))
     train_prediction = tf.nn.softmax(logits)
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
-    cost_summ = tf.scalar_summary("cost", cost)
+    tf.scalar_summary("cost", cost)
 
     # Initializing the variables
     merged = tf.merge_all_summaries()
     init = tf.initialize_all_variables()
     saver = tf.train.Saver()
+    train_writer = tf.train.SummaryWriter(FLAGS.summaries_dir + '/train', sess.graph)
 
     # Launch the graph
     with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
@@ -81,12 +82,12 @@ def main():
             batch_x, batch_y = generate_minibatch(flags, dict_train, params['batch_size'])
             print('Begin batch number: %d' % step)
             summary = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
-            writer.add_summary(summary=summary)
+            writer.add_summary(summary=summary, global_step=step)
+
             if step % params['display_step'] == 0:
                 loss, acc = sess.run([cost, train_prediction], feed_dict={x: batch_x,
                                                                           y: batch_y,
                                                                           keep_prob: 1.})
-                tf.scalar_summary("Accuracy",)
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
