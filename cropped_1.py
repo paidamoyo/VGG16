@@ -49,6 +49,7 @@ def process_images(image_data_dict, flags, dataset):
             if image_original is None:
                 print("File Type Cannot be Read! Skipping Image...")
                 continue
+            print(image_data_dict[d][2], d)
             image_processed = clean_image(image_original, image_data_dict[d], dumb_crop_dims=[3264, 1536])
             new_filename = save_image(flags, dataset, image_original, image_processed, d)
             image_data_dict[d][3] = new_filename

@@ -46,7 +46,6 @@ def read_image(base_file):
 
 def clean_image(image, dict_entry, dumb_crop_dims=None):
     image = cv2.convertScaleAbs(image, alpha=(255.0 / image.max()))  # convert to uint8
-    print(dict_entry[2])
     if dict_entry[2] == 'R':  # flip all images into left orientation
         image = np.fliplr(image)
     if dumb_crop_dims is None:
