@@ -90,6 +90,9 @@ def main():
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
+                print(acc)
+                print(batch_y)
+                print(loss)
                 save_path = saver.save(sess, flags['aux_directory'] + 'model.ckpt')
                 print("Model saved in file: %s" % save_path)
             step += 1
