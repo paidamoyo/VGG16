@@ -5,7 +5,7 @@ import tensorflow as tf
 from functions.tf import weight_variable, bias_variable
 
 
-class Max_area:
+class MaxArea:
     def __init__(self):
         self.weights, self.biases = self.init_params()
 

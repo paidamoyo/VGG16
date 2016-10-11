@@ -6,7 +6,7 @@ import pickle
 import sklearn.metrics
 
 from functions.data import split_data, generate_minibatch_dict, organize_test_index
-from models.cnn_fc import CnnFc
+from models.cnn_fc import MaxArea
 
 
 
@@ -14,7 +14,7 @@ from models.cnn_fc import CnnFc
 flags = {
     'data_directory': '../../../Data/',  # in relationship to the code_directory
     'aux_directory': 'aux/',
-    'model_directory': 'max_area/',
+    'model_directory': 'cnn_fc/',
     'previous_processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
 }
@@ -52,7 +52,7 @@ def main():
     y = tf.placeholder(tf.int64, shape=[None], name='Labels')
 
     # Construct model
-    model = CnnFc()
+    model = MaxArea()
     logits = model.run(x=x)
 
     # Define loss and optimizer
