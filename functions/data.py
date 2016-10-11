@@ -67,32 +67,32 @@ def organize_test_index(flags, index_name, image_dict):
     return batch_data, batch_labels
 
 
-def one_tiled_image(flags, image_dict, inds):
+def one_tiled_image(flags, image_dict, inds, tile):
     batch_data = []
     batch_labels = [image_dict[inds][4]]
     path = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
     image_path = path + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
     with open(image_path, 'rb') as basefile:
         image = pickle.load(basefile)
-        for i in range(12):
-            for j in range(12):
-                img = image[int(i*(3264/12)):int((i+1)*(3264/12)), int(j*(1536/12)):int((j+1)*(1536/12))]
+        for i in range(tile):
+            for j in range(tile):
+                img = image[int(i*(3264/tile)):int((i+1)*(3264/tile)), int(j*(1536/tile)):int((j+1)*(1536/tile))]
                 img = np.expand_dims(img, axis=2)
                 batch_data.append(np.concatenate((img, img, img), axis=2))
     return batch_data, batch_labels
 
 
-def reconstruct(volume):
+def reconstruct(volume, tile):
     image_list = []
     # reconstruct images
-    for j in range(12):
-        for i in range(12):
+    for j in range(tile):
+        for i in range(tile):
             if i == 0:
                 image_list.append(volume[i + j * 12, :, :, :])
                 continue
             additive = volume[i + j * 12, :, :, :]
             image_list[j] = np.concatenate((image_list[j], additive), axis=0)
-    for l in range(12):
+    for l in range(tile):
         if l == 0:
             image = image_list[l]
             continue
