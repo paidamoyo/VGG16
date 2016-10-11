@@ -22,7 +22,7 @@ flags = {
 
 params = {
     'lr': 0.001,
-    'training_iters': 100,
+    'training_iters': 30*10,
     'batch_size': 32,  # must be divisible by 2
     'display_step': 5
 }
@@ -76,7 +76,7 @@ def main():
             if step / counter < 10:
                 split = [0, 1]
             elif step / counter < 20:
-                split = [0.75, 0.25]
+                split = [0.25, 0.75]
             else:
                 counter += 1
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
