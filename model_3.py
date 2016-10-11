@@ -20,7 +20,7 @@ flags = {
 
 
 params = {
-    'lr': 0.0001,
+    'lr': 0.00001,
     'training_iters': 100,
     'batch_size': 16,  # must be divisible by 2
     'display_step': 10
@@ -94,7 +94,7 @@ def main():
                 print("Model saved in file: %s" % save_path)
             step += 1
         print("Optimization Finished!")
-        '''
+
         labels = {}
         for i in range(2):
             labels[i] = []
@@ -106,7 +106,7 @@ def main():
                       ", Label= %d" % y_test[0])
                 labels[i].append(error_rate(acc, y_test))
         print("True Positive: %f" % np.mean(labels[1]) + ", True Negative: %f" % np.mean(labels[0]))
-            '''
-        
+
+
 if __name__ == "__main__":
     main()
