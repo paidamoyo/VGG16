@@ -50,10 +50,10 @@ def main():
     # Construct model
     logits, weights, biases = model_CNN_FC(x=x)
     tf.histogram_summary("weights_conv1", weights['conv1'])
-    tf.histogram_summary("weights_conv2", weights['conv2'])
+    # tf.histogram_summary("weights_conv2", weights['conv2'])
     tf.histogram_summary("weights_fc1", weights['fc1'])
     tf.histogram_summary("biases_conv1", biases['conv1'])
-    tf.histogram_summary("biases_conv2", biases['conv2'])
+    # tf.histogram_summary("biases_conv2", biases['conv2'])
     tf.histogram_summary("biases_fc1", biases['fc1'])
 
     # Define loss and optimizer
