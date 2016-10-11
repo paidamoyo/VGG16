@@ -99,7 +99,7 @@ def define_parameters():
     weights = {}
     biases = {}
     # (204 / 6) * (96 / 6) * 8 = 4352
-    weights['conv1'] = weight_variable([3, 3, 512, 8])
+    # weights['conv1'] = weight_variable([3, 3, 512, 8])
     # weights['conv2'] = weight_variable([3, 3, 64, 8])
     weights['fc1'] = weight_variable([4352, 1])
     biases['conv1'] = bias_variable([8])
