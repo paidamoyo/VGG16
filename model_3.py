@@ -5,7 +5,7 @@ import tensorflow as tf
 import pickle
 import sklearn.metrics
 
-from functions.data import split_data, generate_minibatch
+from functions.data import split_data, generate_minibatch_dict, generate_minibatch_index
 from functions.tf import model_CNN_FC
 
 
@@ -21,9 +21,9 @@ flags = {
 
 params = {
     'lr': 0.0001,
-    'training_iters': 10,
-    'batch_size': 2,  # must be divisible by 2
-    'display_step': 1
+    'training_iters': 100,
+    'batch_size': 16,  # must be divisible by 2
+    'display_step': 10
 }
 
 
@@ -74,7 +74,7 @@ def main():
         step = 1
         writer = tf.train.SummaryWriter(flags['aux_directory'] + "summary_logs", sess.graph_def)
         while step < params['training_iters']:
-            batch_x, batch_y = generate_minibatch(flags, dict_train, image_dict, params['batch_size'])
+            batch_x, batch_y = generate_minibatch_dict(flags, dict_train, image_dict, params['batch_size'])
             print('Begin batch number: %d' % step)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
             writer.add_summary(summary=summary, global_step=step)
@@ -94,20 +94,19 @@ def main():
                 print("Model saved in file: %s" % save_path)
             step += 1
         print("Optimization Finished!")
-
         '''
         labels = {}
         for i in range(2):
             labels[i] = []
             print("Processing %d total images " % len(dict_test[i]) + "for label %d" % i)
             for b in range(len(dict_test[i])):
-                X_test, y_test = generate_minibatch(flags['save_directory'], dict_test)
-                acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test, keep_prob: 1.})
+                X_test, y_test = generate_minibatch_index(flags['save_directory'], dict_test)
+                acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
                 print("Image %d" % b + " of %d" % len(dict_test[i]) + ", Error: %.1f%%" % error_rate(acc, y_test) + \
                       ", Label= %d" % y_test[0])
                 labels[i].append(error_rate(acc, y_test))
         print("True Positive: %f" % np.mean(labels[1]) + ", True Negative: %f" % np.mean(labels[0]))
-        '''
-
+            '''
+        
 if __name__ == "__main__":
     main()
