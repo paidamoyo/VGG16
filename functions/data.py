@@ -114,7 +114,7 @@ def save_image(flags, dataset, image_original, image_processed, inds):
         if len(image_processed.shape) > 2:  # if is a volume
             directory = save_path + image_filename + '/'
             make_directory(directory)
-            for l in range(len(image_processed)):
+            for l in range(image_processed.shape[2]):
                 scipy.misc.imsave(directory + ('map_%d' % l) + '.jpg', image_processed[:, :, l])
         else:
             scipy.misc.imsave(save_path + '.jpg', image_processed)
