@@ -37,11 +37,13 @@ def error_rate(predictions, labels):
 
 
 def auc_roc(predictions, labels):
+    '''
     try:
         return sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1).tolist())
     except ValueError:  # if all predicted labels are the same
         return 0
-
+    '''
+    return sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1).tolist())
 
 def main():
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
@@ -70,34 +72,35 @@ def main():
     with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
         sess.run(init)
         step = 1
-        bool = True
+        bol = True
         split = [.5, .5]
         writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['model_directory'], sess.graph)
         while step < params['training_iters']:
-            batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
+
             print('Begin batch number: %d' % step)
+            batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
             writer.add_summary(summary=summary, global_step=step)
 
             if step % params['display_step'] == 0:
                 loss, acc, login = sess.run([cost, train_prediction, logits], feed_dict={x: batch_x,
                                                                           y: batch_y})
+                acc[0] = 1
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
-                # print("Training split is %f negatives and %d positive" % (int(split[0] * 100), int(split[1]*100)))
-                print(np.argmax(acc, 1).tolist())
-                print(batch_y)
-                print(split)
+                print("Predicted Labels: ", np.argmax(acc, 1).tolist())
+                print("True Labels: ", batch_y)
+                print("Training Split: ", split)
                 print("Number of Positive Predictions: %d" % np.count_nonzero(np.argmax(acc, 1)))
                 save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] +'model.ckpt')
                 print("Model saved in file: %s" % save_path)
-                if bool is True:
+                if bol is True:
                     split = [0.25, 0.75]
-                    bool = False
+                    bol = False
                 else:
                     split = [0, 1]
-                    bool = True
+                    bol = True
             step += 1
         print("Optimization Finished!")
 
