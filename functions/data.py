@@ -40,11 +40,12 @@ def generate_minibatch_dict(flags, dict_name, image_data_dict, batch_size):
             image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
             with open(image_path, 'rb') as basefile:
                 mapstack = pickle.load(basefile)
-            unshuffled_batch.append((mapstack, i))
+            unshuffled_batch.append((mapstack, i, inds[0]))
     shuffle(unshuffled_batch)
-    batch_data = [mapstack for (mapstack, i) in unshuffled_batch]
-    batch_labels = [i for (mapstack, i) in unshuffled_batch]
-    return batch_data, batch_labels
+    batch_data = [mapstack for (mapstack, i, ind) in unshuffled_batch]
+    batch_labels = [i for (mapstack, i, ind) in unshuffled_batch]
+    batch_dataset = [ind for (mapstack, i, ind) in unshuffled_batch]
+    return batch_data, batch_labels, batch_dataset
 
 
 def generate_minibatch_index(flags, dict_name, image_data_dict, batch_size):

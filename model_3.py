@@ -23,7 +23,7 @@ params = {
     'lr': 0.001,
     'training_iters': 100,
     'batch_size': 16,  # must be divisible by 2
-    'display_step': 10
+    'display_step': 3
 }
 
 
@@ -71,7 +71,7 @@ def main():
         step = 1
         writer = tf.train.SummaryWriter(flags['aux_directory'] + "summary_logs4", sess.graph)
         while step < params['training_iters']:
-            batch_x, batch_y = generate_minibatch_dict(flags, dict_train, image_dict, params['batch_size'])
+            batch_x, batch_y, batch_dataset = generate_minibatch_dict(flags, dict_train, image_dict, params['batch_size'])
             print('Begin batch number: %d' % step)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
             writer.add_summary(summary=summary, global_step=step)
@@ -83,8 +83,7 @@ def main():
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
                 print(login)
-                print(batch_y)
-                print(loss)
+                print(batch_dataset)
                 save_path = saver.save(sess, flags['aux_directory'] + 'model.ckpt')
                 print("Model saved in file: %s" % save_path)
             step += 1
