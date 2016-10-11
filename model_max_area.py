@@ -21,9 +21,9 @@ flags = {
 
 
 params = {
-    'lr': 0.001,
+    'lr': 0.01,
     'training_iters': 500,
-    'batch_size': 8,  # must be divisible by 2
+    'batch_size': 32,  # must be divisible by 2
     'display_step': 10
 }
 
@@ -70,6 +70,7 @@ def main():
     with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
         sess.run(init)
         step = 1
+        split = [0, 1]
         bol = True
         writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['model_directory'], sess.graph)
         while step < params['training_iters']:
@@ -90,7 +91,7 @@ def main():
                 print("Training Split: ", split)
                 print("Fraction of Positive Predictions: %d / %d" %
                       (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
-                save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] + 'model.ckpt')
+                save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] + 'model_500_allpositive.ckpt')
                 print("Model saved in file: %s" % save_path)
                 if bol is True:
                     split = [0.25, 0.75]
@@ -98,8 +99,7 @@ def main():
                 else:
                     split = [0, 1]
                     bol = True
-            if step < 500:
-                split = [0, 1]
+            split = [0, 1]
             step += 1
         print("Optimization Finished!")
 
