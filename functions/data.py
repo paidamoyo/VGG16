@@ -30,20 +30,20 @@ def split_data(image_dict, seed):
     return dict_train, dict_test, index_train, index_test
 
 
-def generate_minibatch(flags, dict_name, batch_size):
+def generate_minibatch(flags, dict_name, image_data_dict, batch_size):
     unshuffled_batch = []
     for i in range(2):
-        batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=batch_size / 2).tolist()
+        batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=batch_size/2).tolist()
         for b in batch_ind:
-            inds = dict_name[0][b]
+            inds = dict_name[i][b]
             data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
             image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
             with open(image_path, 'rb') as basefile:
-                image = pickle.load(basefile)
-                unshuffled_batch.append((image, i))
+                mapstack = pickle.load(basefile)
+            unshuffled_batch.append((mapstack, i))
     shuffle(unshuffled_batch)
-    batch_data = [image for (image, i) in unshuffled_batch]
-    batch_labels = [i for (image, i) in unshuffled_batch]
+    batch_data = [mapstack for (mapstack, i) in unshuffled_batch]
+    batch_labels = [i for (mapstack, i) in unshuffled_batch]
     return batch_data, batch_labels
 
 

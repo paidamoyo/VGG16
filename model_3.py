@@ -21,8 +21,8 @@ flags = {
 
 params = {
     'lr': 0.0001,
-    'training_iters': 1000,
-    'batch_size': 16,
+    'training_iters': 10,
+    'batch_size': 1,
     'display_step': 1
 }
 
@@ -42,8 +42,6 @@ def auc_roc(predictions, labels):
 def main():
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
     dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=1234)
-    batch_x, batch_y = generate_minibatch(flags, dict_train, batch_size=2)
-    print('Imported Images have dimension: %s' % str(batch_x[0].shape))
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [None, 204, 96, 512], name='VGG_output')
@@ -71,12 +69,12 @@ def main():
     saver = tf.train.Saver()
 
     # Launch the graph
-    with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
+    with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
         sess.run(init)
         step = 1
         writer = tf.train.SummaryWriter(flags['aux_directory'] + "summary_logs", sess.graph_def)
         while step < params['training_iters']:
-            batch_x, batch_y = generate_minibatch(flags, dict_train, params['batch_size'])
+            batch_x, batch_y = generate_minibatch(flags, dict_train, image_data_dict=image_dict, params['batch_size'])
             print('Begin batch number: %d' % step)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
             writer.add_summary(summary=summary, global_step=step)
