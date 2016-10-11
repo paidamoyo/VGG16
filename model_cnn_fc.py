@@ -90,6 +90,7 @@ def main():
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
+                print("Training split is %d negatives and %d positive" % (split[0], split[1]))
                 print("Number of Positive Predictions: %d" % np.count_nonzero(np.argmax(acc, 1)))
                 save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] +'model.ckpt')
                 print("Model saved in file: %s" % save_path)
