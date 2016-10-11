@@ -22,7 +22,7 @@ flags = {
     'data_directory': '../../../Data/', # in relationship to the code_directory
     'aux_directory': 'aux/',
     'processed_directory': '1_Cropped/',
-    'datasets': ['SAGE', 'INbreast'],
+    'datasets': ['INbreast'],
     'save_processed_jpeg': True,
     'save_original_jpeg': False,
     'save_pickled_dictionary': False,
@@ -44,13 +44,12 @@ def process_images(image_data_dict, flags, dataset):
     for d in image_data_dict:  # loop through all images in dictionary.
         if d[0] == dataset:
             filename = flags['data_directory'] + dataset + '/Originals/' + image_data_dict[d][3]
-            print('Processing %s' % image_data_dict[d][3])
+            print('Processing %s' % image_data_dict[d][3], ', with identifiers: ', image_data_dict[d][2], d)
             image_original = read_image(filename)
             if image_original is None:
                 print("File Type Cannot be Read! Skipping Image...")
                 continue
-            print(image_data_dict[d][2], d)
-            image_processed = clean_image(image_original, image_data_dict[d], dumb_crop_dims=[3264, 1536])
+            image_processed = clean_image(image_original, image_data_dict, d, dumb_crop_dims=[3264, 1536])
             new_filename = save_image(flags, dataset, image_original, image_processed, d)
             image_data_dict[d][3] = new_filename
 

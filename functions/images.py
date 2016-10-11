@@ -44,15 +44,20 @@ def read_image(base_file):
             return None
 
 
-def clean_image(image, dict_entry, dumb_crop_dims=None):
+def clean_image(image, image_data_dict, d, dumb_crop_dims=None):
     image = cv2.convertScaleAbs(image, alpha=(255.0 / image.max()))  # convert to uint8
-    if dict_entry[2] == 'R':  # flip all images into left orientation
+    if image_data_dict[d][2] == 'R':  # flip all images into left orientation
         image = np.fliplr(image)
+        print('Image Flipped.')
     if dumb_crop_dims is None:
         image = smart_crop(image)
     else:
         image = dumb_crop(image, dumb_crop_dims[0], dumb_crop_dims[1])
-    image = adjust_gamma(image, gamma=3)
+    if d[0] == 'SAGE':
+        gamma = 3.0
+    elif d[0] == 'INbreast':
+        gamma = 1.5
+    image = adjust_gamma(image, gamma=gamma)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     image = clahe.apply(image)
     return image
