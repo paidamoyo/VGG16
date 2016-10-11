@@ -41,7 +41,7 @@ def auc_roc(predictions, labels):
 
 def main():
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
-    dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=1234)
+    dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=134)
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [None, 204, 96, 512], name='VGG_output')
