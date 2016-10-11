@@ -40,6 +40,7 @@ def auc_roc(predictions, labels):
     try:
         return sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1).tolist())
     except ValueError:  # if all predicted labels are the same
+        return 1000
 
 def main():
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
