@@ -71,7 +71,6 @@ def main():
     merged = tf.merge_all_summaries()
     init = tf.initialize_all_variables()
     saver = tf.train.Saver()
-    train_writer = tf.train.SummaryWriter(FLAGS.summaries_dir + '/train', sess.graph)
 
     # Launch the graph
     with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
