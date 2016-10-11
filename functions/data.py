@@ -54,7 +54,6 @@ def generate_minibatch_dict(flags, dict_name, batch_size, split):
 
 def organize_test_index(flags, index_name, image_dict):
     unshuffled_batch = []
-    print(index_name)
     for inds in index_name:
         print(inds)
         i = image_dict[inds][4]
