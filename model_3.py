@@ -72,7 +72,7 @@ def main():
     with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
         sess.run(init)
         step = 1
-        writer = tf.train.SummaryWriter(flags['aux_directory'] + "summary_logs", sess.graph_def)
+        writer = tf.train.SummaryWriter(flags['aux_directory'] + "summary_logs", sess.graph)
         while step < params['training_iters']:
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, image_dict, params['batch_size'])
             print('Begin batch number: %d' % step)
