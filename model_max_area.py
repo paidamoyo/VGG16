@@ -86,7 +86,8 @@ def main():
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
                 # print("Training split is %f negatives and %d positive" % (int(split[0] * 100), int(split[1]*100)))
-                print(type(np.argmax(acc, 1)))
+                print(np.argmax(acc, 1).tolist())
+                print(batch_y)
                 print(split)
                 print("Number of Positive Predictions: %d" % np.count_nonzero(np.argmax(acc, 1)))
                 save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] +'model.ckpt')
