@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 
-import pickle as cp
 import numpy as np
 import tensorflow as tf
 import pickle
-import pandas as pd
+import sklearn.metrics
 
 from functions.data import split_data, generate_minibatch
 from functions.tf import model_CNN_FC
@@ -13,7 +12,7 @@ from functions.tf import model_CNN_FC
 
 # Global Dictionary of Flags
 flags = {
-    'data_directory': '../../../Data/', # in relationship to the code_directory
+    'data_directory': '../../../Data/',  # in relationship to the code_directory
     'aux_directory': 'aux/',
     'previous_processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
@@ -21,10 +20,10 @@ flags = {
 
 
 params = {
-    'lr': 0.0001,
-    'training_iters': 10000,
+    'lr': 0.001,
+    'training_iters': 1000,
     'batch_size': 32,
-    'display_step': 100,
+    'display_step': 10,
     'dropout': 0.5
 }
 
@@ -37,6 +36,10 @@ def error_rate(predictions, labels):
         predictions.shape[0])
 
 
+def auc_roc(predictions, labels):
+    return sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1), average='macro', sample_weight=None)
+
+
 def main():
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
     dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=1234)
@@ -44,20 +47,28 @@ def main():
     print('Imported Images have dimension: %s' % str(batch_x[0].shape))
 
     # tf Graph input
-    x = tf.placeholder(tf.float32, [params['batch_size'], 204, 96, 512])
-    y = tf.placeholder(tf.int64, shape=(32,))
+    x = tf.placeholder(tf.float32, [params['batch_size'], 204, 96, 512], name='VGG_output')
+    y = tf.placeholder(tf.int64, shape=(32,), name='Labels')
     keep_prob = tf.placeholder(tf.float32)  # dropout (keep probability)
 
     # Construct model
-    logits = model_CNN_FC(x=x, params=params)
+    logits, weights, biases = model_CNN_FC(x=x, params=params)
+    tf.histogram_summary("weights_conv1", weights['conv1'])
+    tf.histogram_summary("weights_conv2", weights['conv2'])
+    tf.histogram_summary("weights_fc1", weights['fc1'])
+    tf.histogram_summary("biases_conv1", biases['conv1'])
+    tf.histogram_summary("biases_conv2", biases['conv2'])
+    tf.histogram_summary("biases_fc1", biases['fc1'])
 
     # Define loss and optimizer
 
     cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, y))
     train_prediction = tf.nn.softmax(logits)
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
+    cost_summ = tf.scalar_summary("cost", cost)
 
     # Initializing the variables
+    merged = tf.merge_all_summaries()
     init = tf.initialize_all_variables()
     saver = tf.train.Saver()
 
@@ -65,17 +76,20 @@ def main():
     with tf.Session(config=tf.ConfigProto(log_device_placement=True)) as sess:
         sess.run(init)
         step = 1
+        writer = tf.train.SummaryWriter(flags['aux_directory'] + "summary_logs", sess.graph_def)
         while step < params['training_iters']:
             batch_x, batch_y = generate_minibatch(flags, dict_train, params['batch_size'])
             print('Begin batch number: %d' % step)
-            sess.run(optimizer, feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
+            summary = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
+            writer.add_summary(summary=summary)
             if step % params['display_step'] == 0:
                 loss, acc = sess.run([cost, train_prediction], feed_dict={x: batch_x,
                                                                           y: batch_y,
                                                                           keep_prob: 1.})
+                tf.scalar_summary("Accuracy",)
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
-                      ", Label= %d" % batch_y[0])
+                      ", AUC= %d" % auc_roc(acc, batch_y))
                 save_path = saver.save(sess, flags['aux_directory'] + 'model.ckpt')
                 print("Model saved in file: %s" % save_path)
             step += 1

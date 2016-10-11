@@ -136,7 +136,7 @@ def model_CNN_FC(x, params):
     weights, biases = define_parameters()
     pool2 = cnn2(x=x, weights=weights, biases=biases)
     logits = fc1(pool2, weights=weights, biases=biases, dropout=params['dropout'])
-    return logits
+    return logits, weights, biases
 
 def model_VGG16(x, flags):
     weights, biases = load_pretrained_parameters_VGG(flags)

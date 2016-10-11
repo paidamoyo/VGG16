@@ -31,18 +31,19 @@ def split_data(image_dict, seed):
 
 
 def generate_minibatch(flags, dict_name, batch_size):
-    batch_data = []
-    batch_labels = []
+    unshuffled_batch = []
     for i in range(2):
-        batch_ind = np.random.randint(low=0, high=len(dict_name[i]) - 1, size=batch_size / 2)
-        for b in range(len(batch_ind)):
+        batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=batch_size / 2).tolist()
+        for b in batch_ind:
             inds = dict_name[0][b]
             data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
             image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
             with open(image_path, 'rb') as basefile:
                 image = pickle.load(basefile)
-                batch_data.append(image)
-                batch_labels.append(i)
+                unshuffled_batch.append((image, i))
+    shuffle(unshuffled_batch)
+    batch_data = [image for (image, i) in unshuffled_batch]
+    batch_labels = [i for (image, i) in unshuffled_batch]
     return batch_data, batch_labels
 
 
