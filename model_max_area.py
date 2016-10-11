@@ -38,7 +38,7 @@ def error_rate(predictions, labels):
 
 def auc_roc(predictions, labels):
     try:
-        return sklearn.metrics.roc_auc_score(np.array(labels), np.argmax(predictions, 1).ravel())
+        return sklearn.metrics.roc_auc_score(np.array(labels), np.argmax(predictions, 1))
     except ValueError:  # if all predicted labels are the same
         print('All predicted labels are the same')
         return -1
@@ -86,8 +86,6 @@ def main():
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %.3f" % auc_roc(acc, batch_y))
-                print(type(np.argmax(acc, 1).ravel()))
-                print(type(labels))
                 print("Predicted Labels: ", np.argmax(acc, 1).tolist())
                 print("True Labels: ", batch_y)
                 print("Training Split: ", split)
