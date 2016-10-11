@@ -126,9 +126,13 @@ def process_text_INbreast(flags):
 
 def main():
     check_directories(flags)
-    dict_SAGE = [process_text_SAGE(flags) for d in flags['datasets'] if d == 'SAGE']
-    dict_INbreast = [process_text_INbreast(flags) for d in flags['datasets'] if d == 'INbreast']
-    image_data_dict = {**dict_SAGE[0], **dict_INbreast[0]}
+    list_dict = list()
+    list_dict.append([process_text_SAGE(flags) for d in flags['datasets'] if d == 'SAGE'])
+    list_dict.append([process_text_INbreast(flags) for d in flags['datasets'] if d == 'INbreast'])
+    if len(list_dict) == 2:
+        image_data_dict = {**list_dict[0], **list_dict[1]}
+    else:
+        image_data_dict = list_dict[0]
     example = pd.DataFrame(image_data_dict, index=['ExamNumber', 'View', 'Laterality', 'Filename', 'Label'])
 
     if any([flags['save_pickled_images'], flags['save_processed_jpeg']]) is True:
