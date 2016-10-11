@@ -48,7 +48,6 @@ def main():
     # tf Graph input
     x = tf.placeholder(tf.float32, [None, 204, 96, 512], name='VGG_output')
     y = tf.placeholder(tf.int64, shape=[None], name='Labels')
-    keep_prob = tf.placeholder(tf.float32)  # dropout (keep probability)
 
     # Construct model
     logits, weights, biases = model_CNN_FC(x=x)
@@ -79,13 +78,12 @@ def main():
         while step < params['training_iters']:
             batch_x, batch_y = generate_minibatch(flags, dict_train, params['batch_size'])
             print('Begin batch number: %d' % step)
-            summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
+            summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
             writer.add_summary(summary=summary, global_step=step)
 
             if step % params['display_step'] == 0:
                 loss, acc, login = sess.run([cost, train_prediction, logits], feed_dict={x: batch_x,
-                                                                          y: batch_y,
-                                                                          keep_prob: 1.})
+                                                                          y: batch_y})
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
