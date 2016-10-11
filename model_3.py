@@ -53,11 +53,8 @@ def main():
     tf.histogram_summary("weights_fc1", weights['fc1'])
     tf.histogram_summary("biases_conv1", biases['conv1'])
     tf.histogram_summary("biases_fc1", biases['fc1'])
-    # tf.histogram_summary("weights_conv2", weights['conv2'])
-    # tf.histogram_summary("biases_conv2", biases['conv2'])
 
     # Define loss and optimizer
-
     cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, y))
     train_prediction = tf.round(tf.log(logits))
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
@@ -86,8 +83,6 @@ def main():
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
                 print(login)
-                print(type(acc))
-                print(np.argmax(acc, 1))
                 print(batch_y)
                 print(loss)
                 save_path = saver.save(sess, flags['aux_directory'] + 'model.ckpt')
