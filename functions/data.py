@@ -32,42 +32,38 @@ def split_data(image_dict, seed):
     return dict_train, dict_test, index_train, index_test
 
 
-def generate_minibatch_dict(flags, dict_name, image_data_dict, batch_size):
+def generate_minibatch_dict(flags, dict_name, batch_size, split):
     unshuffled_batch = []
     for i in range(2):
-        if i == 1:
-            bsize = int((1/4) * batch_size)
-        else:
-            bsize = int((3/4) * batch_size)
+        bsize = split[i] * batch_size
+        if bsize == 0:
+            continue
         batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=bsize).tolist()
         for b in batch_ind:
             inds = dict_name[i][b]
             data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
             image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
             with open(image_path, 'rb') as basefile:
-                mapstack = pickle.load(basefile)
-            unshuffled_batch.append((mapstack, i, inds[0]))
+                map_stack = pickle.load(basefile)
+                unshuffled_batch.append((map_stack, i))
     shuffle(unshuffled_batch)
-    batch_data = [mapstack for (mapstack, i, ind) in unshuffled_batch]
-    batch_labels = [i for (mapstack, i, ind) in unshuffled_batch]
-    batch_dataset = [ind for (mapstack, i, ind) in unshuffled_batch]
-    return batch_data, batch_labels, batch_dataset
+    batch_data = [map_stack for (map_stack, i) in unshuffled_batch]
+    batch_labels = [i for (map_stack, i) in unshuffled_batch]
+    return batch_data, batch_labels
 
 
-def generate_minibatch_index(flags, dict_name, image_data_dict, batch_size):
+def organize_test_index(flags, index_name, image_dict):
     unshuffled_batch = []
-    for i in range(2):
-        batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=batch_size/2).tolist()
-        for b in batch_ind:
-            inds = dict_name[i][b]
-            data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
-            image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
-            with open(image_path, 'rb') as basefile:
-                mapstack = pickle.load(basefile)
-            unshuffled_batch.append((mapstack, i))
+    for inds in index_name:
+        i = image_dict[inds][5]
+        data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
+        image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
+        with open(image_path, 'rb') as basefile:
+            map_stack = pickle.load(basefile)
+            unshuffled_batch.append((map_stack, i))
     shuffle(unshuffled_batch)
-    batch_data = [mapstack for (mapstack, i) in unshuffled_batch]
-    batch_labels = [i for (mapstack, i) in unshuffled_batch]
+    batch_data = [map_stack for (map_stack, i) in unshuffled_batch]
+    batch_labels = [i for (map_stack, i) in unshuffled_batch]
     return batch_data, batch_labels
 
 

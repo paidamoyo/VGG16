@@ -5,7 +5,7 @@ import tensorflow as tf
 import pickle
 import sklearn.metrics
 
-from functions.data import split_data, generate_minibatch_dict, generate_minibatch_index
+from functions.data import split_data, generate_minibatch_dict, organize_test_index
 from models.cnn_fc import CnnFc
 
 
@@ -14,7 +14,7 @@ from models.cnn_fc import CnnFc
 flags = {
     'data_directory': '../../../Data/',  # in relationship to the code_directory
     'aux_directory': 'aux/',
-    'summary_directory': 'logs_cnn_fc',
+    'model_directory': 'cnn_fc/',
     'previous_processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
 }
@@ -69,7 +69,13 @@ def main():
         step = 1
         writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['summary_directory'], sess.graph)
         while step < params['training_iters']:
-            batch_x, batch_y, batch_dataset = generate_minibatch_dict(flags, dict_train, image_dict, params['batch_size'])
+            if step < 500:
+                split = [0, 1]
+            elif step < 100:
+                split = [0.25, 0.75]
+            else:
+                split = [0.5, 0.5]
+            batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
             print('Begin batch number: %d' % step)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
             writer.add_summary(summary=summary, global_step=step)
@@ -80,24 +86,15 @@ def main():
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
-                print(login)
-                print(batch_dataset)
-                save_path = saver.save(sess, flags['aux_directory'] + 'model.ckpt')
+                save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] +'model.ckpt')
                 print("Model saved in file: %s" % save_path)
             step += 1
         print("Optimization Finished!")
-        '''
-        labels = {}
-        for i in range(2):
-            labels[i] = []
-            print("Processing %d total images " % len(dict_test[i]) + "for label %d" % i)
-            X_test, y_test = generate_minibatch_index(flags['save_directory'], dict_test)
-            acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
-            print("Image %d" % b + " of %d" % len(dict_test[i]) + ", Error: %.1f%%" % error_rate(acc, y_test) + \
-                  ", Label= %d" % y_test[0])
-            labels[i].append(error_rate(acc, y_test))
-        print("True Positive: %f" % np.mean(labels[1]) + ", True Negative: %f" % np.mean(labels[0]))
-            '''
+
+        print("Scoring %d total images " % len(index_test) + " in test dataset.")
+        X_test, y_test = organize_test_index(flags['save_directory'], dict_test, image_dict)
+        acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
+        print("For Test Data ... Error: %.1f%%" % error_rate(acc, batch_y) + ", AUC= %d" % auc_roc(acc, batch_y))
 
 if __name__ == "__main__":
     main()

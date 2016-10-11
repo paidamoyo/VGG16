@@ -46,7 +46,3 @@ def spp_layer(mapstack, dims, poolnum):
     return tf.reshape(tf.convert_to_tensor(flattened), [1, 2560])
 
 
-def model_max_FC(x):
-    weights, biases = define_parameters()
-
-

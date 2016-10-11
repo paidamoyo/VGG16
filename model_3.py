@@ -72,6 +72,8 @@ def main():
         step = 1
         writer = tf.train.SummaryWriter(flags['aux_directory'] + "summary_logs5", sess.graph)
         while step < params['training_iters']:
+            if step < 100:
+                batch_x, batch_y, _ = generate_minibatch_dict_pos(flags, dict_train, image_dict, params['batch_size'])
             batch_x, batch_y, batch_dataset = generate_minibatch_dict(flags, dict_train, image_dict, params['batch_size'])
             print('Begin batch number: %d' % step)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
