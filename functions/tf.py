@@ -14,12 +14,12 @@ import h5py
 
 
 def weight_variable(shape):
-    initial = tf.truncated_normal(shape, mean=1, stddev=0.1)
+    initial = tf.truncated_normal(shape, mean=0.1, stddev=0.1)
     return tf.Variable(initial)
 
 
 def bias_variable(shape):
-    initial = tf.constant(1, shape=shape, dtype=tf.float32)
+    initial = tf.constant(0.1, shape=shape, dtype=tf.float32)
     return tf.Variable(initial)
 
 
