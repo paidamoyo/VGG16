@@ -67,7 +67,7 @@ def main():
     with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
         sess.run(init)
         step = 1
-        writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['summary_directory'], sess.graph)
+        writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['model_directory'], sess.graph)
         while step < params['training_iters']:
             if step < 500:
                 split = [0, 1]
