@@ -33,7 +33,11 @@ def split_data(image_dict, seed):
 def generate_minibatch_dict(flags, dict_name, image_data_dict, batch_size):
     unshuffled_batch = []
     for i in range(2):
-        batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=batch_size/2).tolist()
+        if i == 1:
+            bsize = int((1/4) * batch_size)
+        else:
+            bsize = int((3/4) * batch_size)
+        batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=bsize).tolist()
         for b in batch_ind:
             inds = dict_name[i][b]
             data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
