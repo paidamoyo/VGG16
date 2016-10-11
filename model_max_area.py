@@ -40,7 +40,8 @@ def auc_roc(predictions, labels):
     try:
         return sklearn.metrics.roc_auc_score(np.array(labels), np.argmax(predictions, 1).ravel())
     except ValueError:  # if all predicted labels are the same
-        return 1000
+        print('All predicted labels are the same')
+        return -1
 
 def main():
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
@@ -84,12 +85,15 @@ def main():
                                                                           y: batch_y})
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
-                      ", AUC= %d" % auc_roc(acc, batch_y))
+                      ", AUC= %.3f" % auc_roc(acc, batch_y))
+                print(type(np.argmax(acc, 1).ravel()))
+                print(type(labels))
                 print("Predicted Labels: ", np.argmax(acc, 1).tolist())
                 print("True Labels: ", batch_y)
                 print("Training Split: ", split)
-                print("Number of Positive Predictions: %d" % np.count_nonzero(np.argmax(acc, 1)))
-                save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] +'model.ckpt')
+                print("Fraction of Positive Predictions: %d / %d" %
+                      (np.count_nonzero(np.argmax(acc, 1)), flags['batch_size']))
+                save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] + 'model.ckpt')
                 print("Model saved in file: %s" % save_path)
                 if bol is True:
                     split = [0.25, 0.75]
@@ -103,7 +107,7 @@ def main():
         print("Scoring %d total images " % len(index_test) + "in test dataset.")
         X_test, y_test = organize_test_index(flags, index_test, image_dict)
         acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
-        print("For Test Data ... Error: %.1f%%" % error_rate(acc, y_test) + ", AUC= %d" % auc_roc(acc, y_test))
+        print("For Test Data ... Error: %.1f%%" % error_rate(acc, y_test) + ", AUC= %.3f" % auc_roc(acc, y_test))
 
 if __name__ == "__main__":
     main()
