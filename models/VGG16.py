@@ -9,7 +9,7 @@ from functions.tf import conv2d, maxpool2d
 
 class Vgg16:
     def __init__(self):
-        self.weights, self.biases = self.init_params(self)
+        self.weights, self.biases = self.init_params()
 
     def init_params(self):
         weights, biases = self.load_pretrained_params(self)
