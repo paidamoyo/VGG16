@@ -71,7 +71,7 @@ def main():
         sess.run(init)
         step = 1
         bool = True
-        split = [0, 1]
+        split = [.5, .5]
         writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['model_directory'], sess.graph)
         while step < params['training_iters']:
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
