@@ -73,8 +73,8 @@ def main():
         writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['model_directory'], sess.graph)
         while step < params['training_iters']:
 
-            split = [0, 1]
-            if step % 3 == 0:
+            split = [0.25, 0.75]
+            if step % 2 == 0:
                 split = [0.5, 0.5]
             print('Begin batch number: %d' % step)
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
