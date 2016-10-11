@@ -42,7 +42,7 @@ with tf.Session() as sess:
         volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
         image = reconstruct(volume)
         print(type(image))
-        print(image[0].shape)
+        print(image.shape)
         save_image(flags, dataset=d[0], image_processed=image, image_original=None, inds=d)
         counter += 1
         print("Processed Image %d" % counter + ' of %d total images' % len(image_dict))
