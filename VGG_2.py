@@ -4,7 +4,7 @@ import pickle
 import tensorflow as tf
 
 from functions.data import one_tiled_image, reconstruct, save_image
-from models.vgg16 import Vgg16
+from models.VGG16 import Vgg16
 from functions.aux import check_directories
 
 
