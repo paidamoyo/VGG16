@@ -88,9 +88,9 @@ def reconstruct(volume, tile):
     for j in range(tile):
         for i in range(tile):
             if i == 0:
-                image_list.append(volume[i + j * 12, :, :, :])
+                image_list.append(volume[i + j * tile, :, :, :])
                 continue
-            additive = volume[i + j * 12, :, :, :]
+            additive = volume[i + j * tile, :, :, :]
             image_list[j] = np.concatenate((image_list[j], additive), axis=0)
     for l in range(tile):
         if l == 0:
