@@ -88,11 +88,10 @@ def cnn2(x, weights, biases):
     return pool2
 
 
-def fc1(pool2, weights, biases, dropout):
+def fc1(pool2, weights, biases):
     flattened = tf.reshape(pool2, [-1, 4352])
     fc1 = tf.add(tf.matmul(flattened, weights['fc1']), biases['fc1'])
     fc1 = tf.nn.relu(fc1)
-    fc1 = tf.nn.dropout(fc1, dropout)
     return fc1
 
 
@@ -132,10 +131,10 @@ def load_pretrained_parameters_VGG(flags):
     return weights, biases
 
 
-def model_CNN_FC(x, params):
+def model_CNN_FC(x):
     weights, biases = define_parameters()
     pool2 = cnn2(x=x, weights=weights, biases=biases)
-    logits = fc1(pool2, weights=weights, biases=biases, dropout=params['dropout'])
+    logits = fc1(pool2, weights=weights, biases=biases)
     return logits, weights, biases
 
 def model_VGG16(x, flags):

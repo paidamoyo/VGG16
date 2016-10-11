@@ -23,7 +23,7 @@ params = {
     'lr': 0.001,
     'training_iters': 1000,
     'batch_size': 32,
-    'display_step': 10,
+    'display_step': 1,
     'dropout': 0.5
 }
 
@@ -47,12 +47,12 @@ def main():
     print('Imported Images have dimension: %s' % str(batch_x[0].shape))
 
     # tf Graph input
-    x = tf.placeholder(tf.float32, [params['batch_size'], 204, 96, 512], name='VGG_output')
-    y = tf.placeholder(tf.int64, shape=(32,), name='Labels')
+    x = tf.placeholder(tf.float32, [None, 204, 96, 512], name='VGG_output')
+    y = tf.placeholder(tf.int64, shape=[None], name='Labels')
     keep_prob = tf.placeholder(tf.float32)  # dropout (keep probability)
 
     # Construct model
-    logits, weights, biases = model_CNN_FC(x=x, params=params)
+    logits, weights, biases = model_CNN_FC(x=x)
     tf.histogram_summary("weights_conv1", weights['conv1'])
     tf.histogram_summary("weights_conv2", weights['conv2'])
     tf.histogram_summary("weights_fc1", weights['fc1'])
