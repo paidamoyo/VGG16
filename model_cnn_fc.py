@@ -70,14 +70,17 @@ def main():
     with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
         sess.run(init)
         step = 1
-        counter = 0
+        bool = True
+        split = [0, 1]
         writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['model_directory'], sess.graph)
         while step < params['training_iters']:
-            if counter % 10 == 0:
-                split = [0, 1]
-            elif counter % 20 == 0:
-                split = [0.25, 0.75]
-            counter += 1
+            if step % 10 == 0:
+                if bool == True:
+                    split = [0.25, 0.75]
+                    bool = False
+                else:
+                    split = [0, 1]
+                    bool = True
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
             print('Begin batch number: %d' % step)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
@@ -89,7 +92,7 @@ def main():
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
-                print("Training split is %d negatives and %d positive" % (split[0], split[1]))
+                print("Training split is %f negatives and %d positive" % (int(split[0] * 100), int(split[1]*100)))
                 print("Number of Positive Predictions: %d" % np.count_nonzero(np.argmax(acc, 1)))
                 save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] +'model.ckpt')
                 print("Model saved in file: %s" % save_path)
