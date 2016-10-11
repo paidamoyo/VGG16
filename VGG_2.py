@@ -43,6 +43,9 @@ with tf.Session() as sess:
         image = reconstruct(volume)
         print(type(image))
         print(image.shape)
+        print(image[:,:,1].shape)
+        print(image[:, 1, :].shape)
+        print(image[1, :, :].shape)
         save_image(flags, dataset=d[0], image_processed=image, image_original=None, inds=d)
         counter += 1
         print("Processed Image %d" % counter + ' of %d total images' % len(image_dict))
