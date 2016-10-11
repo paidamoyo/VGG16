@@ -22,7 +22,7 @@ flags = {
 
 params = {
     'lr': 0.0001,
-    'training_iters': 1,
+    'training_iters': 10,
     'batch_size': 8,  # must be divisible by 2
     'display_step': 5
 }
@@ -86,11 +86,12 @@ def main():
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
                 # print("Training split is %f negatives and %d positive" % (int(split[0] * 100), int(split[1]*100)))
+                print(type(np.argmax(acc, 1)))
                 print(split)
                 print("Number of Positive Predictions: %d" % np.count_nonzero(np.argmax(acc, 1)))
                 save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] +'model.ckpt')
                 print("Model saved in file: %s" % save_path)
-                if bool == True:
+                if bool is True:
                     split = [0.25, 0.75]
                     bool = False
                 else:
@@ -99,7 +100,7 @@ def main():
             step += 1
         print("Optimization Finished!")
 
-        print("Scoring %d total images " % len(index_test) + " in test dataset.")
+        print("Scoring %d total images " % len(index_test) + "in test dataset.")
         X_test, y_test = organize_test_index(flags, index_test, image_dict)
         acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
         print("For Test Data ... Error: %.1f%%" % error_rate(acc, y_test) + ", AUC= %d" % auc_roc(acc, y_test))
