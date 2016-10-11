@@ -46,6 +46,8 @@ class Vgg16:
 
         block2_conv1 = conv2d(block1_pool, weights['b2_c1'], biases['b2_c1'])
         block2_conv2 = conv2d(block2_conv1, weights['b2_c2'], biases['b2_c2'])
+        if block_num == 2:
+            return block2_conv2
         block2_pool = maxpool2d(block2_conv2, k=2)
 
         block3_conv1 = conv2d(block2_pool, weights['b3_c1'], biases['b3_c1'])
