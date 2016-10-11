@@ -14,7 +14,7 @@ import h5py
 
 
 def weight_variable(shape):
-    initial = tf.truncated_normal(shape, mean=0.1, stddev=0.1)
+    initial = tf.truncated_normal(shape, stddev=0.1)
     return tf.Variable(initial)
 
 
