@@ -115,6 +115,8 @@ def save_image(flags, dataset, image_original, image_processed, inds):
             directory = save_path + image_filename + '/'
             make_directory(directory)
             for l in range(len(image_processed)):
+                print(type(image_processed[l]))
+                print(image_processed[l].shape)
                 scipy.misc.imsave(directory + ('map_%d' % l) + '.jpg', image_processed[l])
         else:
             scipy.misc.imsave(save_path + '.jpg', image_processed)
