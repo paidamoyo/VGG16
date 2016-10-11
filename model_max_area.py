@@ -14,7 +14,7 @@ from models.max_area import MaxArea
 flags = {
     'data_directory': '../../../Data/',  # in relationship to the code_directory
     'aux_directory': 'aux/',
-    'model_directory': 'cnn_fc/',
+    'model_directory': 'max_area/',
     'previous_processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
 }
