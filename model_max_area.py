@@ -6,7 +6,7 @@ import pickle
 import sklearn.metrics
 
 from functions.data import split_data, generate_minibatch_dict, organize_test_index
-from models.cnn_fc import MaxArea
+from models.max_area import MaxArea
 
 
 
