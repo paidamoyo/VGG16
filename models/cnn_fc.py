@@ -12,9 +12,6 @@ class CnnFc:
     def get_params(self):
         return self.weights, self.biases
 
-    def summary(self):
-
-
     def init_params(self):  # (204 / 6) * (96 / 6) * 8 = 4352
         weights = dict()
         biases = dict()
