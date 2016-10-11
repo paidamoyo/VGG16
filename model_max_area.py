@@ -22,7 +22,7 @@ flags = {
 
 params = {
     'lr': 0.0001,
-    'training_iters': 100,
+    'training_iters': 1,
     'batch_size': 8,  # must be divisible by 2
     'display_step': 5
 }
