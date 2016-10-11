@@ -23,8 +23,8 @@ flags = {
 params = {
     'lr': 0.001,
     'training_iters': 100,
-    'batch_size': 64,  # must be divisible by 2
-    'display_step': 3
+    'batch_size': 32,  # must be divisible by 2
+    'display_step': 5
 }
 
 
@@ -70,14 +70,15 @@ def main():
     with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
         sess.run(init)
         step = 1
+        counter = 1
         writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['model_directory'], sess.graph)
         while step < params['training_iters']:
-            if step < 500:
+            if step * counter < 10:
                 split = [0, 1]
-            elif step < 100:
+            elif step * counter < 20:
                 split = [0.25, 0.75]
             else:
-                split = [0.5, 0.5]
+                counter += 1
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
             print('Begin batch number: %d' % step)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
