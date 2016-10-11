@@ -56,7 +56,7 @@ def main():
 
     # Define loss and optimizer
     cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, y))
-    train_prediction = tf.softmax(tf.log(logits))
+    train_prediction = tf.nn.softmax(tf.log(logits))
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
     tf.scalar_summary("cost", cost)
 
