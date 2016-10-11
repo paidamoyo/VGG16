@@ -117,7 +117,7 @@ def save_image(flags, dataset, image_original, image_processed, inds):
             for l in range(image_processed.shape[2]):
                 scipy.misc.imsave(directory + ('map_%d' % l) + '.jpg', image_processed[:, :, l])
         else:
-            scipy.misc.imsave(save_path + '.jpg', image_processed)
+            scipy.misc.imsave(save_path + image_filename + '.jpg', image_processed)
 
     if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
         save_path = preprocessed_directory + image_filename + '.pickle'
