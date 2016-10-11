@@ -50,18 +50,16 @@ def main():
     # Construct model
     logits, weights, biases = model_CNN_FC(x=x)
     tf.histogram_summary("weights_conv1", weights['conv1'])
-    # tf.histogram_summary("weights_conv2", weights['conv2'])
     tf.histogram_summary("weights_fc1", weights['fc1'])
     tf.histogram_summary("biases_conv1", biases['conv1'])
-    # tf.histogram_summary("biases_conv2", biases['conv2'])
     tf.histogram_summary("biases_fc1", biases['fc1'])
+    # tf.histogram_summary("weights_conv2", weights['conv2'])
+    # tf.histogram_summary("biases_conv2", biases['conv2'])
 
     # Define loss and optimizer
 
-    # cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, y))
-    one = tf.constant(1, dtype=tf.int64)
-    cost = tf.reduce_mean(tf.cast(-y * tf.to_int64(tf.log(logits)) - (one - y) * tf.to_int64(tf.log(logits)), dtype=tf.float32)) # binary xentropy
-    train_prediction = tf.nn.softmax(logits)
+    cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, y))
+    train_prediction = tf.round(tf.log(logits))
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
     tf.scalar_summary("cost", cost)
 
