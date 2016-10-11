@@ -12,7 +12,7 @@ class Vgg16:
         self.weights, self.biases = self.init_params(flags)
 
     def init_params(self, flags):
-        weights, biases = self.load_pretrained_params()
+        weights, biases = self.load_pretrained_params(flags)
         return weights, biases
 
     def load_pretrained_params(self, flags):
