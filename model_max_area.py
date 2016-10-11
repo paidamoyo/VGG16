@@ -21,7 +21,7 @@ flags = {
 
 
 params = {
-    'lr': 0.0001,
+    'lr': 0.001,
     'training_iters': 500,
     'batch_size': 8,  # must be divisible by 2
     'display_step': 10
@@ -71,7 +71,6 @@ def main():
         sess.run(init)
         step = 1
         bol = True
-        split = [.5, .5]
         writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['model_directory'], sess.graph)
         while step < params['training_iters']:
 
@@ -99,6 +98,8 @@ def main():
                 else:
                     split = [0, 1]
                     bol = True
+            if step < 500:
+                split = [0, 1]
             step += 1
         print("Optimization Finished!")
 
