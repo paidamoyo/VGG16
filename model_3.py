@@ -5,8 +5,8 @@ import tensorflow as tf
 import pickle
 import sklearn.metrics
 
-from functions.data import split_data, generate_minibatch_dict, generate_minibatch_index
-from functions.tf import model_CNN_FC
+from functions.data import split_data, generate_minibatch_dict, organize_test_index
+from models.cnn_fc import CnnFc
 
 
 
@@ -14,17 +14,17 @@ from functions.tf import model_CNN_FC
 flags = {
     'data_directory': '../../../Data/',  # in relationship to the code_directory
     'aux_directory': 'aux/',
-    'summary_directory': 'logs_max_area',
+    'model_directory': 'max_area/',
     'previous_processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
 }
 
 
 params = {
-    'lr': 0.001,
-    'training_iters': 100,
-    'batch_size': 16,  # must be divisible by 2
-    'display_step': 3
+    'lr': 0.01,
+    'training_iters': 500,
+    'batch_size': 8,  # must be divisible by 2
+    'display_step': 10
 }
 
 
@@ -37,8 +37,11 @@ def error_rate(predictions, labels):
 
 
 def auc_roc(predictions, labels):
-    return sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1), average='macro', sample_weight=None)
-
+    try:
+        return sklearn.metrics.roc_auc_score(np.array(labels), np.argmax(predictions, 1))
+    except ValueError:  # if all predicted labels are the same
+        print('All predicted labels are the same')
+        return -1
 
 def main():
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
@@ -49,11 +52,8 @@ def main():
     y = tf.placeholder(tf.int64, shape=[None], name='Labels')
 
     # Construct model
-    logits, weights, biases = model_CNN_FC(x=x)
-    tf.histogram_summary("weights_conv1", weights['conv1'])
-    tf.histogram_summary("weights_fc1", weights['fc1'])
-    tf.histogram_summary("biases_conv1", biases['conv1'])
-    tf.histogram_summary("biases_fc1", biases['fc1'])
+    model = CnnFc()
+    logits = model.run(x=x)
 
     # Define loss and optimizer
     cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, y))
@@ -70,12 +70,14 @@ def main():
     with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
         sess.run(init)
         step = 1
-        writer = tf.train.SummaryWriter(flags['aux_directory'] + "summary_logs5", sess.graph)
+        writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['model_directory'], sess.graph)
         while step < params['training_iters']:
-            if step < 100:
-                batch_x, batch_y, _ = generate_minibatch_dict_pos(flags, dict_train, image_dict, params['batch_size'])
-            batch_x, batch_y, batch_dataset = generate_minibatch_dict(flags, dict_train, image_dict, params['batch_size'])
+
+            split = [0, 1]
+            if step % 3 == 0:
+                split = [0.5, 0.5]
             print('Begin batch number: %d' % step)
+            batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
             writer.add_summary(summary=summary, global_step=step)
 
@@ -84,26 +86,22 @@ def main():
                                                                           y: batch_y})
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
-                      ", AUC= %d" % auc_roc(acc, batch_y))
-                print(login)
-                print(batch_dataset)
-                save_path = saver.save(sess, flags['aux_directory'] + 'model.ckpt')
+                      ", AUC= %.3f" % auc_roc(acc, batch_y))
+                print("Predicted Labels: ", np.argmax(acc, 1).tolist())
+                print("True Labels: ", batch_y)
+                print("Training Split: ", split)
+                print("Fraction of Positive Predictions: %d / %d" %
+                      (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
+                save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] + 'model_500_allpositive.ckpt')
                 print("Model saved in file: %s" % save_path)
+
             step += 1
         print("Optimization Finished!")
 
-        labels = {}
-        for i in range(2):
-            labels[i] = []
-            print("Processing %d total images " % len(dict_test[i]) + "for label %d" % i)
-            for b in range(len(dict_test[i])):
-                X_test, y_test = generate_minibatch_index(flags['save_directory'], dict_test)
-                acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
-                print("Image %d" % b + " of %d" % len(dict_test[i]) + ", Error: %.1f%%" % error_rate(acc, y_test) + \
-                      ", Label= %d" % y_test[0])
-                labels[i].append(error_rate(acc, y_test))
-        print("True Positive: %f" % np.mean(labels[1]) + ", True Negative: %f" % np.mean(labels[0]))
-
+        print("Scoring %d total images " % len(index_test) + "in test dataset.")
+        X_test, y_test = organize_test_index(flags, index_test, image_dict)
+        acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
+        print("For Test Data ... Error: %.1f%%" % error_rate(acc, y_test) + ", AUC= %.3f" % auc_roc(acc, y_test))
 
 if __name__ == "__main__":
     main()
