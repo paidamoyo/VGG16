@@ -76,7 +76,7 @@ def one_tiled_image(flags, image_dict, inds):
         image = pickle.load(basefile)
         for i in range(12):
             for j in range(12):
-                img = image[i*(3264/12):(i+1)*(3264/12), j*(1536/12):(j+1)*(1536/12)]
+                img = image[int(i*(3264/12)):int((i+1)*(3264/12)), int(j*(1536/12)):int((j+1)*(1536/12))]
                 img = np.expand_dims(img, axis=2)
                 batch_data.append(np.concatenate((img, img, img), axis=2))
     return batch_data, batch_labels
@@ -111,11 +111,11 @@ def save_image(flags, dataset, image_original, image_processed, inds):
 
     if flags['save_processed_jpeg'] is True:  # save large jpeg file for viewing/presentation purposes
         save_path = preprocessed_directory + '/processed_jpeg_images/'
-        if type(image_processed) is list():
+        if len(image_processed.shape) > 2:  # if is a volume
             directory = save_path + image_filename + '/'
             make_directory(directory)
             for l in range(len(image_processed)):
-                scipy.misc.imsave(directory + ('map_%d' % l) + '.jpg', image_processed[l])
+                scipy.misc.imsave(directory + ('map_%d' % l) + '.jpg', image_processed[:, :, l])
         else:
             scipy.misc.imsave(save_path + '.jpg', image_processed)
 
