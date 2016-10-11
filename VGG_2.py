@@ -40,6 +40,7 @@ with tf.Session() as sess:
     for d in image_dict:
         batch_x, batch_y = one_tiled_image(flags, image_dict, d)
         volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
+        print(volume.shape)
         image = reconstruct(volume)
         print(type(image))
         print(image.shape)
