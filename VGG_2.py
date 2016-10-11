@@ -30,7 +30,7 @@ x = tf.placeholder(tf.float32, [12*12, 272, 128, 3])
 y = tf.placeholder(tf.int64, shape=(1,))
 
 model = Vgg16(flags)
-logits = model.run(x=x, block_num=4)
+logits = model.run(x=x, block_num=3)
 init = tf.initialize_all_variables()
 
 # Launch the graph
@@ -41,6 +41,7 @@ with tf.Session() as sess:
         batch_x, batch_y = one_tiled_image(flags, image_dict, d)
         volume = sess.run(logits, feed_dict={x: batch_x, y: batch_y})
         image = reconstruct(volume)
+        print("Number of Feature Maps: %d" % image.shape[2])
         save_image(flags, dataset=d[0], image_processed=image, image_original=None, inds=d)
         counter += 1
         print("Processed Image %d" % counter + ' of %d total images' % len(image_dict))
