@@ -8,7 +8,7 @@ import scipy.misc
 import os
 from random import shuffle
 
-from functions.aux import check_str
+from functions.aux import check_str, make_directory
 
 
 def split_data(image_dict, seed):
@@ -110,8 +110,14 @@ def save_image(flags, dataset, image_original, image_processed, inds):
         scipy.misc.imsave(save_path, image_original)
 
     if flags['save_processed_jpeg'] is True:  # save large jpeg file for viewing/presentation purposes
-        save_path = preprocessed_directory + '/processed_jpeg_images/' + image_filename + '.jpg'
-        scipy.misc.imsave(save_path, image_processed)
+        save_path = preprocessed_directory + '/processed_jpeg_images/'
+        if type(image_processed) is list():
+            directory = save_path + image_filename + '/'
+            make_directory(directory)
+            for l in range(len(image_processed)):
+                scipy.misc.imsave(directory + ('map_%d' % l) + '.jpg', image_processed[l])
+        else:
+            scipy.misc.imsave(save_path + '.jpg', image_processed)
 
     if flags['save_pickled_images'] is True:  # save image array as .pickle file in appropriate directory
         save_path = preprocessed_directory + image_filename + '.pickle'

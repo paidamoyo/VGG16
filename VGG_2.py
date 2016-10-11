@@ -16,7 +16,7 @@ flags = {
     'datasets': ['SAGE', 'INbreast'],
     'previous_processed_directory': '1_Cropped/',
     'processed_directory': '2_VGG/',
-    'save_processed_jpeg': False,
+    'save_processed_jpeg': True,
     'save_original_jpeg': False,
     'save_pickled_dictionary': True,
     'save_pickled_images': True,
@@ -44,3 +44,6 @@ with tf.Session() as sess:
         save_image(flags, dataset=d[0], image_processed=image, image_original=None, inds=d)
         counter += 1
         print("Processed Image %d" % counter + ' of %d total images' % len(image_dict))
+        if counter == 5:
+            print("Reached 5 processed images. Now exiting...")
+            exit()

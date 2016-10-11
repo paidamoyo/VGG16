@@ -23,7 +23,7 @@ flags = {
 params = {
     'lr': 0.01,
     'training_iters': 500,
-    'batch_size': 32,  # must be divisible by 2
+    'batch_size': 8,  # must be divisible by 2
     'display_step': 10
 }
 
@@ -70,11 +70,12 @@ def main():
     with tf.Session(config=tf.ConfigProto(log_device_placement=False)) as sess:
         sess.run(init)
         step = 1
-        split = [0, 1]
-        bol = True
         writer = tf.train.SummaryWriter(flags['aux_directory'] + flags['model_directory'], sess.graph)
         while step < params['training_iters']:
 
+            split = [0, 1]
+            if step % 3 == 0:
+                split = [0.5, 0.5]
             print('Begin batch number: %d' % step)
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
@@ -93,13 +94,7 @@ def main():
                       (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
                 save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] + 'model_500_allpositive.ckpt')
                 print("Model saved in file: %s" % save_path)
-                if bol is True:
-                    split = [0.25, 0.75]
-                    bol = False
-                else:
-                    split = [0, 1]
-                    bol = True
-            split = [0, 1]
+
             step += 1
         print("Optimization Finished!")
 
