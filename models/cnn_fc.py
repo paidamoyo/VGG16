@@ -8,6 +8,15 @@ from functions.tf import conv2d, maxpool2d, weight_variable, bias_variable
 class CnnFc:
     def __init__(self):
         self.weights, self.biases = self.init_params()
+        self.summary()
+
+    def summary(self):
+        tf.histogram_summary("weights_conv1", self.weights['conv1'])
+        tf.histogram_summary("weights_conv2", self.weights['conv2'])
+        tf.histogram_summary("weights_fc1", self.weights['fc1'])
+        tf.histogram_summary("biases_conv1", self.biases['conv1'])
+        tf.histogram_summary("biases_conv2", self.biases['conv2'])
+        tf.histogram_summary("biases_fc1", self.biases['fc1'])
 
     def get_params(self):
         return self.weights, self.biases

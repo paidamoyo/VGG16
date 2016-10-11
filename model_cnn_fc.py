@@ -50,15 +50,7 @@ def main():
 
     # Construct model
     model = CnnFc()
-    weights, biases = model.get_params()
     logits = model.run(x=x)
-
-    tf.histogram_summary("weights_conv1", weights['conv1'])
-    tf.histogram_summary("weights_conv2", weights['conv2'])
-    tf.histogram_summary("weights_fc1", weights['fc1'])
-    tf.histogram_summary("biases_conv1", biases['conv1'])
-    tf.histogram_summary("biases_conv1", biases['conv2'])
-    tf.histogram_summary("biases_fc1", biases['fc1'])
 
     # Define loss and optimizer
     cost = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(logits, y))
