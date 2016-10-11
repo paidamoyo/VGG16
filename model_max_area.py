@@ -38,7 +38,7 @@ def error_rate(predictions, labels):
 
 def auc_roc(predictions, labels):
     try:
-        return sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1).tolist())
+        return sklearn.metrics.roc_auc_score(np.array(labels), np.argmax(predictions, 1).ravel())
     except ValueError:  # if all predicted labels are the same
         return 1000
 
@@ -82,7 +82,6 @@ def main():
             if step % params['display_step'] == 0:
                 loss, acc, login = sess.run([cost, train_prediction, logits], feed_dict={x: batch_x,
                                                                           y: batch_y})
-                acc[0] = 1
                 print("Batch Number " + str(step) + ", Image Loss= " +
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %d" % auc_roc(acc, batch_y))
