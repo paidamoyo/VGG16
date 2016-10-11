@@ -36,7 +36,7 @@ def error_rate(predictions, labels):
 
 
 def auc_roc(predictions, labels):
-    return sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1), average='macro', sample_weight=None)
+    return sklearn.metrics.roc_auc_score(labels, predictions, average='macro', sample_weight=None)
 
 
 def main():
