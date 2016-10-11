@@ -27,7 +27,7 @@ previous = str.split(flags['previous_processed_directory'], '/')[0]
 image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
 tile = 4
 
-x = tf.placeholder(tf.float32, [tile*tile, int(3264/tile), int(1535/tile), 3])
+x = tf.placeholder(tf.float32, [tile*tile, int(3264/tile), int(1536/tile), 3])
 y = tf.placeholder(tf.int64, shape=(1,))
 
 model = Vgg16(flags)
