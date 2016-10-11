@@ -102,7 +102,7 @@ def main():
         print("Scoring %d total images " % len(index_test) + " in test dataset.")
         X_test, y_test = organize_test_index(flags, index_test, image_dict)
         acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
-        print("For Test Data ... Error: %.1f%%" % error_rate(acc, batch_y) + ", AUC= %d" % auc_roc(acc, batch_y))
+        print("For Test Data ... Error: %.1f%%" % error_rate(acc, y_test) + ", AUC= %d" % auc_roc(acc, t_test))
 
 if __name__ == "__main__":
     main()
