@@ -18,8 +18,8 @@ flags = {
     'processed_directory': '2_VGG/',
     'save_processed_jpeg': True,
     'save_original_jpeg': False,
-    'save_pickled_dictionary': True,
-    'save_pickled_images': True,
+    'save_pickled_dictionary': False,
+    'save_pickled_images': False,
 }
 
 check_directories(flags)
