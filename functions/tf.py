@@ -82,10 +82,10 @@ def spp_layer(mapstack, dims, poolnum):
 
 def cnn2(x, weights, biases):
     conv1 = conv2d(x, w=weights['conv1'], b=biases['conv1'], strides=1)
-    pool1 = maxpool2d(conv1, k=2)
-    conv2 = conv2d(pool1, w=weights['conv2'], b=biases['conv2'], strides=1)
-    pool2 = maxpool2d(conv2, k=3)
-    return pool2
+    pool1 = maxpool2d(conv1, k=6)
+    # conv2 = conv2d(pool1, w=weights['conv2'], b=biases['conv2'], strides=1)
+    # pool2 = maxpool2d(conv2, k=3)
+    return pool1
 
 
 def fc1(pool2, weights, biases):
@@ -99,11 +99,11 @@ def define_parameters():
     weights = {}
     biases = {}
     # (204 / 6) * (96 / 6) * 8 = 4352
-    weights['conv1'] = weight_variable([3, 3, 512, 64])
-    weights['conv2'] = weight_variable([3, 3, 64, 8])
+    weights['conv1'] = weight_variable([3, 3, 512, 8])
+    # weights['conv2'] = weight_variable([3, 3, 64, 8])
     weights['fc1'] = weight_variable([4352, 1])
-    biases['conv1'] = bias_variable([64])
-    biases['conv2'] = bias_variable([8])
+    biases['conv1'] = bias_variable([8])
+    # biases['conv2'] = bias_variable([8])
     biases['fc1'] = bias_variable([1])
     return weights, biases
 
