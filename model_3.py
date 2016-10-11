@@ -80,7 +80,7 @@ def main():
         while step < params['training_iters']:
             batch_x, batch_y = generate_minibatch(flags, dict_train, params['batch_size'])
             print('Begin batch number: %d' % step)
-            summary = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
+            summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y, keep_prob: params['dropout']})
             writer.add_summary(summary=summary, global_step=step)
 
             if step % params['display_step'] == 0:
