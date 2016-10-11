@@ -8,15 +8,15 @@ from functions.tf import conv2d, maxpool2d
 
 
 class Vgg16:
-    def __init__(self):
-        self.weights, self.biases = self.init_params()
+    def __init__(self, flags):
+        self.weights, self.biases = self.init_params(flags)
 
-    def init_params(self):
+    def init_params(self, flags):
         weights, biases = self.load_pretrained_params()
         return weights, biases
 
-    def load_pretrained_params(self):
-        filename = self.flags['weights_directory'] + 'vgg16_ImageNet_tf.h5'
+    def load_pretrained_params(self, flags):
+        filename = flags['weights_directory'] + 'vgg16_ImageNet_tf.h5'
         pretrained = h5py.File(filename, 'r')
         weights = {}
         biases = {}

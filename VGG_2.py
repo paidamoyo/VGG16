@@ -29,7 +29,7 @@ image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.
 x = tf.placeholder(tf.float32, [12*12, 272, 128, 3])
 y = tf.placeholder(tf.int64, shape=(1,))
 
-model = Vgg16()
+model = Vgg16(flags)
 logits = model.run(x=x)
 init = tf.initialize_all_variables()
 
