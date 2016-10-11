@@ -35,7 +35,7 @@ def split_data(image_dict, seed):
 def generate_minibatch_dict(flags, dict_name, batch_size, split):
     unshuffled_batch = []
     for i in range(2):
-        bsize = split[i] * batch_size
+        bsize = int(split[i] * batch_size)
         if bsize == 0:
             continue
         batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=bsize).tolist()

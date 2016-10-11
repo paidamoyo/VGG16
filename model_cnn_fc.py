@@ -38,8 +38,8 @@ def error_rate(predictions, labels):
 
 def auc_roc(predictions, labels):
     try:
-        sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1).tolist())
-    except ValueError:  # if all labels are 0
+        return sklearn.metrics.roc_auc_score(labels, np.argmax(predictions, 1).tolist())
+    except ValueError:  # if all predicted labels are the same
         return 0
 
 
