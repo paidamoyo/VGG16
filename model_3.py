@@ -7,7 +7,7 @@ import sklearn.metrics
 import sys
 import logging
 
-from functions.data import split_data, generate_minibatch_dict, organize_test_index, generate_split, generate_lr
+from functions.data import split_data, generate_minibatch_dict, organize_test_index, generate_split, generate_lr, make_directory
 from models.cnn_fc import CnnFc
 
 
@@ -16,7 +16,7 @@ from models.cnn_fc import CnnFc
 flags = {
     'data_directory': '../../../Data/',  # in relationship to the code_directory
     'aux_directory': 'aux/',
-    'model_directory': 'cnn_fc',
+    'model_directory': 'cnn_fc/',
     'previous_processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
 }
@@ -51,8 +51,9 @@ def main():
     split_num = int(sys.argv[2])  # ranges from 1 - 7
     seed = int(sys.argv[3])  # ranges from 1 - 10
 
-    logging_file = 'split_%d' % split_num + '_lr_%d' % lr_num + '_seed_%d' % seed + '.log'
-    logging.basicConfig(filename=logging_file, level=logging.INFO)
+    flags['logging_directory'] = flags['aux_directory'] + flags['model_directory'] + 'split_%d' % split_num + '_lr_%d' % lr_num + '/'
+    make_directory(flags['logging_directory'])
+    logging.basicConfig(filename=flags['logging_directory'] + str(seed) + '.log', level=logging.INFO)
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
     dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=seed)
 
@@ -98,14 +99,16 @@ def main():
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %.3f" % auc_roc(acc, batch_y))
                 print("Predicted Labels: ", np.argmax(acc, 1).tolist())
+                logging.info("Predicted Labels: ", np.argmax(acc, 1).tolist())
                 print("True Labels: ", batch_y)
+                logging.info("True Labels: ", batch_y)
                 print("Training Split: ", split)
                 print("Fraction of Positive Predictions: %d / %d" %
                       (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
             step += 1
         print("Optimization Finished!")
-        checkpoint_name = 'split_%d' % split_num + '_lr_%d' % lr_num + '_seed_%d' % seed + '.ckpt'
-        save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] + checkpoint_name)
+        checkpoint_name = flags['logging_directory'] + str(seed) + '.ckpt'
+        save_path = saver.save(sess, checkpoint_name)
         print("Model saved in file: %s" % save_path)
 
         print("Scoring %d total images " % len(index_test) + "in test dataset.")
