@@ -46,9 +46,10 @@ def auc_roc(predictions, labels):
         return -1
 
 def main():
-    params['lr'] = generate_lr(sys.argv[1]) # ranges from 1 - 3
-    split_num = sys.argv[2]  # ranges from 1 - 7
-    seed = sys.argv[3]  # ranges from 1 - 10
+    lr_num = int(sys.argv[1])
+    params['lr'] = generate_lr(lr_num) # ranges from 1 - 3
+    split_num = int(sys.argv[2])  # ranges from 1 - 7
+    seed = int(sys.argv[3])  # ranges from 1 - 10
 
     logging_file = 'split_%d' % split_num + '_lr_%d' % sys.argv[1] + '_seed_%d' % seed + '.log'
     logging.basicConfig(filename=logging_file, level=logging.INFO)
