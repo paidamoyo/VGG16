@@ -104,7 +104,7 @@ def main():
                       (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
             step += 1
         print("Optimization Finished!")
-        checkpoint_name = 'split_%d' % split_num + '_lr_%d' % sys.argv[1] + '_seed_%d' % seed + '.ckpt'
+        checkpoint_name = 'split_%d' % split_num + '_lr_%d' % lr_num + '_seed_%d' % seed + '.ckpt'
         save_path = saver.save(sess, flags['aux_directory'] + flags['model_directory'] + checkpoint_name)
         print("Model saved in file: %s" % save_path)
 
