@@ -30,7 +30,7 @@ x = tf.placeholder(tf.float32, [tile*tile, int(3264/tile), int(1536/tile), 3])
 y = tf.placeholder(tf.int64, shape=(1,))
 
 model = Vgg16(flags)
-logits = model.run(x=x, block_num=4)
+logits = model.run(x=x, block_num=3)
 init = tf.initialize_all_variables()
 
 # Launch the graph
