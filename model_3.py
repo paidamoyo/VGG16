@@ -46,9 +46,9 @@ def auc_roc(predictions, labels):
         return -1
 
 def main():
-    lr_num = int(sys.argv[1])
+    split_num = int(sys.argv[1])  # ranges from 1 - 7
+    lr_num = int(sys.argv[2])
     params['lr'] = generate_lr(lr_num) # ranges from 1 - 3
-    split_num = int(sys.argv[2])  # ranges from 1 - 7
     seed = int(sys.argv[3])  # ranges from 1 - 10
 
     flags['logging_directory'] = flags['aux_directory'] + flags['model_directory'] + 'split_%d' % split_num + '_lr_%d' % lr_num + '/'
