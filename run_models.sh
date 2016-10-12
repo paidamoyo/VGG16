@@ -1,12 +1,12 @@
 #!/bin/bash
 
-for SPLIT in 1 2 3 4
+for LR in 1 2 3 4
 do
-    for LR in 1 2 3
+    for BATCH in 12 24
     do
-        for SEED in 1 2 3
+        for SEED in 3 4 5 6 7
         do
-            python model_3.py $SPLIT $LR $SEED
+            python model_3.py $LR $BATCH $SEED
         done
     done
 done

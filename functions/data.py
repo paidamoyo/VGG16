@@ -179,10 +179,12 @@ def generate_split(split_num, step):
 
 def generate_lr(sys_arg):
     if sys_arg == 1:
-        return 0.001
+        return 0.0005
     elif sys_arg == 2:
         return 0.0001
     elif sys_arg == 3:
+        return 0.00005
+    elif sys_arg == 4:
         return 0.00001
     else:
-        return 0.001
+        return 0.0001

@@ -7,9 +7,8 @@ import sklearn.metrics
 import sys
 import logging
 
-from functions.data import split_data, generate_minibatch_dict, generate_one_test_index, generate_split, generate_lr, make_directory
+from functions.data import split_data, generate_minibatch_dict, generate_one_test_index, generate_lr, make_directory
 from models.cnn_fc import CnnFc
-
 
 
 # Global Dictionary of Flags
@@ -19,13 +18,14 @@ flags = {
     'model_directory': 'cnn_fc/',
     'previous_processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
+    'restore': True
 }
 
 
 params = {
     'batch_size': 12,  # must be divisible by 2
     'display_step': 10,
-    'training_iters': 250
+    'training_iters': 500
 }
 
 
@@ -45,13 +45,16 @@ def auc_roc(predictions, labels):
         return -1
 
 def main():
-    split_num = int(sys.argv[1])  # ranges from 1 - 7
-    lr_num = int(sys.argv[2])
-    params['lr'] = generate_lr(lr_num) # ranges from 1 - 3
-    seed = int(sys.argv[3])  # ranges from 1 - 10
+    lr_num = int(sys.argv[1])
+    params['lr'] = generate_lr(lr_num) # ranges from 1 - 4
+    batch = int(sys.argv[2])
+    params['batch_size'] = batch # includes 12, 24
+    seed = int(sys.argv[3])  # ranges from 3- 7 
 
-    folder = 'split_%d' % split_num + '_lr_%d' % lr_num + '_iters_%d' % params['training_iters'] + '/'
-    flags['logging_directory'] = flags['aux_directory'] + flags['model_directory'] + folder
+
+    folder = 'lr_%d' % lr_num + '_batch_%d' % batch + '/'
+    flags['restore_directory'] = flags['aux_directory'] + flags['model_directory']
+    flags['logging_directory'] = flags['restore_directory'] + folder
     make_directory(flags['logging_directory'])
     logging.basicConfig(filename=flags['logging_directory'] + str(seed) + '.log', level=logging.INFO)
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
@@ -81,9 +84,21 @@ def main():
         sess.run(init)
         step = 1
         writer = tf.train.SummaryWriter(flags['logging_directory'], sess.graph)
+        if flags['restore'] is True:
+            saver.restore(sess, flags['restore_directory'] + 'starting_point.ckpt')
+            print("Model restored.")
+            logging.info("Model restored from starting_point.ckpt")
+        else:
+            sess.run(init)
+            print("Mode training from scratch.")
+            logging.info("Model training from scratch.")
         while step < params['training_iters']:
 
-            split = generate_split(split_num, step)
+            if step % 3:
+                split = [0.75, 0.25]
+            else:
+                split = [0, 1]
+
             print('Begin batch number: %d' % step)
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
@@ -105,6 +120,7 @@ def main():
                       (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
                 logging.info("Fraction of Positive Predictions: %d / %d" %
                       (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
+
             step += 1
         print("Optimization Finished!")
         checkpoint_name = flags['logging_directory'] + str(seed) + '.ckpt'
