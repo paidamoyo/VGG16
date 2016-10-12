@@ -51,7 +51,7 @@ def main():
     split_num = int(sys.argv[2])  # ranges from 1 - 7
     seed = int(sys.argv[3])  # ranges from 1 - 10
 
-    logging_file = 'split_%d' % split_num + '_lr_%d' % sys.argv[1] + '_seed_%d' % seed + '.log'
+    logging_file = 'split_%d' % split_num + '_lr_%d' % lr_num + '_seed_%d' % seed + '.log'
     logging.basicConfig(filename=logging_file, level=logging.INFO)
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
     dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=seed)
