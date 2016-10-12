@@ -18,12 +18,12 @@ flags = {
     'model_directory': 'cnn_fc/',
     'previous_processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
-    'restore': True
+    'restore': False
 }
 
 
 params = {
-    'batch_size': 12,  # must be divisible by 2
+    'batch_size': 16,  # must be divisible by 8
     'display_step': 25,
     'training_iters': 250
 }
@@ -45,18 +45,18 @@ def auc_roc(predictions, labels):
         return -1
 
 def main():
-    lr_num = int(sys.argv[1])
+    seed = int(sys.argv[1])  # ranges from 3- 7
+    lr_num = int(sys.argv[2])
     params['lr'] = generate_lr(lr_num) # ranges from 1 - 4
-    batch = int(sys.argv[2])
+    batch = int(sys.argv[3])
     params['batch_size'] = batch # includes 12, 24
-    seed = int(sys.argv[3])  # ranges from 3- 7
 
-
-    folder = 'lr_%d' % lr_num + '_batch_%d' % batch + '/'
+    folder = str(seed) + '/'
+    aux_filenames = 'lr_%d' % lr_num + '_batch_%d' % batch
     flags['restore_directory'] = flags['aux_directory'] + flags['model_directory']
     flags['logging_directory'] = flags['restore_directory'] + folder
     make_directory(flags['logging_directory'])
-    logging.basicConfig(filename=flags['logging_directory'] + str(seed) + '.log', level=logging.INFO)
+    logging.basicConfig(filename=flags['logging_directory'] + aux_filenames + '.log', level=logging.INFO)
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
     dict_train, dict_test, index_train, index_test = split_data(image_dict, seed=seed)
 
@@ -95,9 +95,9 @@ def main():
         while step < params['training_iters']:
 
             if step % 3:
-                split = [0.75, 0.25]
+                split = [(3/4), (1/4)]
             else:
-                split = [0, 1]
+                split = [(1/8), (7/8)]
 
             print('Begin batch number: %d' % step, ", split:", split)
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
@@ -123,7 +123,7 @@ def main():
 
             step += 1
         print("Optimization Finished!")
-        checkpoint_name = flags['logging_directory'] + str(seed) + '.ckpt'
+        checkpoint_name = flags['logging_directory'] + aux_filenames + '.ckpt'
         save_path = saver.save(sess, checkpoint_name)
         print("Model saved in file: %s" % save_path)
 
