@@ -24,7 +24,8 @@ flags = {
 
 params = {
     'batch_size': 12,  # must be divisible by 2
-    'display_step': 10
+    'display_step': 10,
+    'training_iters': 250
 }
 
 
@@ -48,7 +49,6 @@ def main():
     lr_num = int(sys.argv[2])
     params['lr'] = generate_lr(lr_num) # ranges from 1 - 3
     seed = int(sys.argv[3])  # ranges from 1 - 10
-    params['training_iters'] = int(sys.argv[4])  # in 250, 500, 1000
 
     folder = 'split_%d' % split_num + '_lr_%d' % lr_num + '_iters_%d' % params['training_iters'] + '/'
     flags['logging_directory'] = flags['aux_directory'] + flags['model_directory'] + folder
