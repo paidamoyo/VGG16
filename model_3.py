@@ -7,7 +7,7 @@ import sklearn.metrics
 import sys
 import logging
 
-from functions.data import split_data, generate_minibatch_dict, organize_test_index, generate_split, generate_lr, make_directory
+from functions.data import split_data, generate_minibatch_dict, generate_one_test_index, generate_split, generate_lr, make_directory
 from models.cnn_fc import CnnFc
 
 
@@ -99,11 +99,11 @@ def main():
                       "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
                       ", AUC= %.3f" % auc_roc(acc, batch_y))
                 print("Predicted Labels: ", np.argmax(acc, 1).tolist())
-                logging.info("Predicted Labels: ", np.argmax(acc, 1).tolist())
                 print("True Labels: ", batch_y)
-                logging.info("True Labels: ", batch_y)
                 print("Training Split: ", split)
                 print("Fraction of Positive Predictions: %d / %d" %
+                      (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
+                logging.info("Fraction of Positive Predictions: %d / %d" %
                       (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
             step += 1
         print("Optimization Finished!")
@@ -112,10 +112,17 @@ def main():
         print("Model saved in file: %s" % save_path)
 
         print("Scoring %d total images " % len(index_test) + "in test dataset.")
-        X_test, y_test = organize_test_index(flags, index_test, image_dict)
-        acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
-        print("For Test Data ... Error: %.1f%%" % error_rate(acc, y_test) + ", AUC= %.3f" % auc_roc(acc, y_test))
-        logging.info("For Test Data ... Error: %.1f%%" % error_rate(acc, y_test) + ", AUC= %.3f" % auc_roc(acc, y_test))
+        preds = list()
+        trues = list()
+        for inds in index_test:
+            X_test, y_test = generate_one_test_index(flags, inds, image_dict)
+            acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
+            trues.extend(y_test)
+            preds.extend(acc)
+        preds = np.array(preds)
+        trues = np.array(trues)
+        print("For Test Data ... Error: %.1f%%" % error_rate(preds, trues) + ", AUC= %.3f" % auc_roc(preds, trues))
+        logging.info("For Test Data ... Error: %.1f%%" % error_rate(preds, trues) + ", AUC= %.3f" % auc_roc(preds, trues))
 
 if __name__ == "__main__":
     main()
