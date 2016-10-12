@@ -18,7 +18,7 @@ flags = {
     'processed_directory': '2_VGG/',
     'save_processed_jpeg': True,
     'save_original_jpeg': False,
-    'save_pickled_images': True,
+    'save_pickled_images': False,
 }
 
 check_directories(flags)
@@ -47,3 +47,4 @@ with tf.Session() as sess:
         print("Processed Image %d" % counter + ' of %d total images' % len(image_dict))
         if counter == 5:
             flags['save_processed_jpeg'] = False
+            exit()
