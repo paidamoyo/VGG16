@@ -145,3 +145,53 @@ def find_dicom_files(path):  # currently not used but may be useful later.
         print('Warning! No Dicom Files found in %s' % path + '!')
         exit()
     return list_of_dicom_files
+
+
+def generate_split(split_num, step):
+    if split_num == 1:
+        split = [0.5, 0.5]
+
+    elif split_num == 2 or split_num == 3:
+        if step % split_num:
+            split = [0.75, 0.25]
+        else:
+            split = [0.25, 0.75]
+
+    elif split_num == 4:
+        if step % 2:
+            split = [(2/3), (1/3)]
+        else:
+            split = [(1/3), (2/3)]
+
+    elif split_num == 5:
+        if step % 3:
+            split = [(2/3), (1/3)]
+        else:
+            split = [(1/3), (2/3)]
+
+    elif split_num == 6:
+        if step % 3:
+            split = [0.25, 0.75]
+        else:
+            split = [0.75, 0.25]
+
+    elif split_num == 7:
+        if step % 3:
+            split = [(1/3), (2/3)]
+        else:
+            split = [(2/3), (1/3)]
+    else:
+        split = [0.5, 0.5]
+
+    return split
+
+
+def generate_lr(sys_arg):
+    if sys_arg == 1:
+        return 0.001
+    elif sys_arg == 2:
+        return 0.0001
+    elif sys_arg == 3:
+        return 0.00001
+    else:
+        return 0.001
