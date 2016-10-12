@@ -101,8 +101,8 @@ def main():
 
             print('Begin batch number: %d' % step, ", split:", split)
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
-            print(batch_y.shape)
-            print(batch_x.shape)
+            print(len(batch_y))
+            print(len(batch_x))
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
             writer.add_summary(summary=summary, global_step=step)
 
