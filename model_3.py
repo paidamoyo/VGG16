@@ -18,7 +18,7 @@ flags = {
     'model_directory': 'cnn_fc/',
     'previous_processed_directory': '2_VGG/',
     'datasets': ['SAGE', 'INbreast'],
-    'restore': True
+    'restore': False
 }
 
 
@@ -49,7 +49,7 @@ def main():
     params['lr'] = generate_lr(lr_num) # ranges from 1 - 4
     batch = int(sys.argv[2])
     params['batch_size'] = batch # includes 12, 24
-    seed = int(sys.argv[3])  # ranges from 3- 7 
+    seed = int(sys.argv[3])  # ranges from 3- 7
 
 
     folder = 'lr_%d' % lr_num + '_batch_%d' % batch + '/'
