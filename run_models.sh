@@ -6,7 +6,10 @@ do
     do
         for SEED in 1 2 3 4 5
         do
-            python model_3.py $SPLIT $LR $SEED
+            for ITER in 250 500 1000
+            do
+                python model_3.py $SPLIT $LR $SEED $ITER
+            done
         done
     done
 done

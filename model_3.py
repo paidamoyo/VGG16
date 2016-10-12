@@ -23,10 +23,8 @@ flags = {
 
 
 params = {
-    'lr': 0.00001,
-    'training_iters': 11,
-    'batch_size': 8,  # must be divisible by 2
-    'display_step': 5
+    'batch_size': 12,  # must be divisible by 2
+    'display_step': 10
 }
 
 
@@ -50,8 +48,10 @@ def main():
     lr_num = int(sys.argv[2])
     params['lr'] = generate_lr(lr_num) # ranges from 1 - 3
     seed = int(sys.argv[3])  # ranges from 1 - 10
+    params['training_iters'] = int(sys.argv[4])  # in 250, 500, 1000
 
-    flags['logging_directory'] = flags['aux_directory'] + flags['model_directory'] + 'split_%d' % split_num + '_lr_%d' % lr_num + '/'
+    folder = 'split_%d' % split_num + '_lr_%d' % lr_num + '_iters_%d' % params['training_iters'] + '/'
+    flags['logging_directory'] = flags['aux_directory'] + flags['model_directory'] + folder
     make_directory(flags['logging_directory'])
     logging.basicConfig(filename=flags['logging_directory'] + str(seed) + '.log', level=logging.INFO)
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
