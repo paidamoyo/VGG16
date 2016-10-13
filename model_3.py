@@ -82,7 +82,7 @@ def main():
 
             if step % params['display_step'] == 0:
                 loss, acc = sess.run([cost, train_prediction], feed_dict={x: batch_x, y: batch_y})
-                record_metrics(loss, acc, batch_y, logging, step, split, params)
+                record_metrics(loss, acc, batch_y, logging, step, split)
             step += 1
 
         print("Optimization Finished!")
