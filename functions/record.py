@@ -18,9 +18,9 @@ def auc_roc(predictions, labels):
     print(labels.shape)
     total_pos = np.count_nonzero(labels)
     total_neg = total - total_pos
-    tpv = np.sum([int(np.equal(p, l)) for p, l in zip(predictions, labels) if l == 1])
+    tpv = np.sum([np.equal(p, l) for p, l in zip(predictions, labels) if l == 1])
     fpv = total_pos - tpv
-    tnv = np.sum([int(np.equal(p, l)) for p, l in zip(predictions, labels) if l == 0])
+    tnv = np.sum([np.equal(p, l) for p, l in zip(predictions, labels) if l == 0])
     fnv = total_neg - tnv
     fpr, tpr, _ = metrics.roc_curve(np.array(labels), np.argmax(predictions, 1), pos_label=1)
     auc = metrics.auc(fpr, tpr)
