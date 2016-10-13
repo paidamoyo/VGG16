@@ -14,8 +14,7 @@ def error_rate(predictions, labels):
 
 def auc_roc(predictions, labels):
     total = len(labels)
-    print(predictions.shape)
-    print(labels.shape)
+    predictions = np.argmax(predictions, 1)
     total_pos = np.count_nonzero(labels)
     total_neg = total - total_pos
     tpv = np.sum([np.equal(p, l) for p, l in zip(predictions, labels) if l == 1])
