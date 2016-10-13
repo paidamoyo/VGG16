@@ -25,7 +25,7 @@ flags = {
 params = {
     'batch_size': 16,  # must be divisible by 8
     'display_step': 2,
-    'training_iters': 150
+    'training_iters': 40
 }
 
 
