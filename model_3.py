@@ -90,6 +90,7 @@ def main():
         save_path = saver.save(sess, checkpoint_name)
         print("Model saved in file: %s" % save_path)
 
+        print_log("Begin scoring the test images.", logging)
         preds = list()
         trues = list()
         for inds in index_test:
