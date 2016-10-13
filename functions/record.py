@@ -18,6 +18,8 @@ def error_rate(predictions, labels):
 def auc_roc(predictions, labels):
     try:
         fpr, tpr, _ = metrics.roc_curve(np.array(labels), np.argmax(predictions, 1), pos_label=1)
+        print(fpr)
+        print(tpr)
         auc = metrics.auc(fpr, tpr)
         return auc, fpr, tpr
     except ValueError:  # if all predicted labels are the same
@@ -41,7 +43,7 @@ def record_metrics(loss, acc, batch_y, logging, step, split, params):
     if split is not None:
         print_log("Training Split: ", split)
     print_log("Fraction of Positive Predictions: %d / %d" %
-          (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
+              (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']), logging)
 
 
 def setup_metrics(flags, aux_filenames, folder):
