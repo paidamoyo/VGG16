@@ -20,13 +20,13 @@ def auc_roc(predictions, labels):
         fpr, tpr, _ = metrics.roc_curve(np.array(labels), np.argmax(predictions, 1), pos_label=1)
     except ValueError:  # if all predicted labels are the same
         print('All predicted labels are the same')
-        return -1
+        return -1, -1, -1
     if type(fpr) is int and type(tpr) is int:
         auc = metrics.auc(fpr, tpr)
         return auc, fpr, tpr
     else:
         print('fpr and tpr were not returned properly.')
-        return -1
+        return -1, -1, -1
 
 
 
