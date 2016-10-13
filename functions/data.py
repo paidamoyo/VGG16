@@ -148,34 +148,11 @@ def find_dicom_files(path):  # currently not used but may be useful later.
     return list_of_dicom_files
 
 
-def generate_split(split_num, step):
-
-    if split_num == 1:
-        if step % 3:
-            split = [0.5, 0.5]
-        else:
-            split = [0, 1]
-
-    elif split_num == 2:
-        if step % 3:
-            split = [0.75, 0.25]
-        else:
-            split = [0, 1]
-
-    elif split_num == 3:
-        if step % 3:
-            split = [0, 1]
-        else:
-            split = [(1/3), (2/3)]
-
-    elif split_num == 4:
-        if step % 3:
-            split = [0.5, 0.5]
-        else:
-            split = [0, 1]
+def generate_split(step):
+    if step % 3:
+        split = [(3 / 4), (1 / 4)]
     else:
-        split = [0, 1]
-
+        split = [(1 / 8), (7 / 8)]
     return split
 
 

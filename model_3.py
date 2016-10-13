@@ -3,11 +3,11 @@
 import numpy as np
 import tensorflow as tf
 import pickle
-import sklearn.metrics
 import sys
 import logging
 
-from functions.data import split_data, generate_minibatch_dict, generate_one_test_index, generate_lr, make_directory
+from functions.data import split_data, generate_minibatch_dict, generate_one_test_index, generate_lr, make_directory, generate_split
+from functions.record import record_metrics, print_log
 from models.cnn_fc import CnnFc
 
 
@@ -18,7 +18,8 @@ flags = {
     'model_directory': 'cnn_fc/',
     'previous_processed_directory': '2_VGG/',
     'datasets': {'SAGE'},
-    'restore': False
+    'restore': False,
+    'restore_file': 'starting_point.ckpt'
 }
 
 
@@ -28,21 +29,6 @@ params = {
     'training_iters': 150
 }
 
-
-def error_rate(predictions, labels):
-    """Return the error rate based on dense predictions and sparse labels."""
-    return 100.0 - (
-        100.0 *
-        np.sum(np.argmax(predictions, 1) == labels) /
-        predictions.shape[0])
-
-
-def auc_roc(predictions, labels):
-    try:
-        return sklearn.metrics.roc_auc_score(np.array(labels), np.argmax(predictions, 1))
-    except ValueError:  # if all predicted labels are the same
-        print('All predicted labels are the same')
-        return -1
 
 def main():
     seed = int(sys.argv[1])  # ranges from 3- 7
@@ -85,61 +71,41 @@ def main():
         step = 1
         writer = tf.train.SummaryWriter(flags['logging_directory'], sess.graph)
         if flags['restore'] is True:
-            saver.restore(sess, flags['restore_directory'] + 'starting_point.ckpt')
-            print("Model restored.")
-            logging.info("Model restored from starting_point.ckpt")
+            saver.restore(sess, flags['restore_directory'] + flags['restore_file'])
+            print_log("Model restored from %s" % flags['restore_file'], logging)
         else:
             sess.run(init)
-            print("Mode training from scratch.")
-            logging.info("Model training from scratch.")
+            print_log("Mode training from scratch.", logging)
         while step < params['training_iters']:
 
-            if step % 3:
-                split = [(3/4), (1/4)]
-            else:
-                split = [(1/8), (7/8)]
-
+            split = generate_split(step)
             print('Begin batch number: %d' % step, ", split:", split)
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
             writer.add_summary(summary=summary, global_step=step)
 
             if step % params['display_step'] == 0:
-                loss, acc, login = sess.run([cost, train_prediction, logits], feed_dict={x: batch_x,
-                                                                          y: batch_y})
-                print("Batch Number " + str(step) + ", Image Loss= " +
-                      "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
-                      ", AUC= %.3f" % auc_roc(acc, batch_y))
-                logging.info("Batch Number " + str(step) + ", Image Loss= " +
-                      "{:.6f}".format(loss) + ", Error: %.1f%%" % error_rate(acc, batch_y) +
-                      ", AUC= %.3f" % auc_roc(acc, batch_y))
-                print("Predicted Labels: ", np.argmax(acc, 1).tolist())
-                print("True Labels: ", batch_y)
-                print("Training Split: ", split)
-                print("Fraction of Positive Predictions: %d / %d" %
-                      (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
-                logging.info("Fraction of Positive Predictions: %d / %d" %
-                      (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
-
+                loss, acc, _ = sess.run([cost, train_prediction], feed_dict={x: batch_x, y: batch_y})
+                record_metrics(loss, acc, batch_y, logging, step, split, params)
             step += 1
+
         print("Optimization Finished!")
         checkpoint_name = flags['logging_directory'] + aux_filenames + '.ckpt'
         save_path = saver.save(sess, checkpoint_name)
         print("Model saved in file: %s" % save_path)
 
-        print("Scoring %d total images " % len(index_test) + "in test dataset.")
         preds = list()
         trues = list()
         for inds in index_test:
-            if inds[0] is in flags['dataset']:
+            if inds[0] in flags['dataset']:
                 X_test, y_test = generate_one_test_index(flags, inds, image_dict)
                 acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
                 trues.extend(y_test)
                 preds.extend(acc)
         preds = np.array(preds)
         trues = np.array(trues)
-        print("For Test Data ... Error: %.1f%%" % error_rate(preds, trues) + ", AUC= %.3f" % auc_roc(preds, trues))
-        logging.info("For Test Data ... Error: %.1f%%" % error_rate(preds, trues) + ", AUC= %.3f" % auc_roc(preds, trues))
+        print_log("Scored a total of %d images " % len(preds) + "in test dataset.", logging)
+        record_metrics(loss=None, acc=preds, batch_y=trues, logging=logging, step=step, split=None, params=params)
 
 if __name__ == "__main__":
     main()
