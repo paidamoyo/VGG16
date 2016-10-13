@@ -42,7 +42,7 @@ def record_metrics(loss, acc, batch_y, logging, step, split):
     print_log("Error: %.1f%%" % error_rate(acc, batch_y) + ", AUC= %.3f" % auc + ", TP= %.3f" % tp +
               ", FP= %.3f" % fp + ", TN= %.3f" % tn + ", FN= %.3f" % fn, logging)
     if split is not None:
-        print_log("Training Split: ", split)
+        print("Training Split: ", split)
 
 
 def setup_metrics(flags, aux_filenames, folder):
