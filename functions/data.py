@@ -28,6 +28,7 @@ def split_data(flags, image_dict, seed, percent_train=0.85):
             pats = labels[labels == str(i)].index.values
             patients = [(d, i, j) for (i, j) in pats]
             partition = int(math.floor(len(patients) * percent_train))  # 70% of data goes to training
+            print(partition)
             indexes = np.random.choice(range(len(patients)), size=len(patients))
             dict_test[i].extend(patients[indexes[partition:]])
             dict_train[i].extend(patients[indexes[:partition]])
