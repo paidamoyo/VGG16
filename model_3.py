@@ -96,7 +96,7 @@ def main():
         for inds in index_test:
             test_x, test_y = generate_one_test_index(flags, inds, image_dict)
             acc = sess.run(train_prediction, feed_dict={x: test_x, y: test_y})
-            trues.extend(test_x)
+            trues.extend(test_y)
             preds.extend(acc)
         preds = np.array(preds)
         trues = np.array(trues)
