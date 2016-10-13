@@ -101,6 +101,8 @@ def main():
                 preds.extend(acc)
         preds = np.array(preds)
         trues = np.array(trues)
+        print(preds)
+        print(preds[0])
         print_log("Scored a total of %d images " % len(preds) + "in test dataset.", logging)
         record_metrics(loss=None, acc=preds, batch_y=trues, logging=logging, step=None, split=None, params=params)
 
