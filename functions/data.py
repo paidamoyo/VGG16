@@ -45,7 +45,6 @@ def generate_minibatch_dict(flags, dict_name, batch_size, split):
         batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=bsize).tolist()
         for b in batch_ind:
             inds = dict_name[i][b]
-            print(inds)
             data_directory = flags['data_directory'] + check_str(inds[0]) + '/Preprocessed/' + flags['previous_processed_directory']
             image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
             with open(image_path, 'rb') as basefile:
@@ -54,7 +53,7 @@ def generate_minibatch_dict(flags, dict_name, batch_size, split):
     shuffle(unshuffled_batch)
     batch_data = [map_stack for (map_stack, i) in unshuffled_batch]
     batch_labels = [i for (map_stack, i) in unshuffled_batch]
-    return batch_data, batch_labels
+    return np.array(batch_data), np.array(batch_labels)
 
 
 def generate_one_test_index(flags, inds, image_dict):
