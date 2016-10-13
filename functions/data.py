@@ -25,7 +25,8 @@ def split_data(flags, image_dict, seed, percent_train=0.85):
         dict_image = pdict[d]
         labels = dict_image.iloc[4]
         for i in range(2):
-            patients = labels[labels == str(i)].index.values
+            pats = labels[labels == str(i)].index.values
+            patients = [(d, i, j) for (i, j) in pats]
             partition = int(math.floor(len(patients) * percent_train))  # 70% of data goes to training
             indexes = np.random.choice(range(len(patients)), size=len(patients))
             dict_test[i].extend(patients[indexes[partition:]])
@@ -44,8 +45,7 @@ def generate_minibatch_dict(flags, dict_name, batch_size, split):
         batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=bsize).tolist()
         for b in batch_ind:
             inds = dict_name[i][b]
-            print(inds[0])
-            data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
+            data_directory = flags['data_directory'] + check_str(inds[0]) + '/Preprocessed/' + flags['previous_processed_directory']
             image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
             with open(image_path, 'rb') as basefile:
                 map_stack = pickle.load(basefile)
