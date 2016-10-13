@@ -94,7 +94,7 @@ def main():
         preds = list()
         trues = list()
         for inds in index_test:
-            if inds[0] in flags['dataset']:
+            if inds[0] in flags['datasets']:
                 test_x, test_y = generate_one_test_index(flags, inds, image_dict)
                 acc = sess.run(train_prediction, feed_dict={x: test_x, y: test_y})
                 trues.extend(test_x)
