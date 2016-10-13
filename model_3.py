@@ -41,7 +41,6 @@ def main():
     logging = setup_metrics(flags, aux_filenames, folder)
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
     dict_train, dict_test, index_train, index_test = split_data(flags, image_dict, seed)
-    print(dict_train)
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [None, 204, 96, 512], name='VGG_output')
