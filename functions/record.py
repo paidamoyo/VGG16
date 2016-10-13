@@ -13,19 +13,10 @@ def error_rate(predictions, labels):
 
 
 def auc_roc(predictions, labels):
-    print(np.squeeze(labels))
-    print(np.argmax(predictions, 1))
     fpr, tpr, _ = metrics.roc_curve(np.array(labels), np.argmax(predictions, 1), pos_label=1)
-    # except ValueError:  # if all predicted labels are the same
-    print('All predicted labels are the same')
-     #   return -1, -1, -1
-    if type(fpr) is int and type(tpr) is int:
-        auc = metrics.auc(fpr, tpr)
-        return auc, fpr, tpr
-    else:
-        print('fpr and tpr were not returned properly.')
-        return -1, -1, -1
-
+    print(type(fpr))
+    auc = metrics.auc(fpr, tpr)
+    return auc, fpr, tpr
 
 
 def print_log(string, logging):
@@ -38,6 +29,8 @@ def record_metrics(loss, acc, batch_y, logging, step, split, params):
         print_log("Batch Number " + str(step) + ", Image Loss= " + "{:.6f}".format(loss), logging)
         print("Predicted Labels: ", np.argmax(acc, 1).tolist(), logging)
         print("True Labels: ", batch_y)
+    print_log(np.squeeze(batch_y), logging)
+    print_log(np.argmax(acc, 1), logging)
     auc, fpr, tpr = auc_roc(acc, batch_y)
     print_log("Error: %.1f%%" % error_rate(acc, batch_y) + ", AUC= %.3f" % auc + ", FPR= %.3f" % fpr +
               ", TPR= %.3f" % tpr, logging)
