@@ -102,7 +102,7 @@ def main():
         preds = np.array(preds)
         trues = np.array(trues)
         print_log("Scored a total of %d images " % len(preds) + "in test dataset.", logging)
-        record_metrics(loss=None, acc=preds, batch_y=trues, logging=logging, step=step, split=None, params=params)
+        record_metrics(loss=None, acc=preds, batch_y=trues, logging=logging, step=None, split=None, params=params)
 
 if __name__ == "__main__":
     main()
