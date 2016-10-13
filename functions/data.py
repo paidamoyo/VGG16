@@ -41,11 +41,13 @@ def generate_minibatch_dict(flags, dict_name, batch_size, split):
         batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=bsize).tolist()
         for b in batch_ind:
             inds = dict_name[i][b]
-            data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
-            image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
-            with open(image_path, 'rb') as basefile:
-                map_stack = pickle.load(basefile)
-                unshuffled_batch.append((map_stack, i))
+            if inds[0] in flags['datasets']:
+                print(inds[0])
+                data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
+                image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
+                with open(image_path, 'rb') as basefile:
+                    map_stack = pickle.load(basefile)
+                    unshuffled_batch.append((map_stack, i))
     shuffle(unshuffled_batch)
     batch_data = [map_stack for (map_stack, i) in unshuffled_batch]
     batch_labels = [i for (map_stack, i) in unshuffled_batch]

@@ -17,7 +17,7 @@ flags = {
     'aux_directory': 'aux/',
     'model_directory': 'cnn_fc/',
     'previous_processed_directory': '2_VGG/',
-    'datasets': ['SAGE', 'INbreast'],
+    'datasets': {'SAGE'},
     'restore': False
 }
 
@@ -131,10 +131,11 @@ def main():
         preds = list()
         trues = list()
         for inds in index_test:
-            X_test, y_test = generate_one_test_index(flags, inds, image_dict)
-            acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
-            trues.extend(y_test)
-            preds.extend(acc)
+            if inds[0] is in flags['dataset']:
+                X_test, y_test = generate_one_test_index(flags, inds, image_dict)
+                acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
+                trues.extend(y_test)
+                preds.extend(acc)
         preds = np.array(preds)
         trues = np.array(trues)
         print("For Test Data ... Error: %.1f%%" % error_rate(preds, trues) + ", AUC= %.3f" % auc_roc(preds, trues))
