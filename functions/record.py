@@ -12,7 +12,7 @@ def error_rate(predictions, labels):
     return 100.0 - (100.0 * np.sum(np.argmax(predictions, 1) == labels) / predictions.shape[0])
 
 
-def auc_roc(predictions, labels):
+def auc_roc(predictions, labels):  # must input np.arrays
     total = len(labels)
     predictions = np.argmax(predictions, 1)
     total_pos = np.count_nonzero(labels)
@@ -21,7 +21,7 @@ def auc_roc(predictions, labels):
     fpv = total_pos - tpv
     tnv = np.sum([np.equal(p, l) for p, l in zip(predictions, labels) if l == 0])
     fnv = total_neg - tnv
-    fpr, tpr, _ = metrics.roc_curve(np.array(labels), np.argmax(predictions, 1), pos_label=1)
+    fpr, tpr, _ = metrics.roc_curve(labels, np.argmax(predictions, 1), pos_label=1)
     auc = metrics.auc(fpr, tpr)
     return auc, tpv/total, fpv/total, tnv/total, fnv/total
 
