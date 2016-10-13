@@ -43,8 +43,6 @@ def record_metrics(loss, acc, batch_y, logging, step, split):
               ", FP= %.3f" % fp + ", TN= %.3f" % tn + ", FN= %.3f" % fn, logging)
     if split is not None:
         print_log("Training Split: ", split)
-    print_log("Fraction of Positive Predictions: %d / %d" %
-              (np.count_nonzero(np.argmax(acc, 1)), total), logging)
 
 
 def setup_metrics(flags, aux_filenames, folder):
