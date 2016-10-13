@@ -25,7 +25,7 @@ flags = {
 params = {
     'batch_size': 16,  # must be divisible by 8
     'display_step': 10,
-    'training_iters': 150
+    'training_iters': 0
 }
 
 
@@ -95,9 +95,9 @@ def main():
         trues = list()
         for inds in index_test:
             if inds[0] in flags['dataset']:
-                X_test, y_test = generate_one_test_index(flags, inds, image_dict)
-                acc = sess.run(train_prediction, feed_dict={x: X_test, y: y_test})
-                trues.extend(y_test)
+                test_x, test_y = generate_one_test_index(flags, inds, image_dict)
+                acc = sess.run(train_prediction, feed_dict={x: test_x, y: test_y})
+                trues.extend(test_x)
                 preds.extend(acc)
         preds = np.array(preds)
         trues = np.array(trues)
