@@ -94,15 +94,12 @@ def main():
         preds = list()
         trues = list()
         for inds in index_test:
-            if inds[0] in flags['datasets']:
-                test_x, test_y = generate_one_test_index(flags, inds, image_dict)
-                acc = sess.run(train_prediction, feed_dict={x: test_x, y: test_y})
-                trues.extend(test_x)
-                preds.extend(acc)
+            test_x, test_y = generate_one_test_index(flags, inds, image_dict)
+            acc = sess.run(train_prediction, feed_dict={x: test_x, y: test_y})
+            trues.extend(test_x)
+            preds.extend(acc)
         preds = np.array(preds)
         trues = np.array(trues)
-        print(preds)
-        print(preds[0])
         print_log("Scored a total of %d images " % len(preds) + "in test dataset.", logging)
         record_metrics(loss=None, acc=preds, batch_y=trues, logging=logging, step=None, split=None, params=params)
 

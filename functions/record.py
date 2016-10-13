@@ -9,16 +9,12 @@ from functions.aux import make_directory
 
 def error_rate(predictions, labels):
     """Return the error rate based on dense predictions and sparse labels."""
-    return 100.0 - (
-        100.0 *
-        np.sum(np.argmax(predictions, 1) == labels) /
-        predictions.shape[0])
+    return 100.0 - (100.0 * np.sum(np.argmax(predictions, 1) == labels) / predictions.shape[0])
 
 
 def auc_roc(predictions, labels):
-    print(np.array(labels).shape)
-    print(np.squeeze(np.argmax(predictions, 1)).shape)
-    # try:
+    print(labels.shape)
+    print(np.argmax(predictions, 1))
     fpr, tpr, _ = metrics.roc_curve(np.array(labels), np.argmax(predictions, 1), pos_label=1)
     # except ValueError:  # if all predicted labels are the same
     print('All predicted labels are the same')
