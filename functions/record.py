@@ -13,10 +13,16 @@ def error_rate(predictions, labels):
 
 
 def auc_roc(predictions, labels):
+    total = len(labels)
+    total_pos = np.count_nonzero(labels)
+    total_neg = total - total_pos
+    tpv = np.sum([int(np.equal(p, l)) for p, l in zip(predictions, labels) if l == 1])
+    fpv = total_pos - tpv
+    tnv = np.sum([int(np.equal(p, l)) for p, l in zip(predictions, labels) if l == 0])
+    fnv = total_neg - tnv
     fpr, tpr, _ = metrics.roc_curve(np.array(labels), np.argmax(predictions, 1), pos_label=1)
-    print(type(fpr))
     auc = metrics.auc(fpr, tpr)
-    return auc, fpr, tpr
+    return auc, tpv/total, fpv/total, tnv/total, fnv/total
 
 
 def print_log(string, logging):
@@ -31,9 +37,9 @@ def record_metrics(loss, acc, batch_y, logging, step, split, params):
         print("True Labels: ", batch_y)
     print_log(np.squeeze(batch_y), logging)
     print_log(np.argmax(acc, 1), logging)
-    auc, fpr, tpr = auc_roc(acc, batch_y)
-    print_log("Error: %.1f%%" % error_rate(acc, batch_y) + ", AUC= %.3f" % auc + ", FPR= %.3f" % fpr +
-              ", TPR= %.3f" % tpr, logging)
+    auc, tp, fp, tn, fn = auc_roc(acc, batch_y)
+    print_log("Error: %.1f%%" % error_rate(acc, batch_y) + ", AUC= %.3f" % auc + ", TP= %.3f" % tp +
+              ", FP= %.3f" % fp + ", TN= %.3f" % tn + ", FN= %.3f" % fn, logging)
     if split is not None:
         print_log("Training Split: ", split)
     print_log("Fraction of Positive Predictions: %d / %d" %
