@@ -28,7 +28,6 @@ def split_data(flags, image_dict, seed, percent_train=0.85):
             pats = labels[labels == str(i)].index.values
             patients = np.array([(d, i, j) for (i, j) in pats])
             partition = int(math.floor(len(patients) * percent_train))  # 70% of data goes to training
-            print(partition)
             indexes = np.random.choice(range(len(patients)), size=len(patients))
             dict_test[i].extend(patients[indexes[partition:]])
             dict_train[i].extend(patients[indexes[:partition]])
@@ -38,7 +37,7 @@ def split_data(flags, image_dict, seed, percent_train=0.85):
 
 
 def generate_minibatch_dict(flags, dict_name, batch_size, split):
-    unshuffled_batch = []
+    unshuffled_batch = list()
     for i in range(2):
         bsize = int(split[i] * batch_size)
         if bsize == 0:
@@ -46,6 +45,7 @@ def generate_minibatch_dict(flags, dict_name, batch_size, split):
         batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=bsize).tolist()
         for b in batch_ind:
             inds = dict_name[i][b]
+            print(inds)
             data_directory = flags['data_directory'] + check_str(inds[0]) + '/Preprocessed/' + flags['previous_processed_directory']
             image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
             with open(image_path, 'rb') as basefile:

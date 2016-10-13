@@ -4,10 +4,9 @@ import numpy as np
 import tensorflow as tf
 import pickle
 import sys
-import logging
 
 from functions.data import split_data, generate_minibatch_dict, generate_one_test_index, generate_lr, make_directory, generate_split
-from functions.record import record_metrics, print_log
+from functions.record import record_metrics, print_log, setup_metrics
 from models.cnn_fc import CnnFc
 
 
@@ -39,12 +38,10 @@ def main():
 
     folder = str(seed) + '/'
     aux_filenames = 'lr_%d' % lr_num + '_batch_%d' % batch
-    flags['restore_directory'] = flags['aux_directory'] + flags['model_directory']
-    flags['logging_directory'] = flags['restore_directory'] + folder
-    make_directory(flags['logging_directory'])
-    logging.basicConfig(filename=flags['logging_directory'] + aux_filenames + '.log', level=logging.INFO)
+    logging = setup_metrics(flags, aux_filenames, folder)
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
     dict_train, dict_test, index_train, index_test = split_data(flags, image_dict, seed)
+    print(dict_train)
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [None, 204, 96, 512], name='VGG_output')
@@ -81,9 +78,6 @@ def main():
             split = generate_split(step)
             print('Begin batch number: %d' % step, ", split:", split)
             batch_x, batch_y = generate_minibatch_dict(flags, dict_train, params['batch_size'], split)
-            print(len(batch_x))
-            print(batch_x[0].shape)
-            print(batch_y)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, y: batch_y})
             writer.add_summary(summary=summary, global_step=step)
 

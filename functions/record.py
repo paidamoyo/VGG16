@@ -2,6 +2,9 @@
 
 import numpy as np
 from sklearn import metrics
+import logging
+
+from functions.aux import make_directory
 
 
 def error_rate(predictions, labels):
@@ -39,3 +42,11 @@ def record_metrics(loss, acc, batch_y, logging, step, split, params):
         print_log("Training Split: ", split)
     print_log("Fraction of Positive Predictions: %d / %d" %
           (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']))
+
+
+def setup_metrics(flags, aux_filenames, folder):
+    flags['restore_directory'] = flags['aux_directory'] + flags['model_directory']
+    flags['logging_directory'] = flags['restore_directory'] + folder
+    make_directory(flags['logging_directory'])
+    logging.basicConfig(filename=flags['logging_directory'] + aux_filenames + '.log', level=logging.INFO)
+    return logging
