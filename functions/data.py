@@ -57,7 +57,10 @@ def generate_minibatch_dict(flags, dict_name, batch_size, split):
 
 
 def generate_one_test_index(flags, inds, image_dict):
-    unshuffled_batch = []
+    type(inds)
+    unshuffled_batch = list()
+    print(image_dict)
+    print(image_dict[inds])
     i = image_dict[inds][4]
     data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
     image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
