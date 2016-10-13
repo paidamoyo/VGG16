@@ -6,13 +6,13 @@ import pandas as pd
 import pickle
 import scipy.misc
 import os
-from random import shuffle
+import random
 
 from functions.aux import check_str, make_directory
 
 
 def split_data(flags, image_dict, seed, percent_train=0.85):
-    np.random.seed(seed=seed)
+    random.seed(seed=seed)
     index_test = list()
     index_train = list()
     dict_test = dict()
@@ -27,15 +27,12 @@ def split_data(flags, image_dict, seed, percent_train=0.85):
             labels = dict_image.iloc[4]
             pats = labels[labels == str(i)].index.values
             patients.extend([(d, i, j) for (i, j) in pats.tolist()])
-        print(patients)
-        patients = np.array(patients)
-        print(patients)
+        random.shuffle(patients)
         partition = int(math.floor(len(patients) * percent_train))  # 70% of data goes to training
-        indexes = np.random.choice(range(len(patients)), size=len(patients))
-        dict_test[i].extend(patients[indexes[partition:]].tolist())
-        dict_train[i].extend(patients[indexes[:partition]].tolist())
-        index_test.extend(patients[indexes[partition:]].tolist())
-        index_train.extend(patients[indexes[:partition]].tolist())
+        dict_test[i].extend(patients[partition:])
+        dict_train[i].extend(patients[:partition])
+        index_test.extend(patients[partition:])
+        index_train.extend(patients[:partition])
     return dict_train, dict_test, index_train, index_test
 
 
@@ -53,7 +50,7 @@ def generate_minibatch_dict(flags, dict_name, batch_size, split):
             with open(image_path, 'rb') as basefile:
                 map_stack = pickle.load(basefile)
                 unshuffled_batch.append((map_stack, i))
-    shuffle(unshuffled_batch)
+    random.shuffle(unshuffled_batch)
     batch_data = [map_stack for (map_stack, i) in unshuffled_batch]
     batch_labels = [i for (map_stack, i) in unshuffled_batch]
     return np.array(batch_data), np.array(batch_labels)
