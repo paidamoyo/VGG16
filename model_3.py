@@ -8,6 +8,7 @@ import sys
 from functions.data import split_data, generate_minibatch_dict, generate_one_test_index, generate_lr, make_directory, generate_split
 from functions.record import record_metrics, print_log, setup_metrics
 from models.cnn_fc import CnnFc
+from models.max_area import MaxArea
 
 
 # Global Dictionary of Flags
@@ -16,7 +17,7 @@ flags = {
     'aux_directory': 'aux/',
     'model_directory': 'cnn_fc/',
     'previous_processed_directory': '2_VGG/',
-    'datasets': {'INbreast'},
+    'datasets': {'SAGE'},
     'restore': False,
     'restore_file': 'starting_point.ckpt'
 }
@@ -47,7 +48,7 @@ def main():
     y = tf.placeholder(tf.int64, shape=[None], name='Labels')
 
     # Construct model
-    model = CnnFc()
+    model = MaxArea()
     logits = model.run(x=x)
 
     # Define loss and optimizer
@@ -82,7 +83,7 @@ def main():
 
             if step % params['display_step'] == 0:
                 loss, acc = sess.run([cost, train_prediction], feed_dict={x: batch_x, y: batch_y})
-                record_metrics(loss, acc, batch_y, logging, step, split)
+                record_metrics(loss=loss, acc=acc, batch_y=batch_y, logging=logging, step=step, split=split)
             step += 1
 
         print("Optimization Finished!")

@@ -151,10 +151,10 @@ def find_dicom_files(path):  # currently not used but may be useful later.
 
 
 def generate_split(step):
-    if step % 5:
-        split = [(1 / 4), (3 / 4)]
-    else:
+    if step % 6:
         split = [(3 / 4), (1 / 4)]
+    else:
+        split = [(1 / 4), (3 / 4)]
     return split
 
 
