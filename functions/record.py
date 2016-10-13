@@ -13,7 +13,7 @@ def error_rate(predictions, labels):
 
 
 def auc_roc(predictions, labels):
-    print(labels.shape)
+    print(np.squeeze(labels))
     print(np.argmax(predictions, 1))
     fpr, tpr, _ = metrics.roc_curve(np.array(labels), np.argmax(predictions, 1), pos_label=1)
     # except ValueError:  # if all predicted labels are the same
