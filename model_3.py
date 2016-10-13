@@ -16,7 +16,7 @@ flags = {
     'aux_directory': 'aux/',
     'model_directory': 'cnn_fc/',
     'previous_processed_directory': '2_VGG/',
-    'datasets': {'SAGE'},
+    'datasets': {'INbreast'},
     'restore': False,
     'restore_file': 'starting_point.ckpt'
 }

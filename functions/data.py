@@ -150,12 +150,7 @@ def find_dicom_files(path):  # currently not used but may be useful later.
     return list_of_dicom_files
 
 
-def generate_split(step):
-    if step % 3:
-        split = [(3 / 4), (1 / 4)]
-    else:
-        split = [(1 / 8), (7 / 8)]
-    return split
+def generate_split(batch_size):
 
 
 def generate_lr(sys_arg):
