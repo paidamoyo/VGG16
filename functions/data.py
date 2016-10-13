@@ -11,24 +11,27 @@ from random import shuffle
 from functions.aux import check_str, make_directory
 
 
-def split_data(image_dict, seed):
+def split_data(flags, image_dict, seed, percent_train=0.85):
     np.random.seed(seed=seed)
     index_test = list()
     index_train = list()
     dict_test = dict()
     dict_train = dict()
-    dict_image = pd.DataFrame(image_dict)
-    labels = dict_image.iloc[4]
-    for i in ['0', '1']:
-        patients = labels[labels == i].index.values
-        partition = int(math.floor(len(patients) * .85))  # 70% of data goes to training
-        indexes = np.random.choice(range(len(patients)), size=len(patients))
-        dict_test[int(i)] = list(patients[indexes[partition:]])
-        dict_train[int(i)] = list(patients[indexes[:partition]])
-        index_test = index_test + list(patients[indexes[partition:]])
-        index_train = index_train + list(patients[indexes[:partition]])
-        print("Training split has %d mammograms" % len(dict_train[int(i)]) + " with label %d" % int(i))
-        print("Testing split has %d mammograms" % len(dict_test[int(i)]) + " with label %d" % int(i))
+    for i in range(2):
+        dict_test[i] = list()
+        dict_train[i] = list()
+    for d in flags['datasets']:
+        pdict = pd.DataFrame(image_dict)
+        dict_image = pdict[d]
+        labels = dict_image.iloc[4]
+        for i in range(2):
+            patients = labels[labels == str(i)].index.values
+            partition = int(math.floor(len(patients) * percent_train))  # 70% of data goes to training
+            indexes = np.random.choice(range(len(patients)), size=len(patients))
+            dict_test[i].extend(patients[indexes[partition:]])
+            dict_train[i].extend(patients[indexes[:partition]])
+            index_test.extend(patients[indexes[partition:]])
+            index_train.extend(patients[indexes[:partition]])
     return dict_train, dict_test, index_train, index_test
 
 
@@ -41,13 +44,12 @@ def generate_minibatch_dict(flags, dict_name, batch_size, split):
         batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=bsize).tolist()
         for b in batch_ind:
             inds = dict_name[i][b]
-            if inds[0] in flags['datasets']:
-                print(inds[0])
-                data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
-                image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
-                with open(image_path, 'rb') as basefile:
-                    map_stack = pickle.load(basefile)
-                    unshuffled_batch.append((map_stack, i))
+            print(inds[0])
+            data_directory = flags['data_directory'] + inds[0] + '/Preprocessed/' + flags['previous_processed_directory']
+            image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
+            with open(image_path, 'rb') as basefile:
+                map_stack = pickle.load(basefile)
+                unshuffled_batch.append((map_stack, i))
     shuffle(unshuffled_batch)
     batch_data = [map_stack for (map_stack, i) in unshuffled_batch]
     batch_labels = [i for (map_stack, i) in unshuffled_batch]
