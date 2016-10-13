@@ -38,11 +38,11 @@ def print_log(string, logging):
 def record_metrics(loss, acc, batch_y, logging, step, split, params):
     if step is not None or loss is not None:
         print_log("Batch Number " + str(step) + ", Image Loss= " + "{:.6f}".format(loss), logging)
+        print("Predicted Labels: ", np.argmax(acc, 1).tolist(), logging)
+        print("True Labels: ", batch_y)
     auc, fpr, tpr = auc_roc(acc, batch_y)
     print_log("Error: %.1f%%" % error_rate(acc, batch_y) + ", AUC= %.3f" % auc + ", FPR= %.3f" % fpr +
               ", TPR= %.3f" % tpr, logging)
-    print("Predicted Labels: ", np.argmax(acc, 1).tolist(), logging)
-    print("True Labels: ", batch_y)
     if split is not None:
         print_log("Training Split: ", split)
     print_log("Fraction of Positive Predictions: %d / %d" %
