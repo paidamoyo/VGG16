@@ -12,7 +12,7 @@ from functions.aux import check_str, make_directory
 
 
 def split_data(flags, image_dict, seed, percent_train=0.85):
-    random.seed(seed=seed)
+    random.seed(seed)
     index_test = list()
     index_train = list()
     dict_test = dict()
