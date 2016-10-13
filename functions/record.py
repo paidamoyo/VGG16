@@ -23,7 +23,7 @@ def auc_roc(predictions, labels):  # must input np.arrays
     fnv = total_neg - tnv
     fpr, tpr, _ = metrics.roc_curve(labels, predictions, pos_label=1)
     auc = metrics.auc(fpr, tpr)
-    return auc, tpv/total, fpv/total, tnv/total, fnv/total
+    return auc, tpv/total, fpv/total, tnv/total, fnv/total, total
 
 
 def print_log(string, logging):
@@ -31,20 +31,20 @@ def print_log(string, logging):
     logging.info(string)
 
 
-def record_metrics(loss, acc, batch_y, logging, step, split, params):
+def record_metrics(loss, acc, batch_y, logging, step, split):
     if step is not None or loss is not None:
         print_log("Batch Number " + str(step) + ", Image Loss= " + "{:.6f}".format(loss), logging)
         print("Predicted Labels: ", np.argmax(acc, 1).tolist(), logging)
         print("True Labels: ", batch_y)
     print_log(np.squeeze(batch_y), logging)
     print_log(np.argmax(acc, 1), logging)
-    auc, tp, fp, tn, fn = auc_roc(acc, batch_y)
+    auc, tp, fp, tn, fn, total = auc_roc(acc, batch_y)
     print_log("Error: %.1f%%" % error_rate(acc, batch_y) + ", AUC= %.3f" % auc + ", TP= %.3f" % tp +
               ", FP= %.3f" % fp + ", TN= %.3f" % tn + ", FN= %.3f" % fn, logging)
     if split is not None:
         print_log("Training Split: ", split)
     print_log("Fraction of Positive Predictions: %d / %d" %
-              (np.count_nonzero(np.argmax(acc, 1)), params['batch_size']), logging)
+              (np.count_nonzero(np.argmax(acc, 1)), total), logging)
 
 
 def setup_metrics(flags, aux_filenames, folder):
