@@ -24,7 +24,7 @@ flags = {
 
 params = {
     'batch_size': 16,  # must be divisible by 8
-    'display_step': 10,
+    'display_step': 2,
     'training_iters': 150
 }
 
@@ -81,7 +81,7 @@ def main():
             writer.add_summary(summary=summary, global_step=step)
 
             if step % params['display_step'] == 0:
-                loss, acc, _ = sess.run([cost, train_prediction], feed_dict={x: batch_x, y: batch_y})
+                loss, acc = sess.run([cost, train_prediction], feed_dict={x: batch_x, y: batch_y})
                 record_metrics(loss, acc, batch_y, logging, step, split, params)
             step += 1
 
