@@ -11,7 +11,7 @@ class ConvVae:
         self.biases = dict()
         self.hidden_size = params['hidden_size']
         self.batch_size = params['batch_size']
-        self.depth_conv = [1, 32, 32, 32, 64, 64, 64, 128, 128, 128, 256, 256, 256]
+        self.depth_conv = [1, 32, 32, 32, 64, 64, 64, 128, 128]
         self.num_conv = len(self.depth_conv)-1
         self.depth_fc = [4096, 1000, self.hidden_size]
         self.num_fc = len(self.depth_fc)-1
