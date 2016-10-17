@@ -45,11 +45,10 @@ class ConvVae:
             input_sample = epsilon
         else:
             mean, stddev = tf.split(1, 2, z)
-            print(mean.get_shape)
             stddev = tf.sqrt(tf.exp(stddev))
-            print(stddev.get_shape)
             input_sample = mean + epsilon * stddev
-        y = tf.reshape(input_sample, [None, 1, 1, self.hidden_size])
+        y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
+        print(y.get_shape)
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
             y = deconv2d(y, w=self.weights[key], b=self.biases[key], strides=2, padding='VALID')
