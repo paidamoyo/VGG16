@@ -60,7 +60,7 @@ def deconv2d(x, w, b, stride=2, padding='VALID'):
                                                   filter_width, row_stride, col_stride, padding)
     # batch_size, rows, cols, number of channels #
 
-    output_shape = [tf.shape(x)[0], out_rows, out_cols, tf.shape(w)[2]]
+    output_shape = tf.pack([tf.shape(x)[0], out_rows, out_cols, tf.shape(w)[2]])
     print(output_shape)
     y = tf.nn.conv2d_transpose(x, w, output_shape, [1, stride, stride, 1], padding)
     y = tf.nn.bias_add(y, b)
