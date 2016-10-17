@@ -39,16 +39,18 @@ class ConvVae:
             self.biases['deconv' + str(d)] = bias_variable([self.depth_deconv[d+1]])
 
     def decoder(self, z):
-        epsilon = tf.random_normal([self.batch_size, self.hidden_size])
+        epsilon = tf.random_normal([None, self.hidden_size])
         if z is None:
             mean = None
             stddev = None
             input_sample = epsilon
         else:
             mean = z[:, :self.hidden_size]
+            print(mean.get_shape)
             stddev = tf.sqrt(tf.exp(z[:, self.hidden_size:]))
+            print(stddev.get_shape)
             input_sample = mean + epsilon * stddev
-        y = tf.reshape(input_sample, [self.batch_size, 1, 1, self.hidden_size])
+        y = tf.reshape(input_sample, [None, 1, 1, self.hidden_size])
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
             y = deconv2d(y, w=self.weights[key], b=self.biases[key], strides=2, padding='VALID')
