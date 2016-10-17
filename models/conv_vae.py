@@ -55,6 +55,8 @@ class ConvVae:
         return y, mean, stddev
 
     def encoder(self, x):
+        print(self.num_conv)
+        print(self.depth_deconv)
         for c in range(self.num_conv):
             key = 'conv' + str(c)
             print(key)
