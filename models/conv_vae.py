@@ -11,7 +11,7 @@ class ConvVae:
         self.biases = dict()
         self.hidden_size = params['hidden_size']
         self.batch_size = params['batch_size']
-        self.depth_conv = [1, 32, 32, 32, 64, 64, 64, 128, 128]
+        self.depth_conv = [1, 32, 32, 32, 64, 64, 64, 128]
         self.num_conv = len(self.depth_conv)-1
         self.depth_fc = [4096, 1000, self.hidden_size]
         self.num_fc = len(self.depth_fc)-1
@@ -57,8 +57,6 @@ class ConvVae:
     def encoder(self, x):
         print(self.num_conv)
         print(self.depth_conv)
-        print(self.weights)
-        print(self.biases)
         for c in range(self.num_conv):
             key = 'conv' + str(c)
             print(key)
