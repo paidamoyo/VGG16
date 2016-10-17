@@ -47,17 +47,17 @@ def spp_layer(mapstack, dims, poolnum):
 
 def deconv2d(x, w, b, stride=2, padding='VALID'):
 
-    input_height = x.get_shape[1]
-    input_width = x.get_shape[2]
-    filter_height = w.shape[0]
-    filter_width = w.shape[1]
+    input_height = x.get_shape()[1]
+    input_width = x.get_shape()[2]
+    filter_height = w.get_shape()[0]
+    filter_width = w.get_shape()[1]
     row_stride = stride
     col_stride = stride
 
     out_rows, out_cols = get2d_deconv_output_size(input_height, input_width, filter_height,
                                                   filter_width, row_stride, col_stride, padding)
-
-    output_shape = [x.get_shape[0], out_rows, out_cols, w.shape[3]]
+    # batch_size, rows, cols, number of channels #
+    output_shape = [x.get_shape()[0], out_rows, out_cols, w.get_shape()[2]]
     y = tf.nn.conv2d_transpose(x, w, output_shape, [1, stride, stride, 1], padding)
     y = tf.nn.bias_add(y, b)
     return tf.nn.relu(y)
@@ -66,13 +66,6 @@ def deconv2d(x, w, b, stride=2, padding='VALID'):
 def get2d_deconv_output_size(input_height, input_width, filter_height,
                          filter_width, row_stride, col_stride, padding_type):
     """Returns the number of rows and columns in a convolution/pooling output."""
-    input_height = tensor_shape.as_dimension(input_height)
-    input_width = tensor_shape.as_dimension(input_width)
-    filter_height = tensor_shape.as_dimension(filter_height)
-    filter_width = tensor_shape.as_dimension(filter_width)
-    row_stride = int(row_stride)
-    col_stride = int(col_stride)
-
     # Compute number of rows in the output, based on the padding.
     if input_height.value is None or filter_height.value is None:
         out_rows = None
