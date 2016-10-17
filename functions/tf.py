@@ -54,7 +54,7 @@ def deconv2d(x, w, b, stride=2, padding='VALID'):
     input_width = tf.shape(x)[2]
     filter_height = tf.shape(w)[0]
     filter_width = tf.shape(w)[1]
-    out_channels = tf.shape(w)[4]
+    out_channels = tf.shape(w)[2]
     row_stride = stride
     col_stride = stride
 
