@@ -40,7 +40,7 @@ def main():
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [None, 512, 512, 1], name='256x256_input')  # input patches
-    keep_prob = tf.placeholder(tf.float32, 1, name='dropout')
+    keep_prob = tf.placeholder(tf.float32, name='dropout')
 
     # Construct model and initialize
     model = ConvVae(params)
