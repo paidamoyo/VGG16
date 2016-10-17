@@ -66,6 +66,7 @@ class ConvVae:
             key = 'fc' + str(f)
             x = fc(x, w=self.weights[key], b=self.biases[key])
             x = tf.nn.dropout(x, keep_prob=keep_prob)
+        print(x.get_shape)
         return x
 
     def init_cost(self, output_tensor, target_tensor, mean, stddev, epsilon=1e-8):
