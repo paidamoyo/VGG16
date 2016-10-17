@@ -70,7 +70,7 @@ def generate_cluttered_MNIST(dims, nImages, numbers, prob, clutter, train_set):
     Return:
         images: 3D stack of cluttered MNIST images (dim[0],dim[1],nImages)
     '''
-    images = np.zeros((dims[0], dims[1], nImages))
+    images = np.zeros((nImages, dims[0], dims[1]))
 
     # Calculate number of patches of clutter to add in
     clutterPatches = int(clutter * dims[0] * dims[1] / (8 * 8))
