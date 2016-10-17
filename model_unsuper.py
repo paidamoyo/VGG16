@@ -39,7 +39,7 @@ def main():
     train_set, valid_set, test_set =  load_data(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
 
     # tf Graph input
-    x = tf.placeholder(tf.int32, [None, 256, 256, 1], name='256x256_input')  # input patches
+    x = tf.placeholder(tf.float32, [None, 256, 256, 1], name='256x256_input')  # input patches
 
     # Construct model and initialize
     model = ConvVae(params)
