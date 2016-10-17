@@ -47,6 +47,8 @@ def spp_layer(mapstack, dims, poolnum):
 
 def deconv2d(x, w, b, stride=2, padding='VALID'):
 
+    print(x.get_shape())
+    print(w.get_shape())
     input_height = x.get_shape()[1]
     input_width = x.get_shape()[2]
     filter_height = w.get_shape()[0]
@@ -57,7 +59,9 @@ def deconv2d(x, w, b, stride=2, padding='VALID'):
     out_rows, out_cols = get2d_deconv_output_size(input_height, input_width, filter_height,
                                                   filter_width, row_stride, col_stride, padding)
     # batch_size, rows, cols, number of channels #
+
     output_shape = [x.get_shape()[0], out_rows, out_cols, w.get_shape()[2]]
+    print(output_shape)
     y = tf.nn.conv2d_transpose(x, w, output_shape, [1, stride, stride, 1], padding)
     y = tf.nn.bias_add(y, b)
     return tf.nn.relu(y)
