@@ -33,10 +33,10 @@ class ConvVae:
             self.biases['conv' + str(c)] = bias_variable([self.depth_conv[c+1]])
         for f in range(self.num_fc):
             self.weights['fc' + str(f)] = weight_variable([self.depth_fc[f], self.depth_fc[f+1]])
-            self.biases['conv' + str(f)] = bias_variable([self.depth_fc[f+1]])
+            self.biases['fc' + str(f)] = bias_variable([self.depth_fc[f+1]])
         for d in range(self.num_deconv):
-            self.weights['conv' + str(d)] = weight_variable([3, 3, self.depth_deconv[d], self.depth_deconv[d+1]])
-            self.biases['conv' + str(d)] = bias_variable([self.depth_deconv[d+1]])
+            self.weights['deconv' + str(d)] = weight_variable([3, 3, self.depth_deconv[d], self.depth_deconv[d+1]])
+            self.biases['deconv' + str(d)] = bias_variable([self.depth_deconv[d+1]])
 
     def decoder(self, z):
         epsilon = tf.random_normal([self.batch_size, self.hidden_size])
@@ -57,7 +57,6 @@ class ConvVae:
     def encoder(self, x):
         for c in range(self.num_conv):
             key = 'conv' + str(c)
-            print(key)
             x = conv2d(x, w=self.weights[key], b=self.biases[key], strides=2, padding='VALID')
         x = tf.reshape(x, [-1, 4096])
         for f in range(self.num_fc):
