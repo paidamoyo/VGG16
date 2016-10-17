@@ -50,6 +50,7 @@ class ConvVae:
         print(y.get_shape)
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
+            print(key)
             y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=2, padding='VALID')
         return y, mean, stddev
 
