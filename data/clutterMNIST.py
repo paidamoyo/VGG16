@@ -91,7 +91,7 @@ def generate_cluttered_MNIST(dims, nImages, numbers, prob, clutter, train_set):
                 y = np.random.randint(low=0, high=dims[1] - 28)
 
                 # Insert digit
-                images[x:x + 28, y:y + 28, k] += digit
+                images[k, x:x + 28, y:y + 28] += digit
 
         # Add in clutter
         for j in range(clutterPatches):
