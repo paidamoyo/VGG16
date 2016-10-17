@@ -20,7 +20,7 @@ flags = {
 
 params = {
     'batch_size': 32,  # must be divisible by 8
-    'hidden_size': 20,
+    'hidden_size': 10,
     'display_step': 2,
     'training_iters': 50
 }
