@@ -44,7 +44,7 @@ def main():
 
     # Construct model and initialize
     model = ConvVae(params)
-    generated_img, cost = model.run(x=x)
+    generated_img, cost = model.run(x=x, keep_prob=keep_prob)
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
     tf.scalar_summary("cost", cost)
     merged = tf.merge_all_summaries()

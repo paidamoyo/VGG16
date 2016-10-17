@@ -74,8 +74,8 @@ class ConvVae:
         recon = tf.reduce_sum(0.5 * (tf.square(mean) + tf.square(stddev) - 2.0 * tf.log(stddev + epsilon) - 1.0))
         return vae + recon
 
-    def run(self, x):
-        y, mean, stddev = self.decoder(self.encoder(x))
+    def run(self, x, keep_prob):
+        y, mean, stddev = self.decoder(self.encoder(x, keep_prob))
         cost = self.init_cost(y, x, mean, stddev)
         return y, cost
 
