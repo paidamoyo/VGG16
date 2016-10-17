@@ -13,7 +13,7 @@ flags = {
     'data_directory': '../../../Data/',  # in relationship to the code_directory
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
-    'datasets': {'MNIST'},
+    'datasets': ['MNIST'],
     'restore': False,
     'restore_file': 'starting_point.ckpt'
 }
