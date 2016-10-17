@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 
-import numpy as np
 import tensorflow as tf
-import pickle
-import sys
 
 from functions.data import generate_minibatch_MNIST, generate_one_test_index, generate_lr, generate_split
 from functions.record import record_metrics, print_log, setup_metrics
@@ -67,15 +64,14 @@ def main():
             print_log("Mode training from scratch.", logging)
         while step < params['training_iters']:
 
-            split = generate_split(step)
-            print('Begin batch number: %d' % step, ", split:", split)
+            print('Begin batch number: %d' % step)
             batch_x = generate_cluttered_MNIST([256, 256], params['batch_size'], 0.1, 8, 0.1, train_set)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x})
             writer.add_summary(summary=summary, global_step=step)
 
             if step % params['display_step'] == 0:
                 loss = sess.run([cost], feed_dict={x: batch_x})
-                record_metrics(loss=loss, acc=None, batch_y=None, logging=logging, step=step, split=split)
+                record_metrics(loss=loss, acc=None, batch_y=None, logging=logging, step=step, split=None)
             step += 1
 
         print("Optimization Finished!")

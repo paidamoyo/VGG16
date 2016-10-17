@@ -11,7 +11,6 @@ adjustable degree. Clutter generated from random pieces of MNIST digits
 """
 
 import gzip
-import matplotlib.pyplot as plt
 import numpy as np
 import os
 import pickle
