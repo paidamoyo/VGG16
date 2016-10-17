@@ -2,7 +2,6 @@
 
 import tensorflow as tf
 
-from functions.data import generate_minibatch_MNIST, generate_one_test_index, generate_lr, generate_split
 from functions.record import record_metrics, print_log, setup_metrics
 from models.conv_vae import ConvVae
 from data.clutterMNIST import load_data, generate_cluttered_MNIST
