@@ -45,25 +45,20 @@ def spp_layer(mapstack, dims, poolnum):
     return tf.reshape(tf.convert_to_tensor(flattened), [1, 2560])
 
 
-def deconv2d(x, w, b, strides=1, padding='VALID'):
-    if len(x.get_shape) != 4:
-        raise ValueError(
-            'Cannot perform conv2d on tensor with shape %s' % x.shape)
-    if x.get_shape[3] is None:
-        raise ValueError('Input depth must be known')
+def deconv2d(x, w, b, stride=2, padding='VALID'):
 
     input_height = x.get_shape[1]
     input_width = x.get_shape[2]
     filter_height = w.shape[0]
     filter_width = w.shape[1]
-    row_stride = strides
-    col_stride = strides
+    row_stride = stride
+    col_stride = stride
 
     out_rows, out_cols = get2d_deconv_output_size(input_height, input_width, filter_height,
                                                   filter_width, row_stride, col_stride, padding)
 
-    output_shape = [x.shape[0], out_rows, out_cols, depth]
-    y = tf.nn.conv2d_transpose(x, params, output_shape, strides, padding)
+    output_shape = [x.get_shape[0], out_rows, out_cols, w.shape[3]]
+    y = tf.nn.conv2d_transpose(x, w, output_shape, [1, stride, stride, 1], padding)
     y = tf.nn.bias_add(y, b)
     return tf.nn.relu(y)
 
