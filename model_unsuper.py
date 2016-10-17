@@ -66,7 +66,7 @@ def main():
         while step < params['training_iters']:
 
             print('Begin batch number: %d' % step)
-            batch_x = generate_cluttered_MNIST([256, 256], params['batch_size'], 0.1, 8, 0.1, train_set)
+            batch_x = generate_cluttered_MNIST([512, 512], params['batch_size'], 0.1, 8, 0.1, train_set)
             norm = tf.random_normal([params['batch_size'], params['hidden_size']])
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, keep_prob: 0.5, epsilon: norm})
             writer.add_summary(summary=summary, global_step=step)

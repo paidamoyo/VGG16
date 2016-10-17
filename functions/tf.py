@@ -45,7 +45,7 @@ def spp_layer(mapstack, dims, poolnum):
     return tf.reshape(tf.convert_to_tensor(flattened), [1, 2560])
 
 
-def deconv2d(x, w, b, stride=2, padding='VALID'):
+def deconv2d(x, w, stride=2, padding='VALID'):
 
     batch_size = tf.shape(x)[0]
     print(x.get_shape())
