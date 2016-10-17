@@ -40,6 +40,7 @@ def main():
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [None, 512, 512, 1], name='256x256_input')  # input patches
+    keep_prob = tf.placeholder(tf.float32, [1], name='dropout')
 
     # Construct model and initialize
     model = ConvVae(params)
@@ -65,7 +66,7 @@ def main():
 
             print('Begin batch number: %d' % step)
             batch_x = generate_cluttered_MNIST([256, 256], params['batch_size'], 0.1, 8, 0.1, train_set)
-            summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x})
+            summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, keep_prob: 0.5})
             writer.add_summary(summary=summary, global_step=step)
 
             if step % params['display_step'] == 0:

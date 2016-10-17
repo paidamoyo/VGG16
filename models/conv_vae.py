@@ -11,11 +11,11 @@ class ConvVae:
         self.biases = dict()
         self.hidden_size = params['hidden_size']
         self.batch_size = params['batch_size']
-        self.depth_conv = [1, 32, 32, 64, 64, 128, 128, 256, 256]
+        self.depth_conv = [1, 32, 32, 64, 64, 128, 128, 256]
         self.num_conv = len(self.depth_conv)-1
-        self.depth_fc = [4096, 1000, self.hidden_size]
+        self.depth_fc = [3*3*256, 256, self.hidden_size]
         self.num_fc = len(self.depth_fc)-1
-        self.depth_deconv = [1, 32, 32, 32, 64, 64, 64, 128, 128, 128, 256, 256, 256]
+        self.depth_deconv = [1, 32, 32, 64, 64, 128, 128, 256]
         self.depth_deconv.reverse()
         self.num_deconv = len(self.depth_deconv)-1
         self.init_params()
@@ -54,17 +54,18 @@ class ConvVae:
             y = deconv2d(y, w=self.weights[key], b=self.biases[key], strides=2, padding='VALID')
         return y, mean, stddev
 
-    def encoder(self, x):
+    def encoder(self, x, keep_prob):
         print(self.num_conv)
         print(self.depth_conv)
         for c in range(self.num_conv):
             key = 'conv' + str(c)
             x = conv2d(x, w=self.weights[key], b=self.biases[key], strides=2, padding='VALID')
             print(x.get_shape)
-        x = tf.reshape(x, [-1, 3*3*64])
+        x = tf.reshape(x, [-1, 3*3*256])
         for f in range(self.num_fc):
             key = 'fc' + str(f)
             x = fc(x, w=self.weights[key], b=self.biases[key])
+            x = tf.nn.dropout(x, keep_prob=keep_prob)
         return x
 
     def init_cost(self, output_tensor, target_tensor, mean, stddev, epsilon=1e-8):
