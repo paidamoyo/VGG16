@@ -62,7 +62,7 @@ def deconv2d(x, w, b, stride=2, padding='VALID'):
 
     print(out_rows)
     print(out_cols)
-    output_shape = tf.pack([tf.shape(x)[0], tf.shape(out_rows), tf.shape(out_cols), tf.shape(w)[2]])
+    output_shape = tf.pack([tf.shape(x)[0], out_rows, out_rows, tf.shape(w)[2]])
     print(output_shape)
     y = tf.nn.conv2d_transpose(x, w, output_shape, [1, stride, stride, 1], padding)
     print(y.get_shape())
