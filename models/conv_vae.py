@@ -38,8 +38,7 @@ class ConvVae:
             self.weights['deconv' + str(d)] = weight_variable([3, 3, self.depth_deconv[d], self.depth_deconv[d+1]])
             self.biases['deconv' + str(d)] = bias_variable([self.depth_deconv[d+1]])
 
-    def decoder(self, z):
-        epsilon = tf.random_normal([None, self.hidden_size])
+    def decoder(self, z, epsilon):
         if z is None:
             mean = None
             stddev = None
@@ -57,8 +56,6 @@ class ConvVae:
         return y, mean, stddev
 
     def encoder(self, x, keep_prob):
-        print(self.num_conv)
-        print(self.depth_conv)
         for c in range(self.num_conv):
             key = 'conv' + str(c)
             x = conv2d(x, w=self.weights[key], b=self.biases[key], strides=2, padding='VALID')
@@ -77,8 +74,8 @@ class ConvVae:
         recon = tf.reduce_sum(0.5 * (tf.square(mean) + tf.square(stddev) - 2.0 * tf.log(stddev + epsilon) - 1.0))
         return vae + recon
 
-    def run(self, x, keep_prob):
-        y, mean, stddev = self.decoder(self.encoder(x, keep_prob))
+    def run(self, x, keep_prob, epsilon):
+        y, mean, stddev = self.decoder(self.encoder(x, keep_prob), epsilon=epsilon)
         cost = self.init_cost(y, x, mean, stddev)
         return y, cost
 

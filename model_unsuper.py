@@ -39,12 +39,13 @@ def main():
     train_set, valid_set, test_set =  load_data(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
 
     # tf Graph input
-    x = tf.placeholder(tf.float32, [None, 512, 512, 1], name='256x256_input')  # input patches
+    x = tf.placeholder(tf.float32, [None, 512, 512, 1], name='x')  # input patches
     keep_prob = tf.placeholder(tf.float32, name='dropout')
+    epsilon = tf.placeholder(tf.float32, [None, params['hidden_size']], name='epsilon')
 
     # Construct model and initialize
     model = ConvVae(params)
-    generated_img, cost = model.run(x=x, keep_prob=keep_prob)
+    generated_img, cost = model.run(x=x, keep_prob=keep_prob, epsilon=epsilon)
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
     tf.scalar_summary("cost", cost)
     merged = tf.merge_all_summaries()
@@ -66,7 +67,8 @@ def main():
 
             print('Begin batch number: %d' % step)
             batch_x = generate_cluttered_MNIST([256, 256], params['batch_size'], 0.1, 8, 0.1, train_set)
-            summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, keep_prob: 0.5})
+            norm = tf.random_normal([params['batch_size'], params['hidden_size']])
+            summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, keep_prob: 0.5, epsilon: norm})
             writer.add_summary(summary=summary, global_step=step)
 
             if step % params['display_step'] == 0:
