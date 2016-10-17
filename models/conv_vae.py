@@ -56,7 +56,9 @@ class ConvVae:
 
     def encoder(self, x):
         print(self.num_conv)
-        print(self.depth_deconv)
+        print(self.depth_conv)
+        print(self.weights)
+        print(self.biases)
         for c in range(self.num_conv):
             key = 'conv' + str(c)
             print(key)
