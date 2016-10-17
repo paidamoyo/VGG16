@@ -56,6 +56,26 @@ def generate_minibatch_dict(flags, dict_name, batch_size, split):
     return np.array(batch_data), np.array(batch_labels)
 
 
+def generate_minibatch_MNIST(flags, batch_size, split):
+    unshuffled_batch = list()
+    for i in range(2):
+        bsize = int(split[i] * batch_size)
+        if bsize == 0:
+            continue
+        batch_ind = np.random.randint(low=0, high=len(dict_name[i]), size=bsize).tolist()
+        for b in batch_ind:
+            inds = dict_name[i][b]
+            data_directory = flags['data_directory'] + check_str(inds[0]) + '/Preprocessed/' + flags['previous_processed_directory']
+            image_path = data_directory + check_str(inds[1]) + '_' + check_str(inds[2]) + '.pickle'
+            with open(image_path, 'rb') as basefile:
+                map_stack = pickle.load(basefile)
+                unshuffled_batch.append((map_stack, i))
+    random.shuffle(unshuffled_batch)
+    batch_data = [map_stack for (map_stack, i) in unshuffled_batch]
+    batch_labels = [i for (map_stack, i) in unshuffled_batch]
+    return np.array(batch_data), np.array(batch_labels)
+
+
 def generate_one_test_index(flags, inds, image_dict):
     unshuffled_batch = list()
     i = image_dict[inds][4]

@@ -8,14 +8,13 @@ import sys
 from functions.data import split_data, generate_minibatch_dict, generate_one_test_index, generate_lr, make_directory, generate_split
 from functions.record import record_metrics, print_log, setup_metrics
 from models.cnn_fc import CnnFc
-from models.max_area import MaxArea
 
 
 # Global Dictionary of Flags
 flags = {
     'data_directory': '../../../Data/',  # in relationship to the code_directory
     'aux_directory': 'aux/',
-    'model_directory': 'cnn_fc/',
+    'model_directory': 'conv_vae',
     'previous_processed_directory': '2_VGG/',
     'datasets': {'SAGE'},
     'restore': False,
@@ -48,7 +47,7 @@ def main():
     y = tf.placeholder(tf.int64, shape=[None], name='Labels')
 
     # Construct model
-    model = MaxArea()
+    model = CnnFc()
     logits = model.run(x=x)
 
     # Define loss and optimizer
