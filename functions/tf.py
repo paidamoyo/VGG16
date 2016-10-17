@@ -15,7 +15,7 @@ def bias_variable(shape, value=0.1):
 
 
 def conv2d(img, w, b, stride=1, padding='SAME'):
-    img = tf.nn.conv2d(img, w, strides=[1, strides, strides, 1], padding=padding)
+    img = tf.nn.conv2d(img, w, strides=[1, stride, stride, 1], padding=padding)
     img = tf.nn.bias_add(img, b)
     return tf.nn.relu(img)
 
