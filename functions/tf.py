@@ -50,11 +50,11 @@ def deconv2d(x, w, b, stride=2, padding='VALID'):
     batch_size = tf.shape(x)[0]
     print(x.get_shape())
     print(w.get_shape())
-    input_height = tf.shape(x)[1].value
-    input_width = tf.shape(x)[2].value
-    filter_height = tf.shape(w)[0]
-    filter_width = tf.shape(w)[1]
-    out_channels = tf.shape(w)[2].value
+    input_height = x.get_shape()[1].value
+    input_width = x.get_shape()[2].value
+    filter_height = w.get_shape()[0].value
+    filter_width = w.get_shape()[1].value
+    out_channels = x.get_shape()[3].value
     row_stride = stride
     col_stride = stride
 
