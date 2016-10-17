@@ -108,12 +108,12 @@ def generate_cluttered_MNIST(dims, nImages, numbers, prob, clutter, train_set):
             y = np.random.randint(low=0, high=dims[1] - 28)
 
             # Insert digit fragment
-            images[x:x + 8, y:y + 8, k] += digit[px:px + 8, py:py + 8]
+            images[k, x:x + 8, y:y + 8] += digit[px:px + 8, py:py + 8]
 
         # Renormalize image
-        images[:, :, k] = images[:, :, k] / images[:, :, k].max()
+        images[k, :, :] = images[k, :, :] / images[k, :, :].max()
 
-    return images
+    return np.expand_dims(images, 3)
 
 
 if __name__ == '__main__':
