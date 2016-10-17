@@ -15,8 +15,7 @@ class ConvVae:
         self.num_conv = len(self.depth_conv)-1
         self.depth_fc = [3*3*256, 256, self.hidden_size*2]
         self.num_fc = len(self.depth_fc)-1
-        self.depth_deconv = [1, 32, 32, 64, 64, 128, 128, 256]
-        self.depth_deconv.reverse()
+        self.depth_deconv = [self.hidden_size, 256, 128, 128, 64, 64, 32, 32, 1]
         self.num_deconv = len(self.depth_deconv)-1
         self.init_params()
         self.summary()
