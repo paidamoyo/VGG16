@@ -47,51 +47,30 @@ def spp_layer(mapstack, dims, poolnum):
 
 def deconv2d(x, w, b, stride=2, padding='VALID'):
 
+    batch_size = tf.shape(x)[0]
     print(x.get_shape())
     print(w.get_shape())
-    input_height = x.get_shape()[1]
-    input_width = x.get_shape()[2]
-    filter_height = w.get_shape()[0]
-    filter_width = w.get_shape()[1]
+    input_height = tf.shape(x)[1]
+    input_width = tf.shape(x)[2]
+    filter_height = tf.shape(w)[0]
+    filter_width = tf.shape(w)[1]
+    out_channels = tf.shape(w)[3]
     row_stride = stride
     col_stride = stride
 
-    out_rows, out_cols = get2d_deconv_output_size(input_height, input_width, filter_height,
-                                                  filter_width, row_stride, col_stride, padding)
-    # batch_size, rows, cols, number of channels #
+    if padding == "VALID":
+        out_rows = (input_height - 1) * row_stride + filter_height
+        out_cols = (input_width - 1) * col_stride + filter_width
+    else:  # padding == "SAME"
+        out_rows = input_height * row_stride
+        out_cols = input_width * col_stride
 
-    print(out_rows)
-    print(out_cols)
-    output_shape = tf.pack([tf.shape(x)[0], out_rows, out_rows, tf.shape(w)[2]])
-    print(output_shape)
+    # batch_size, rows, cols, number of channels #
+    output_shape = tf.pack([batch_size, out_rows, out_cols, out_channels])
     y = tf.nn.conv2d_transpose(x, w, output_shape, [1, stride, stride, 1], padding)
     print(y.get_shape())
     y = tf.nn.bias_add(y, b)
     return tf.nn.relu(y)
-
-
-def get2d_deconv_output_size(input_height, input_width, filter_height,
-                         filter_width, row_stride, col_stride, padding_type):
-    """Returns the number of rows and columns in a convolution/pooling output."""
-    # Compute number of rows in the output, based on the padding.
-    if input_height.value is None or filter_height.value is None:
-        out_rows = None
-    elif padding_type == "VALID":
-        out_rows = (input_height.value - 1) * row_stride + filter_height.value
-    elif padding_type == "SAME":
-        out_rows = input_height.value * row_stride
-    else:
-        raise ValueError("Invalid value for padding: %r" % padding_type)
-
-    # Compute number of columns in the output, based on the padding.
-    if input_width.value is None or filter_width.value is None:
-        out_cols = None
-    elif padding_type == "VALID":
-        out_cols = (input_width.value - 1) * col_stride + filter_width.value
-    elif padding_type == "SAME":
-        out_cols = input_width.value * col_stride
-
-    return out_rows, out_cols
 
 
 def fc(x, w, b):
