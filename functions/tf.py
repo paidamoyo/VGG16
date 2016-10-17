@@ -63,6 +63,7 @@ def deconv2d(x, w, b, stride=2, padding='VALID'):
     output_shape = tf.pack([tf.shape(x)[0], tf.shape(out_rows)[0], tf.shape(out_cols)[0], tf.shape(w)[2]])
     print(output_shape)
     y = tf.nn.conv2d_transpose(x, w, output_shape, [1, stride, stride, 1], padding)
+    print(y.get_shape())
     y = tf.nn.bias_add(y, b)
     return tf.nn.relu(y)
 
