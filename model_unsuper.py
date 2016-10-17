@@ -2,6 +2,7 @@
 
 import tensorflow as tf
 
+import numpy as np
 from functions.record import record_metrics, print_log, setup_metrics
 from models.conv_vae import ConvVae
 from data.clutterMNIST import load_data, generate_cluttered_MNIST
@@ -68,7 +69,7 @@ def main():
             print('Begin batch number: %d' % step)
             batch_x = generate_cluttered_MNIST(dims=[512, 512], nImages=params['batch_size'], clutter=0.1, numbers=[8],
                                                prob=0.1, train_set=train_set)
-            norm = tf.random_normal([params['batch_size'], params['hidden_size']])
+            norm = np.random.standard_normal([params['batch_size'], params['hidden_size']])
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, keep_prob: 0.5, epsilon: norm})
             writer.add_summary(summary=summary, global_step=step)
 
