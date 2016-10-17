@@ -11,7 +11,7 @@ class ConvVae:
         self.biases = dict()
         self.hidden_size = params['hidden_size']
         self.batch_size = params['batch_size']
-        self.depth_conv = [1, 32, 32, 32, 64, 64, 64, 128]
+        self.depth_conv = [1, 32, 32, 64, 64, 128, 128, 256, 256]
         self.num_conv = len(self.depth_conv)-1
         self.depth_fc = [4096, 1000, self.hidden_size]
         self.num_fc = len(self.depth_fc)-1
@@ -59,10 +59,8 @@ class ConvVae:
         print(self.depth_conv)
         for c in range(self.num_conv):
             key = 'conv' + str(c)
-            print(key)
-            print(x.get_shape)
             x = conv2d(x, w=self.weights[key], b=self.biases[key], strides=2, padding='VALID')
-        x = tf.reshape(x, [-1, 4096])
+        x = tf.reshape(x, [-1, 3*3*64])
         for f in range(self.num_fc):
             key = 'fc' + str(f)
             x = fc(x, w=self.weights[key], b=self.biases[key])
