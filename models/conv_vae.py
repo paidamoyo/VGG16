@@ -34,8 +34,8 @@ class ConvVae:
             self.weights['fc' + str(f)] = weight_variable([self.depth_fc[f], self.depth_fc[f+1]])
             self.biases['fc' + str(f)] = bias_variable([self.depth_fc[f+1]])
         for d in range(self.num_deconv):
-            self.weights['deconv' + str(d)] = weight_variable([3, 3, self.depth_deconv[d], self.depth_deconv[d+1]])
-            self.biases['deconv' + str(d)] = bias_variable([self.depth_deconv[d+1]])
+            self.weights['deconv' + str(d)] = weight_variable([3, 3, self.depth_deconv[d+1], self.depth_deconv[d]])
+            self.biases['deconv' + str(d)] = bias_variable([self.depth_deconv[d]])
 
     def decoder(self, z, epsilon):
         if z is None:
