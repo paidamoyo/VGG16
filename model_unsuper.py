@@ -70,6 +70,7 @@ def main():
             batch_x = generate_cluttered_MNIST(dims=[512, 512], nImages=params['batch_size'], clutter=0.1, numbers=[8],
                                                prob=0.1, train_set=train_set)
             norm = np.random.standard_normal([params['batch_size'], params['hidden_size']])
+            print(batch_x.shape)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, keep_prob: 0.5, epsilon: norm})
             writer.add_summary(summary=summary, global_step=step)
 
