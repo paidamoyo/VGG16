@@ -50,13 +50,13 @@ class ConvVae:
         print(y.get_shape)
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
-            y = deconv2d(y, w=self.weights[key], b=self.biases[key], strides=2, padding='VALID')
+            y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=2, padding='VALID')
         return y, mean, stddev
 
     def encoder(self, x, keep_prob):
         for c in range(self.num_conv):
             key = 'conv' + str(c)
-            x = conv2d(x, w=self.weights[key], b=self.biases[key], strides=2, padding='VALID')
+            x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=2, padding='VALID')
         x = tf.reshape(x, [-1, 3*3*256])
         for f in range(self.num_fc):
             key = 'fc' + str(f)
