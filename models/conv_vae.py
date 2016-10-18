@@ -53,7 +53,7 @@ class ConvVae:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
             else:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME') # to return even number (510 x 510)
-        return tf.pad(y, [[1, 1]]), mean, stddev
+        return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
 
     def encoder(self, x, keep_prob):
         for c in range(self.num_conv):
