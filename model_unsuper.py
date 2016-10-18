@@ -72,11 +72,11 @@ def main():
             sess.run(init)
             print_log("Mode training from scratch.", logging)
 
-        norm = np.random.normal(size=[1, params['hidden_size']])
+        norm = np.random.normal(size=[10, params['hidden_size']])
         image = sess.run([gen], feed_dict={epsilon: norm})
-        print(image[0].shape)
-        plt.imshow(np.ndarray.squeeze(image[0]))
-        plt.savefig(flags['logging_directory'] + 'image1')
+        for i in range(10):
+            plt.imshow(np.ndarray.squeeze(image[i]), cmap='gray')
+            plt.savefig(flags['logging_directory'] + 'image' + str(i))
         '''
         while step < params['training_iters']:
 
