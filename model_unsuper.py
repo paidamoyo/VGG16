@@ -16,26 +16,28 @@ flags = {
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
     'datasets': ['MNIST'],
-    'restore': False,
+    'restore': True,
     'restore_file': 'starting_point.ckpt'
 }
 
 
 params = {
     'image_dim': 512,
-    'batch_size': 32,  # must be divisible by 8
+    'batch_size': 64,  # must be divisible by 8
     'hidden_size': 10,
-    'display_step': 2,
-    'training_iters': 1500
+    'display_step': 5,
+    'training_iters': 500
 }
 
 
 def main():
-    seed = int(sys.argv[1])
+    seed = 14
+    batch = int(sys.argv[1])
+    params['batch_size'] = batch
     params['lr'] = generate_lr(int(sys.argv[2]))
     lr_str = str(params['lr'])
 
-    folder = str(seed) + '/'
+    folder = str(batch) + '/'
     aux_filenames = 'lr_' + lr_str + '_batch_%d' % params['batch_size']
     logging = setup_metrics(flags, aux_filenames, folder)
 
@@ -74,8 +76,6 @@ def main():
                                                nImages=params['batch_size'], clutter=0.1, numbers=[8],
                                                prob=0.1, train_set=train_set)
             norm = np.random.standard_normal([params['batch_size'], params['hidden_size']])
-            # printed_y = print_y.eval(session=sess, feed_dict={x: batch_x, keep_prob: 0.5, epsilon: norm})
-            # print(printed_y.shape)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, keep_prob: 0.5, epsilon: norm})
             writer.add_summary(summary=summary, global_step=step)
 
