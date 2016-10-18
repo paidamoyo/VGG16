@@ -28,7 +28,6 @@ class ConvVae:
             tf.histogram_summary("biases_" + k, self.biases[k])
 
     def init_params(self):
-        tf.random.seed(self.seed)
         for c in range(self.num_conv):
             self.weights['conv' + str(c)] = weight_variable([3, 3, self.depth_conv[c], self.depth_conv[c+1]])
             self.biases['conv' + str(c)] = bias_variable([self.depth_conv[c+1]])
