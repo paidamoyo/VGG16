@@ -21,9 +21,9 @@ flags = {
 
 params = {
     'image_dim': 512,
-    'batch_size': 128,  # must be divisible by 8
+    'batch_size': 32,  # must be divisible by 8
     'hidden_size': 10,
-    'display_step': 10,
+    'display_step': 5,
     'training_iters': 5000
 }
 
