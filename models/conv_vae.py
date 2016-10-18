@@ -49,11 +49,11 @@ class ConvVae:
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
             print(key)
-            if d == 7:
-                y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME')
-            else:
+            if d != 7:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
-        return y, mean, stddev
+            else:
+                y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME') # to return even number (510 x 510)
+        return tf.pad(y, [[1,1], [2,1]], "CONSTANT"), mean, stddev
 
     def encoder(self, x, keep_prob):
         for c in range(self.num_conv):
