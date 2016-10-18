@@ -41,7 +41,7 @@ def main():
     train_set, valid_set, test_set =  load_data(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
 
     # tf Graph input
-    x = tf.placeholder(tf.float32, [None, flags['image_dim'], flags['image_dim'], 1], name='x')  # input patches
+    x = tf.placeholder(tf.float32, [None, params['image_dim'], params['image_dim'], 1], name='x')  # input patches
     keep_prob = tf.placeholder(tf.float32, name='dropout')
     epsilon = tf.placeholder(tf.float32, [None, params['hidden_size']], name='epsilon')
 
@@ -68,7 +68,7 @@ def main():
         while step < params['training_iters']:
 
             print('Begin batch number: %d' % step)
-            batch_x = generate_cluttered_MNIST(dims=[flags['image_dim'], flags['image_dim']],
+            batch_x = generate_cluttered_MNIST(dims=[params['image_dim'], params['image_dim']],
                                                nImages=params['batch_size'], clutter=0.1, numbers=[8],
                                                prob=0.1, train_set=train_set)
             norm = np.random.standard_normal([params['batch_size'], params['hidden_size']])
