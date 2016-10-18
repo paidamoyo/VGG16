@@ -30,7 +30,7 @@ params = {
 
 def main():
     seed = '10-17-16'
-    params['lr'] = 0.0001
+    params['lr'] = 0.00075
     lr_str = '5e-4'
 
     folder = str(seed) + '/'
