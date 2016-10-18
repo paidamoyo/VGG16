@@ -75,7 +75,7 @@ def main():
         norm = np.random.normal(size=[10, params['hidden_size']])
         image = sess.run(gen, feed_dict={epsilon: norm})
         for i in range(10):
-            plt.imshow(image[i,:,:,1], cmap='gray')
+            plt.imshow(image[i,:,:,0], cmap='gray')
             plt.savefig(flags['logging_directory'] + 'image' + str(i))
         '''
         while step < params['training_iters']:
