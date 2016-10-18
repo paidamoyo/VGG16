@@ -76,7 +76,7 @@ def main():
             writer.add_summary(summary=summary, global_step=step)
 
             if step % params['display_step'] == 0:
-                loss = sess.run([cost], feed_dict={x: batch_x})
+                loss = sess.run([cost], feed_dict={x: batch_x, keep_prob: 0.5, epsilon: norm})
                 record_metrics(loss=loss, acc=None, batch_y=None, logging=logging, step=step, split=None)
             step += 1
 
