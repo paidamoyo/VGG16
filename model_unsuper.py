@@ -24,13 +24,13 @@ params = {
     'batch_size': 32,  # must be divisible by 8
     'hidden_size': 10,
     'display_step': 2,
-    'training_iters': 50
+    'training_iters': 5000
 }
 
 
 def main():
     seed = 3
-    params['lr'] = 0.00001
+    params['lr'] = 0.0001
     lr_str = '1e-3'
 
     folder = str(seed) + '/'
