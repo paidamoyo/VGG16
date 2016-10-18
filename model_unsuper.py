@@ -30,7 +30,7 @@ params = {
 
 def main():
     seed = 3
-    params['lr'] = 0.001
+    params['lr'] = 0.00001
     lr_str = '1e-3'
 
     folder = str(seed) + '/'
