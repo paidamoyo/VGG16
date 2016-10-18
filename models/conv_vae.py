@@ -6,7 +6,8 @@ from functions.tf import conv2d, deconv2d, fc, weight_variable, bias_variable
 
 
 class ConvVae:
-    def __init__(self, params):
+    def __init__(self, params, seed):
+        tf.set_random_seed(seed)
         self.weights = dict()
         self.biases = dict()
         self.hidden_size = params['hidden_size']
@@ -27,6 +28,7 @@ class ConvVae:
             tf.histogram_summary("biases_" + k, self.biases[k])
 
     def init_params(self):
+        tf.random.seed(self.seed)
         for c in range(self.num_conv):
             self.weights['conv' + str(c)] = weight_variable([3, 3, self.depth_conv[c], self.depth_conv[c+1]])
             self.biases['conv' + str(c)] = bias_variable([self.depth_conv[c+1]])

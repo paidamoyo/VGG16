@@ -1,9 +1,11 @@
 #!/usr/bin/env python
 
 import tensorflow as tf
+import sys
 
 import numpy as np
 from functions.record import record_metrics, print_log, setup_metrics
+from functions.data import generate_lr
 from models.conv_vae import ConvVae
 from data.clutterMNIST import load_data, generate_cluttered_MNIST
 
@@ -24,14 +26,14 @@ params = {
     'batch_size': 32,  # must be divisible by 8
     'hidden_size': 10,
     'display_step': 2,
-    'training_iters': 25000
+    'training_iters': 100
 }
 
 
 def main():
-    seed = '10-17-16'
-    params['lr'] = 0.0001
-    lr_str = '5e-4'
+    seed = sys.argv[0]
+    params['lr'] = generate_lr(sys.argv[1])
+    lr_str = str(params['lr'])
 
     folder = str(seed) + '/'
     aux_filenames = 'lr_' + lr_str + '_batch_%d' % params['batch_size']
@@ -46,7 +48,7 @@ def main():
     epsilon = tf.placeholder(tf.float32, [None, params['hidden_size']], name='epsilon')
 
     # Construct model and initialize
-    model = ConvVae(params)
+    model = ConvVae(params, seed)
     generated_img, cost, print_y = model.run(x=x, keep_prob=keep_prob, epsilon=epsilon)
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
     tf.scalar_summary("cost", cost)

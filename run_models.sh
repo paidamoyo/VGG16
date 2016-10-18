@@ -1,12 +1,9 @@
 #!/bin/bash
 
-for SEED in 3
+for SEED in 1 2 3 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20
 do
-    for LR in 2
+    for LR in 1 2 3 4 5
     do
-        for BATCH in 16
-        do
-            python model_3.py $SEED $LR $BATCH
-        done
+        python model_unsuper.py $SEED $LR
     done
 done
