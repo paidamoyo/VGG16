@@ -75,8 +75,8 @@ def main():
         norm = np.random.normal(size=[1, params['hidden_size']])
         image = sess.run([gen], feed_dict={epsilon: norm})
         print(image[0].shape)
-        plt.imshow(image[0])
-        plt.savefig(flags['logging_directory'] + 'image1.jpg')
+        plt.imshow(np.ndarray.squeeze(image[0]))
+        plt.savefig(flags['logging_directory'] + 'image1')
         '''
         while step < params['training_iters']:
 
