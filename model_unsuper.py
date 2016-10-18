@@ -72,8 +72,8 @@ def main():
                                                nImages=params['batch_size'], clutter=0.1, numbers=[8],
                                                prob=0.1, train_set=train_set)
             norm = np.random.standard_normal([params['batch_size'], params['hidden_size']])
-            printed_y = print_y.eval(session=sess, feed_dict={x: batch_x, keep_prob: 0.5, epsilon: norm})
-            print(printed_y.shape)
+            # printed_y = print_y.eval(session=sess, feed_dict={x: batch_x, keep_prob: 0.5, epsilon: norm})
+            # print(printed_y.shape)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, keep_prob: 0.5, epsilon: norm})
             writer.add_summary(summary=summary, global_step=step)
 
