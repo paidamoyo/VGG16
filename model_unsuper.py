@@ -72,6 +72,8 @@ def main():
             print_log("Mode training from scratch.", logging)
 
         norm = np.random.normal(size=[1, params['hidden_size']])
+        print(norm)
+        print(type(norm))
         image = sess.run([gen], feed_dict={epsilon: norm})
         scipy.misc.imsave(flags['logging_directory'] + 'image1.jpg', image)
         '''
