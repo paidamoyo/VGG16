@@ -75,6 +75,8 @@ def main():
         norm = np.random.normal(size=[10, params['hidden_size']])
         image = sess.run([gen], feed_dict={epsilon: norm})
         for i in range(10):
+            print(i)
+            print(image[i].shape)
             plt.imshow(np.ndarray.squeeze(image[i]), cmap='gray')
             plt.savefig(flags['logging_directory'] + 'image' + str(i))
         '''
