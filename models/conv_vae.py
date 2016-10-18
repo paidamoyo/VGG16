@@ -49,8 +49,7 @@ class ConvVae:
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
             y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
-        print_dims = tf.Print(y, [y])
-        return y, mean, stddev, print_dims
+        return y, mean, stddev
 
     def encoder(self, x, keep_prob):
         for c in range(self.num_conv):
@@ -72,7 +71,7 @@ class ConvVae:
     def run(self, x, keep_prob, epsilon):
         y, mean, stddev, print_dims = self.decoder(self.encoder(x, keep_prob), epsilon=epsilon)
         cost = self.init_cost(y, x, mean, stddev)
-        return y, cost, print_dims
+        return y, cost
 
     def get_params(self):
         return self.weights, self.biases

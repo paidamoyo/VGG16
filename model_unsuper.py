@@ -46,7 +46,7 @@ def main():
 
     # Construct model and initialize
     model = ConvVae(params)
-    generated_img, cost, print_dims = model.run(x=x, keep_prob=keep_prob, epsilon=epsilon)
+    generated_img, cost = model.run(x=x, keep_prob=keep_prob, epsilon=epsilon)
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
     tf.scalar_summary("cost", cost)
     merged = tf.merge_all_summaries()
@@ -70,7 +70,8 @@ def main():
             batch_x = generate_cluttered_MNIST(dims=[512, 512], nImages=params['batch_size'], clutter=0.1, numbers=[8],
                                                prob=0.1, train_set=train_set)
             norm = np.random.standard_normal([params['batch_size'], params['hidden_size']])
-            print_dims.eval(session=sess)
+            image = sess.run([generated_img])
+            print(image.shape)
             summary, _ = sess.run([merged, optimizer], feed_dict={x: batch_x, keep_prob: 0.5, epsilon: norm})
             writer.add_summary(summary=summary, global_step=step)
 
