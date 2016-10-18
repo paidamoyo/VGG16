@@ -35,7 +35,7 @@ def record_metrics(loss, acc, batch_y, logging, step, split):
     if step is not None or loss is not None:
         print(type(np.mean(loss)))
         print_log("Batch Number " + str(step) + ", Image Loss= " + "{:.6f}".format(np.mean(loss)), logging)
-    if batch_y is None or acc is None:
+    if batch_y is not None or acc is not None:
         print_log(np.squeeze(batch_y), logging)
         print_log(np.argmax(acc, 1), logging)
         auc, tp, fp, tn, fn, total = auc_roc(acc, batch_y)
