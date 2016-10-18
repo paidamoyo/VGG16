@@ -48,7 +48,7 @@ class ConvVae:
         y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
-            y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
+            y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME')
         return y, mean, stddev
 
     def encoder(self, x, keep_prob):
