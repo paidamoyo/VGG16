@@ -49,7 +49,7 @@ class ConvVae:
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
             print(key)
-            if d == 8:
+            if d == 7:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME')
             else:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
