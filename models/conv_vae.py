@@ -70,6 +70,7 @@ class ConvVae:
 
     def run(self, x, keep_prob, epsilon):
         y, mean, stddev = self.decoder(self.encoder(x, keep_prob), epsilon=epsilon)
+        tf.pad(y, )
         cost = self.init_cost(y, x, mean, stddev)
         return y, cost
 
