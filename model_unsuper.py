@@ -26,7 +26,7 @@ params = {
     'batch_size': 32,  # must be divisible by 8
     'hidden_size': 10,
     'display_step': 2,
-    'training_iters': 100
+    'training_iters': 1500
 }
 
 
