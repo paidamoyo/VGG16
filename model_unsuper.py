@@ -74,8 +74,8 @@ def main():
         norm = np.random.normal(size=[1, params['hidden_size']])
         image = sess.run([gen], feed_dict={epsilon: norm})
         print(image)
-        print(type(image))
-        scipy.misc.imsave(flags['logging_directory'] + 'image1.jpg', image)
+        print(type(image[0]))
+        scipy.misc.imsave(flags['logging_directory'] + 'image1.jpg', image[0])
         '''
         while step < params['training_iters']:
 
