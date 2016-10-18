@@ -3,6 +3,7 @@
 import tensorflow as tf
 import sys
 import scipy.misc
+import matplotlib.pyplot as plt
 
 import numpy as np
 from functions.record import record_metrics, print_log, setup_metrics
@@ -73,9 +74,9 @@ def main():
 
         norm = np.random.normal(size=[1, params['hidden_size']])
         image = sess.run([gen], feed_dict={epsilon: norm})
-        print(image)
-        print(type(image[0]))
-        scipy.misc.imsave(flags['logging_directory'] + 'image1.jpg', image[0])
+        print(image[0].shape)
+        plt.imshow(image[0])
+        plt.savefig(flags['logging_directory'] + 'image1.jpg')
         '''
         while step < params['training_iters']:
 
