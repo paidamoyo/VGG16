@@ -29,16 +29,16 @@ params = {
 
 
 def main():
-    seed = 3
+    seed = '10-17-16'
     params['lr'] = 0.0005
-    lr_str = '1e-3'
+    lr_str = '5e-4'
 
     folder = str(seed) + '/'
     aux_filenames = 'lr_' + lr_str + '_batch_%d' % params['batch_size']
     logging = setup_metrics(flags, aux_filenames, folder)
 
     # Import Data
-    train_set, valid_set, test_set =  load_data(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
+    train_set, valid_set, test_set = load_data(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
 
     # tf Graph input
     x = tf.placeholder(tf.float32, [None, params['image_dim'], params['image_dim'], 1], name='x')  # input patches
