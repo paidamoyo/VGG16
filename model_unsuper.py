@@ -31,8 +31,8 @@ params = {
 
 
 def main():
-    seed = int(sys.argv[0])
-    params['lr'] = generate_lr(int(sys.argv[1]))
+    seed = int(sys.argv[1])
+    params['lr'] = generate_lr(int(sys.argv[2]))
     lr_str = str(params['lr'])
 
     folder = str(seed) + '/'
