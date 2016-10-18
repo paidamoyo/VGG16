@@ -70,9 +70,9 @@ class ConvVae:
 
     def run(self, x, keep_prob, epsilon):
         y, mean, stddev = self.decoder(self.encoder(x, keep_prob), epsilon=epsilon)
-        tf.pad(y, )
+        print_y = tf.Print(y, [y])
         cost = self.init_cost(y, x, mean, stddev)
-        return y, cost
+        return y, cost, print_y
 
     def get_params(self):
         return self.weights, self.biases
