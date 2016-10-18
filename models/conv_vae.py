@@ -48,7 +48,7 @@ class ConvVae:
         y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
-            if d == 6:
+            if d == 6 or d==5:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME')
             else:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
