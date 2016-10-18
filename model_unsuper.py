@@ -32,6 +32,7 @@ params = {
 
 def main():
     seed = sys.argv[0]
+    print(type(seed))
     params['lr'] = generate_lr(sys.argv[1])
     lr_str = str(params['lr'])
 
@@ -48,7 +49,7 @@ def main():
     epsilon = tf.placeholder(tf.float32, [None, params['hidden_size']], name='epsilon')
 
     # Construct model and initialize
-    model = ConvVae(params, int(seed))
+    model = ConvVae(params, int(float(seed)))
     generated_img, cost, print_y = model.run(x=x, keep_prob=keep_prob, epsilon=epsilon)
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
     tf.scalar_summary("cost", cost)
