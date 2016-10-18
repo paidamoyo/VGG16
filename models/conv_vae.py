@@ -49,7 +49,6 @@ class ConvVae:
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
             y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
-            print(y.get_shape())
         return y, mean, stddev
 
     def encoder(self, x, keep_prob):
