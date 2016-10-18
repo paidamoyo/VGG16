@@ -48,7 +48,7 @@ def main():
     epsilon = tf.placeholder(tf.float32, [None, params['hidden_size']], name='epsilon')
 
     # Construct model and initialize
-    model = ConvVae(params, seed)
+    model = ConvVae(params, 3)
     generated_img, cost, print_y = model.run(x=x, keep_prob=keep_prob, epsilon=epsilon)
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
     tf.scalar_summary("cost", cost)
