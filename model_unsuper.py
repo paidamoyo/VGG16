@@ -2,6 +2,7 @@
 
 import tensorflow as tf
 import sys
+import scipy.misc
 
 import numpy as np
 from functions.record import record_metrics, print_log, setup_metrics
@@ -51,7 +52,7 @@ def main():
 
     # Construct model and initialize
     model = ConvVae(params, seed)
-    generated_img, cost, print_y = model.run(x=x, keep_prob=keep_prob, epsilon=epsilon)
+    generated_img, cost, gen = model.run(x=x, keep_prob=keep_prob, epsilon=epsilon)
     optimizer = tf.train.AdamOptimizer(learning_rate=params['lr']).minimize(cost)
     tf.scalar_summary("cost", cost)
     merged = tf.merge_all_summaries()
@@ -69,6 +70,11 @@ def main():
         else:
             sess.run(init)
             print_log("Mode training from scratch.", logging)
+
+        norm = np.random.normal(size=[1, params['hidden_size']])
+        image = sess.run([gen], feed_dict={epsilon: norm})
+        scipy.misc.imsave(flags['logging_directory'] + 'image1.jpg', image)
+        '''
         while step < params['training_iters']:
 
             print('Begin batch number: %d' % step)
@@ -88,6 +94,7 @@ def main():
         checkpoint_name = flags['logging_directory'] + aux_filenames + '.ckpt'
         save_path = saver.save(sess, checkpoint_name)
         print("Model saved in file: %s" % save_path)
+        '''
 
 if __name__ == "__main__":
     main()

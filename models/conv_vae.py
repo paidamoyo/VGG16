@@ -70,13 +70,16 @@ class ConvVae:
         vae = tf.reduce_sum(-target_tensor * tf.log(output_tensor + epsilon) -
                             (1.0 - target_tensor) * tf.log(1.0 - output_tensor + epsilon))
         recon = tf.reduce_sum(0.5 * (tf.square(mean) + tf.square(stddev) - 2.0 * tf.log(stddev + epsilon) - 1.0))
-        return vae + recon
+        return tf.reduce_mean(vae + recon)
 
     def run(self, x, keep_prob, epsilon):
         y, mean, stddev = self.decoder(self.encoder(x, keep_prob), epsilon=epsilon)
+        gen, _, _ = self.decoder(z=None, epsilon=epsilon)
         print_y = tf.Print(y, [y])
         cost = self.init_cost(y, x, mean, stddev)
-        return y, cost, print_y
+        return y, cost, gen
 
     def get_params(self):
         return self.weights, self.biases
+
+
