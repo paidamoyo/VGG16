@@ -90,7 +90,7 @@ class ConvVae:
         y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
-            if d != self.num_deconv - 2:
+            if d != self.num_deconv - 1:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
             else:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME')  # to return even number (510 x 510)
