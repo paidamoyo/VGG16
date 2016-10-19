@@ -48,7 +48,7 @@ class ConvVae:
                        'layers': [3*3*128, params['hidden_size'] * 2]}
             self.fc_num = len(self.fc['layers'])-1
             self.deconv = {'input': params['hidden_size'],
-                           'layers': [(128, 5, 1, 'VALID'), (64, 5, 1, 'VALID'), (32, 5, 2, 'SAME')]}  #, (1, 5, 2, 'SAME')]}
+                           'layers': [(128, 5, 1, 'VALID'), (64, 5, 1, 'VALID')]}  #, (32, 5, 2, 'SAME')]}  #, (1, 5, 2, 'SAME')]}
             self.deconv_num = len(self.deconv['layers'])
 
     def summary(self):
