@@ -26,7 +26,7 @@ class ConvVae:
         self.cost, self.optimizer = self._create_loss_optimizer()
         self.saver = tf.train.Saver()
         self.merged = tf.merge_all_summaries()
-        # self.summary()
+        self.summary()
 
         # Launch the session
         self.sess = tf.InteractiveSession()
