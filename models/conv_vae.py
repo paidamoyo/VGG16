@@ -173,12 +173,12 @@ class ConvVae:
             print('Begin batch number: %d' % step)
             batch_x = batch_generating_fxn()
             norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
-            summary = self.sess.run(self.merged, feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
-            self.writer.add_summary(summary=summary, global_step=step)
+            summary, _ = self.sess.run([self.merged, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
 
             if step % self.params['display_step'] == 0:
-                self.sess.run([self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
-                # record_metrics(loss=loss, acc=None, batch_y=None, logging=self.logging, step=step, split=None)
+                summary, loss, _ = self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
+                record_metrics(loss=loss, acc=None, batch_y=None, logging=self.logging, step=step, split=None)
+            self.writer.add_summary(summary=summary, global_step=step)
             step += 1
 
         print("Optimization Finished!")
