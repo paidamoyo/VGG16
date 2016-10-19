@@ -25,7 +25,6 @@ flags = {
 
 params = {
     'image_dim': 32,
-    'batch_size': 32,  # must be divisible by 8
     'hidden_size': 32,
     'display_step': 5,
     'training_iters': 500
@@ -36,7 +35,7 @@ def main():
 
     seed = 14
     # batch = int(sys.argv[1])
-    batch = 128
+    batch = 64
     params['batch_size'] = batch
     params['lr'] = 0.00005  # generate_lr(int(sys.argv[2]))
     lr_str = str(params['lr'])
