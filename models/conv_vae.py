@@ -28,7 +28,6 @@ class ConvVae:
         self.summary()
         self.merged = tf.merge_all_summaries()
 
-
         # Launch the session
         self.sess = tf.InteractiveSession()
 
@@ -41,21 +40,6 @@ class ConvVae:
             print_log("Mode training from scratch.", logging)
 
     def _define_layers(self, params):
-        if params['image_dim'] == 512:
-            self.depth_conv = [1, 32, 32, 64, 64, 128, 128, 256]
-            self.conv_num = len(self.depth_conv) - 1
-            self.depth_fc = [3 * 3 * 256, 256, params['hidden_size'] * 2]
-            self.fc_num = len(self.depth_fc) - 1
-            self.depth_deconv = [params['hidden_size'], 256, 128, 128, 64, 64, 32, 32, 1]
-            self.deconv_num = len(self.depth_deconv) - 1
-        if params['image_dim'] == 128:
-            self.depth_conv = [1, 32, 64, 64, 128, 128]
-            self.conv_num = len(self.depth_conv) - 1
-            self.depth_fc = [3 * 3 * 128, 1024, params['hidden_size'] * 2]
-            self.fc_num = len(self.depth_fc) - 1
-            self.depth_deconv = [params['hidden_size'], 128, 128, 64, 64, 32, 1]
-            self.deconv_num = len(self.depth_deconv) - 1
-            self.fc_reshape = [-1, 3*3*128]
         if params['image_dim'] == 28:
             self.conv = {'input': 1,
                          'layers': [(32, 5, 2, 'SAME'), (64, 5, 2, 'SAME'), (128, 5, 1, 'VALID')]}
@@ -64,7 +48,7 @@ class ConvVae:
                        'layers': [3*3*128, params['hidden_size'] * 2]}
             self.fc_num = len(self.fc['layers'])-1
             self.deconv = {'input': params['hidden_size'],
-                           'layers': [(128, 5, 1, 'VALID'), (64, 5, 1, 'VALID'), (32, 5, 2, 'SAME'), (1, 5, 2, 'SAME')]}
+                           'layers': [(128, 5, 1, 'VALID'), (64, 5, 1, 'VALID'), (32, 5, 2, 'SAME')]}  #, (1, 5, 2, 'SAME')]}
             self.deconv_num = len(self.deconv['layers'])
 
     def summary(self):
@@ -126,8 +110,6 @@ class ConvVae:
         for d in range(self.deconv_num):
             key = 'deconv' + str(d)
             print(key)
-            print(self.weights[key])
-            print(self.biases[key])
             y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=self.deconv['layers'][d][2], padding=self.deconv['layers'][d][3])
         return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
 
@@ -207,3 +189,22 @@ class ConvVae:
         checkpoint_name = self.flags['logging_directory'] + aux_filenames + '.ckpt'
         save_path = self.saver.save(self.sess, checkpoint_name)
         print("Model saved in file: %s" % save_path)
+
+
+'''
+        if params['image_dim'] == 512:
+            self.depth_conv = [1, 32, 32, 64, 64, 128, 128, 256]
+            self.conv_num = len(self.depth_conv) - 1
+            self.depth_fc = [3 * 3 * 256, 256, params['hidden_size'] * 2]
+            self.fc_num = len(self.depth_fc) - 1
+            self.depth_deconv = [params['hidden_size'], 256, 128, 128, 64, 64, 32, 32, 1]
+            self.deconv_num = len(self.depth_deconv) - 1
+        if params['image_dim'] == 128:
+            self.depth_conv = [1, 32, 64, 64, 128, 128]
+            self.conv_num = len(self.depth_conv) - 1
+            self.depth_fc = [3 * 3 * 128, 1024, params['hidden_size'] * 2]
+            self.fc_num = len(self.depth_fc) - 1
+            self.depth_deconv = [params['hidden_size'], 128, 128, 64, 64, 32, 1]
+            self.deconv_num = len(self.depth_deconv) - 1
+            self.fc_reshape = [-1, 3*3*128]
+            '''
