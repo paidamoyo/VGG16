@@ -104,7 +104,7 @@ class ConvVae:
         x = self.x
         for c in range(self.conv_num):
             key = 'conv' + str(c)
-            x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=self.depth_conv[c][2], padding=self.depth_conv[c][3])
+            x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=self.conv['layers'][c][2], padding=self.conv['layers'][c][3])
         print(x.get_shape())
         x = tf.reshape(x, self.fc['reshape'])
         for f in range(self.fc_num):
@@ -125,8 +125,8 @@ class ConvVae:
         y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
         for d in range(self.deconv_num):
             key = 'deconv' + str(d)
-            y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=self.depth_deconv[d][2],
-                       padding=self.depth_deconv[d][3])
+            y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=self.deconv['layers'][d][2],
+                       padding=self.deconv['layers'][d][3])
         return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
 
     def _create_network(self):
