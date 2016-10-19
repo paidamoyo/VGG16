@@ -57,7 +57,7 @@ class ConvVae:
             self.num_deconv = len(self.depth_deconv) - 1
             self.fc_reshape = [-1, 3*3*128]
         if params['image_dim'] == 32:
-            self.depth_conv = [1, 16, 32, 64]
+            self.depth_conv = [1, 32, 64, 128]
             self.num_conv = len(self.depth_conv) - 1
             self.depth_fc = [64*9, params['hidden_size'] * 2]
             self.num_fc = len(self.depth_fc) - 1
@@ -108,11 +108,9 @@ class ConvVae:
 
     def encoder(self):
         x = self.x
-        print(self.num_conv)
         for c in range(self.num_conv):
             key = 'conv' + str(c)
-            x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=2, padding='VALID')
-        print(x.get_shape())
+            x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=2, padding='SAME')
         x = tf.reshape(x, self.fc_reshape)
         for f in range(self.num_fc):
             key = 'fc' + str(f)
