@@ -4,7 +4,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
 
-from functions.tf import conv2d, deconv2d, fc, weight_variable, bias_variable
+from functions.tf import conv2d, deconv2d, fc, weight_variable, bias_variable, deconv_weight_variable
 from functions.record import print_log, record_metrics
 
 
@@ -83,7 +83,7 @@ class ConvVae:
             weights['fc' + str(f)] = weight_variable('fc' + str(f), [self.depth_fc[f], self.depth_fc[f+1]])
             biases['fc' + str(f)] = bias_variable('fc' + str(f), [self.depth_fc[f+1]])
         for d in range(self.num_deconv):
-            weights['deconv' + str(d)] = weight_variable('deconv' + str(d), [3, 3, self.depth_deconv[d+1], self.depth_deconv[d]])
+            weights['deconv' + str(d)] = deconv_weight_variable('deconv' + str(d), [3, 3, self.depth_deconv[d+1], self.depth_deconv[d]])
         return weights, biases
 
     def encoder(self):

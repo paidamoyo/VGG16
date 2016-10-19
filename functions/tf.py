@@ -6,7 +6,23 @@ from tensorflow.python.framework import tensor_shape
 
 
 def weight_variable(name, shape):
-    initial = xavier_init(shape)
+    if len(shape) == 4:
+        fan_in = shape[0] * shape[1] * shape[2]
+        fan_out = shape[0] * shape[1] * shape[3]
+    else:  # len(shape) == 2:
+        fan_in = shape[0]
+        fan_out = shape[1]
+    initial = xavier_init(fan_in, fan_out, shape)
+    return tf.Variable(initial, name=name)
+
+def deconv_weight_variable(name, shape):
+    if len(shape) == 4:
+        fan_in = shape[0] * shape[1] * shape[3]
+        fan_out = shape[0] * shape[1] * shape[2]
+    else:  # len(shape) == 2:
+        fan_in = shape[0]
+        fan_out = shape[1]
+    initial = xavier_init(fan_in, fan_out, shape)
     return tf.Variable(initial, name=name)
 
 
@@ -15,15 +31,9 @@ def bias_variable(name, shape, value=0.0):
     return tf.Variable(initial, name)
 
 
-def xavier_init(shape, constant=1):
+def xavier_init(fan_in, fan_out, shape, constant=1):
     """ Xavier initialization of network weights"""
     # https://stackoverflow.com/questions/33640581/how-to-do-xavier-initialization-on-tensorflow
-    if len(shape) == 4:
-        fan_in = shape[0] * shape[1] * shape[2]
-        fan_out = shape[0] * shape[1] * shape[3]
-    else:  # len(shape) == 2:
-        fan_in = shape[0]
-        fan_out = shape[1]
     low = -constant*np.sqrt(6.0/(fan_in + fan_out))
     high = constant*np.sqrt(6.0/(fan_in + fan_out))
     return tf.random_uniform(shape, minval=low, maxval=high, dtype=tf.float32)
