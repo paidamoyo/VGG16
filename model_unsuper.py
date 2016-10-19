@@ -35,7 +35,7 @@ def main():
 
     seed = 14
     # batch = int(sys.argv[1])
-    batch = 128
+    batch = 32
     params['batch_size'] = batch
     params['lr'] = 0.00005  # generate_lr(int(sys.argv[2]))
     lr_str = str(params['lr'])
