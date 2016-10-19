@@ -88,8 +88,8 @@ class ConvVae:
             weights['conv' + str(c)] = weight_variable('conv' + str(c), [i[1], i[1], previous, i[0]])
             biases['conv' + str(c)] = bias_variable('conv' + str(c), [i[0]])
         for f in range(self.fc_num):
-            weights['fc' + str(f)] = weight_variable('fc' + str(f), [self.depth_fc[f], self.depth_fc[f+1]])
-            biases['fc' + str(f)] = bias_variable('fc' + str(f), [self.depth_fc[f+1]])
+            weights['fc' + str(f)] = weight_variable('fc' + str(f), [self.fc['layers'][f], self.fc['layers'][f+1]])
+            biases['fc' + str(f)] = bias_variable('fc' + str(f), [self.fc['layers'][f+1]])
         for d in range(self.deconv_num):
             i = self.deconv['layers'][d]
             if d == 0:
@@ -106,7 +106,7 @@ class ConvVae:
             key = 'conv' + str(c)
             x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=self.depth_conv[c][2], padding=self.depth_conv[c][3])
         print(x.get_shape())
-        x = tf.reshape(x, self.fc_reshape)
+        x = tf.reshape(x, self.fc['reshape'])
         for f in range(self.fc_num):
             key = 'fc' + str(f)
             x = tf.nn.dropout(x, keep_prob=self.keep_prob)
