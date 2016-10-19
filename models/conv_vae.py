@@ -22,7 +22,7 @@ class ConvVae:
 
         self._define_layers(params)
         self.weights, self.biases = self._initialize_variables()
-        self.x_reconst, self.mean, self.stddev, self.gen = self._create_network()
+        self.x_reconst, self.mean, self.stddev, = self._create_network()
         self.cost, self.optimizer = self._create_loss_optimizer()
         self.saver = tf.train.Saver()
         self.merged = tf.merge_all_summaries()
@@ -120,7 +120,7 @@ class ConvVae:
     def _create_network(self):
         x_reconst, mean, stddev = self.decoder(self.encoder())
         # gen, _, _ = self.decoder(z=None)
-        return x_reconst, mean, stddev, gen
+        return x_reconst, mean, stddev
 
     def print_variable(self, var):
         if var == 'x_reconst':
