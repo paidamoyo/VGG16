@@ -55,13 +55,15 @@ class ConvVae:
             self.num_fc = len(self.depth_fc) - 1
             self.depth_deconv = [params['hidden_size'], 128, 128, 64, 64, 32, 1]
             self.num_deconv = len(self.depth_deconv) - 1
+            self.fc_reshape = [-1, 3*3*128]
         if params['image_dim'] == 32:
-            self.depth_conv = [1, 64, 64, 128, 128]
+            self.depth_conv = [1, 64, 64, 64, 128, 128]
             self.num_conv = len(self.depth_conv) - 1
-            self.depth_fc = [3 * 3 * 128, 1024, params['hidden_size'] * 2]
+            self.depth_fc = [3 * 3 * 128, 512, params['hidden_size'] * 2]
             self.num_fc = len(self.depth_fc) - 1
             self.depth_deconv = [params['hidden_size'], 128, 128, 64, 64, 32, 1]
             self.num_deconv = len(self.depth_deconv) - 1
+            self.fc_reshape = [-1, ]
 
     def summary(self):
         for k in self.weights.keys():
@@ -108,7 +110,7 @@ class ConvVae:
             key = 'conv' + str(c)
             x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=2, padding='VALID')
         print(x.get_shape())
-        x = tf.reshape(x, [-1, 3*3*128])
+        x = tf.reshape(x, self.fc_reshape)
         for f in range(self.num_fc):
             key = 'fc' + str(f)
             print(key)
