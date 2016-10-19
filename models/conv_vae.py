@@ -81,7 +81,7 @@ class ConvVae:
             else:
                 previous = self.deconv['layers'][d-1][0]
             weights['deconv' + str(d)] = deconv_weight_variable('deconv' + str(d), [i[1], i[1], i[0], previous])
-            biases['deconv' + str(d)] = bias_variable('deconv' + str(d), [previous])
+            biases['deconv' + str(d)] = bias_variable('deconv' + str(d), i[0])
         return weights, biases
 
     def encoder(self):
