@@ -97,7 +97,6 @@ class ConvVae:
         if self.params['image_dim'] == 512:
             return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
         if self.params['image_dim'] == 128:
-            print('Returning x_reconst')
             return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
         else:
             print('Reconstructed Image pad is not defined for Image Dimensions of %d' % self.params['image_dims'])
@@ -120,7 +119,7 @@ class ConvVae:
 
     def _create_network(self):
         x_reconst, mean, stddev = self.decoder(self.encoder())
-        gen, _, _ = self.decoder(z=None)
+        # gen, _, _ = self.decoder(z=None)
         return x_reconst, mean, stddev, gen
 
     def print_variable(self, var):
