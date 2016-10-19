@@ -60,8 +60,8 @@ class ConvVae:
             self.conv = {'input': 1,
                          'layers': [(32, 5, 2, 'SAME'), (64, 5, 2, 'SAME'), (128, 5, 1, 'VALID')]}
             self.conv_num = len(self.conv['layers'])
-            self.fc = {'reshape': [-1, 4*128],
-                       'layers': [4*128, params['hidden_size'] * 2]}
+            self.fc = {'reshape': [-1, 3*3*128],
+                       'layers': [3*3*128, params['hidden_size'] * 2]}
             self.fc_num = len(self.fc['layers'])-1
             self.deconv = {'input': params['hidden_size'],
                            'layers': [(128, 5, 1, 'VALID'), (64, 5, 1, 'VALID'), (32, 5, 2, 'SAME'), (1, 5, 2, 'SAME')]}
