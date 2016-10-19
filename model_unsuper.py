@@ -25,7 +25,7 @@ flags = {
 
 params = {
     'image_dim': 32,
-    'hidden_size': 16,
+    'hidden_size': 10,
     'display_step': 5,
     'training_iters': 50000
 }
@@ -35,9 +35,9 @@ def main():
 
     seed = 14
     # batch = int(sys.argv[1])
-    batch = 32
+    batch = 128
     params['batch_size'] = batch
-    params['lr'] = 0.00001  # generate_lr(int(sys.argv[2]))
+    params['lr'] = 0.001  # generate_lr(int(sys.argv[2]))
     lr_str = str(params['lr'])
 
     folder = str(batch) + '/'
