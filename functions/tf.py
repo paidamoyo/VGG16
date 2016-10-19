@@ -15,6 +15,7 @@ def weight_variable(name, shape):
     initial = xavier_init(fan_in, fan_out, shape)
     return tf.Variable(initial, name=name)
 
+
 def deconv_weight_variable(name, shape):
     if len(shape) == 4:
         fan_in = shape[0] * shape[1] * shape[3]
@@ -42,7 +43,7 @@ def xavier_init(fan_in, fan_out, shape, constant=1):
 def conv2d(img, w, b, stride=1, padding='SAME'):
     img = tf.nn.conv2d(img, w, strides=[1, stride, stride, 1], padding=padding)
     img = tf.nn.bias_add(img, b)
-    return tf.nn.relu(img)
+    return tf.nn.tanh(img)
 
 
 def maxpool2d(x, k=2):

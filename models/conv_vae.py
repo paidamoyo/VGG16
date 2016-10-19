@@ -77,13 +77,13 @@ class ConvVae:
     def _initialize_variables(self):
         weights, biases = dict(), dict()
         for c in range(self.num_conv):
-            weights['conv' + str(c)] = weight_variable('conv' + str(c), [3, 3, self.depth_conv[c], self.depth_conv[c+1]])
+            weights['conv' + str(c)] = weight_variable('conv' + str(c), [5, 5, self.depth_conv[c], self.depth_conv[c+1]])
             biases['conv' + str(c)] = bias_variable('conv' + str(c), [self.depth_conv[c+1]])
         for f in range(self.num_fc):
             weights['fc' + str(f)] = weight_variable('fc' + str(f), [self.depth_fc[f], self.depth_fc[f+1]])
             biases['fc' + str(f)] = bias_variable('fc' + str(f), [self.depth_fc[f+1]])
         for d in range(self.num_deconv):
-            weights['deconv' + str(d)] = deconv_weight_variable('deconv' + str(d), [3, 3, self.depth_deconv[d+1], self.depth_deconv[d]])
+            weights['deconv' + str(d)] = deconv_weight_variable('deconv' + str(d), [5, 5, self.depth_deconv[d+1], self.depth_deconv[d]])
         return weights, biases
 
     def encoder(self):
