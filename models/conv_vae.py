@@ -110,6 +110,8 @@ class ConvVae:
         x = tf.reshape(x, [-1, 3*3*256])
         for f in range(self.num_fc):
             key = 'fc' + str(f)
+            print(key)
+            print(x.get_shape())
             x = fc(x, w=self.weights[key], b=self.biases[key])
             x = tf.nn.dropout(x, keep_prob=self.keep_prob)
         return x
