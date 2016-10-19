@@ -1,17 +1,32 @@
 #!/usr/bin/env python
 
 import tensorflow as tf
+import numpy as np
 from tensorflow.python.framework import tensor_shape
 
 
-def weight_variable(shape, mean=0, stddev=0.1):
-    initial = tf.truncated_normal(shape, mean=mean, stddev=stddev, dtype=tf.float32)
-    return tf.Variable(initial)
+def weight_variable(name, shape):
+    initial = xavier_init(shape)
+    return tf.Variable(initial, name=name)
 
 
-def bias_variable(shape, value=0.1):
+def bias_variable(name, shape, value=0.0):
     initial = tf.constant(value, shape=shape, dtype=tf.float32)
-    return tf.Variable(initial)
+    return tf.Variable(initial, name)
+
+
+def xavier_init(shape, constant=1):
+    """ Xavier initialization of network weights"""
+    # https://stackoverflow.com/questions/33640581/how-to-do-xavier-initialization-on-tensorflow
+    if len(shape) == 4:
+        fan_in = shape[0] * shape[1] * shape[2]
+        fan_out = shape[0] * shape[1] * shape[3]
+    else:  # len(shape) == 2:
+        fan_in = shape[0]
+        fan_out = shape[1]
+    low = -constant*np.sqrt(6.0/(fan_in + fan_out))
+    high = constant*np.sqrt(6.0/(fan_in + fan_out))
+    return tf.random_uniform(shape, minval=low, maxval=high, dtype=tf.float32)
 
 
 def conv2d(img, w, b, stride=1, padding='SAME'):

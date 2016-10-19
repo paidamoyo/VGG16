@@ -78,7 +78,7 @@ def generate_cluttered_MNIST(dims, nImages, numbers, prob, clutter, train_set):
     for k in range(nImages):
         # Add in MNIST digits
         for i in numbers:
-            if prob > np.random.uniform(low=0, high=1):
+            if prob < np.random.uniform(low=0, high=1):
                 continue
             else:
                 # Randomly select MNIST data of the correct digit
@@ -94,21 +94,23 @@ def generate_cluttered_MNIST(dims, nImages, numbers, prob, clutter, train_set):
                 images[k, x:x + 28, y:y + 28] += digit
 
         # Add in clutter
-        for j in range(clutterPatches):
-            # Randomly select MNIST digit
-            index = np.random.choice(len(train_set[1]))
-            digit = np.reshape(train_set[0][index, :], (28, 28))
+        if clutterPatches != 0:
+            for j in range(clutterPatches):
+                # Randomly select MNIST digit
+                index = np.random.choice(len(train_set[1]))
+                digit = np.reshape(train_set[0][index, :], (28, 28))
 
-            # Randomly select patch of selected digit
-            px = np.random.randint(low=0, high=28 - 8)
-            py = np.random.randint(low=0, high=28 - 8)
+                # Randomly select patch of selected digit
+                px = np.random.randint(low=0, high=28 - 8)
+                py = np.random.randint(low=0, high=28 - 8)
 
-            # Randomly choose location to insert clutter
-            x = np.random.randint(low=0, high=dims[0] - 28)
-            y = np.random.randint(low=0, high=dims[1] - 28)
+                # Randomly choose location to insert clutter
+                x = np.random.randint(low=0, high=dims[0] - 28)
+                y = np.random.randint(low=0, high=dims[1] - 28)
 
-            # Insert digit fragment
-            images[k, x:x + 8, y:y + 8] += digit[px:px + 8, py:py + 8]
+                # Insert digit fragment
+                images[k, x:x + 8, y:y + 8] += digit[px:px + 8, py:py + 8]
+
 
         # Renormalize image
         images[k, :, :] = images[k, :, :] / images[k, :, :].max()
