@@ -25,8 +25,9 @@ class ConvVae:
         self.x_reconst, self.mean, self.stddev, self.gen = self._create_network()
         self.cost, self.optimizer = self._create_loss_optimizer()
         self.saver = tf.train.Saver()
-        self.merged = tf.merge_all_summaries()
         self.summary()
+        self.merged = tf.merge_all_summaries()
+
 
         # Launch the session
         self.sess = tf.InteractiveSession()
