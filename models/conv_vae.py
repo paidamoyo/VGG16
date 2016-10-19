@@ -172,7 +172,7 @@ class ConvVae:
             print('Begin batch number: %d' % step)
             batch_x = batch_generating_fxn()
             norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
-            summary = self.sess.run([self.merged, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
+            summary = self.sess.run(self.merged, feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
             self.writer.add_summary(summary=summary, global_step=step)
 
             if step % self.params['display_step'] == 0:
