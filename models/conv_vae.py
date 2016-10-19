@@ -56,12 +56,10 @@ class ConvVae:
             self.num_deconv = len(self.depth_deconv) - 1
 
     def summary(self):
-        '''
         for k in self.weights.keys():
             tf.histogram_summary("weights_" + k, self.weights[k])
         for k in self.biases.keys():
             tf.histogram_summary("biases_" + k, self.biases[k])
-        '''
         tf.scalar_summary("cost", self.cost)
         tf.image_summary("x", self.x)
         tf.image_summary("x_reconst", self.x_reconst)
@@ -174,8 +172,8 @@ class ConvVae:
             print('Begin batch number: %d' % step)
             batch_x = batch_generating_fxn()
             norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
-            self.sess.run(self.optimizer, feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
-            # self.writer.add_summary(summary=summary, global_step=step)
+            summary, _ = self.sess.run([self.merged, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
+            self.writer.add_summary(summary=summary, global_step=step)
 
             if step % self.params['display_step'] == 0:
                 self.sess.run([self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
