@@ -82,10 +82,10 @@ class ConvVae:
         for c in range(self.conv_num):
             i = self.conv['layers'][c]
             if c == 0:
-                i_1[0] = self.conv['input']
+                previous = self.conv['input']
             else:
-                i_1 = self.conv['layers'][c-1]
-            weights['conv' + str(c)] = weight_variable('conv' + str(c), [i[1], i[1], i_1[0], i[0]])
+                previous = self.conv['layers'][c-1]
+            weights['conv' + str(c)] = weight_variable('conv' + str(c), [i[1], i[1], previous, i[0]])
             biases['conv' + str(c)] = bias_variable('conv' + str(c), [i[0]])
         for f in range(self.fc_num):
             weights['fc' + str(f)] = weight_variable('fc' + str(f), [self.depth_fc[f], self.depth_fc[f+1]])
@@ -93,10 +93,10 @@ class ConvVae:
         for d in range(self.deconv_num):
             i = self.deconv['layers'][d]
             if d == 0:
-                i_1[0] = self.deconv['input']
+                previous = self.deconv['input']
             else:
-                i_1 = self.deconv['layers'][d-1]
-            weights['deconv' + str(d)] = deconv_weight_variable('deconv' + str(d), [i[1], i[1], i[0], i_1[0]])
+                previous = self.deconv['layers'][d-1]
+            weights['deconv' + str(d)] = deconv_weight_variable('deconv' + str(d), [i[1], i[1], i[0], previous])
             biases['deconv' + str(d)] = bias_variable('deconv' + str(d), [i_1[0]])
         return weights, biases
 
