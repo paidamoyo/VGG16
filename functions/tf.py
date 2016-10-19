@@ -7,22 +7,22 @@ from tensorflow.python.framework import tensor_shape
 
 def weight_variable(name, shape):
     if len(shape) == 4:
-        fan_in = shape[0] * shape[1] * shape[2]
-        fan_out = shape[0] * shape[1] * shape[3]
+        fan_in = int(shape[0]) * int(shape[1]) * int(shape[2])
+        fan_out = int(shape[0]) * int(shape[1]) * int(shape[3])
     else:  # len(shape) == 2:
-        fan_in = shape[0]
-        fan_out = shape[1]
+        fan_in = int(shape[0])
+        fan_out = int(shape[1])
     initial = xavier_init(fan_in, fan_out, shape)
     return tf.Variable(initial, name=name)
 
 
 def deconv_weight_variable(name, shape):
     if len(shape) == 4:
-        fan_in = shape[0] * shape[1] * shape[3]
-        fan_out = shape[0] * shape[1] * shape[2]
+        fan_in = int(shape[0]) * int(shape[1]) * int(shape[3])
+        fan_out = int(shape[0]) * int(shape[1]) * int(shape[2])
     else:  # len(shape) == 2:
-        fan_in = shape[0]
-        fan_out = shape[1]
+        fan_in = int(shape[0])
+        fan_out = int(shape[1])
     initial = xavier_init(fan_in, fan_out, shape)
     return tf.Variable(initial, name=name)
 
@@ -84,9 +84,12 @@ def deconv2d(x, w, b, stride=2, padding='SAME'):
     if padding == "VALID":
         out_rows = (input_height - 1) * row_stride + filter_height
         out_cols = (input_width - 1) * col_stride + filter_width
-    else:  # padding == "SAME"
+    elif padding == "SAME":
         out_rows = input_height * row_stride
         out_cols = input_width * col_stride
+    else:
+        print("check the padding on the deconv2d")
+        exit()
 
     # batch_size, rows, cols, number of channels #
     output_shape = tf.pack([batch_size, out_rows, out_cols, out_channels])
