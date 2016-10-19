@@ -52,7 +52,7 @@ class ConvVae:
             self.num_conv = len(self.depth_conv) - 1
             self.depth_fc = [3 * 3 * 128, 1024, params['hidden_size'] * 2]
             self.num_fc = len(self.depth_fc) - 1
-            self.depth_deconv = [params['hidden_size'], 64, 64, 32, 32, 1]
+            self.depth_deconv = [params['hidden_size'], 128, 128, 64, 64, 32, 1]
             self.num_deconv = len(self.depth_deconv) - 1
 
     def summary(self):
@@ -108,7 +108,7 @@ class ConvVae:
             key = 'conv' + str(c)
             x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=2, padding='VALID')
         print(x.get_shape())
-        x = tf.reshape(x, [-1, 7*7*128])
+        x = tf.reshape(x, [-1, 3*3*128])
         for f in range(self.num_fc):
             key = 'fc' + str(f)
             print(key)
