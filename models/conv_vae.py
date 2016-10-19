@@ -85,6 +85,8 @@ class ConvVae:
                 previous = self.conv['input']
             else:
                 previous = self.conv['layers'][c-1]
+            print(type(i[1]))
+            print(type(i[0]))
             weights['conv' + str(c)] = weight_variable('conv' + str(c), [i[1], i[1], previous, i[0]])
             biases['conv' + str(c)] = bias_variable('conv' + str(c), [i[0]])
         for f in range(self.fc_num):
