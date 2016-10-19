@@ -108,6 +108,7 @@ class ConvVae:
 
     def encoder(self):
         x = self.x
+        print(self.num_conv)
         for c in range(self.num_conv):
             key = 'conv' + str(c)
             x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=2, padding='VALID')
