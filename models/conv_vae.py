@@ -99,7 +99,7 @@ class ConvVae:
         if self.params['image_dim'] == 128:
             return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
         else:
-            print('Reconstructed Image pad is not defined for Image Dimensions of %d' % params['image_dims'])
+            print('Reconstructed Image pad is not defined for Image Dimensions of %d' % self.params['image_dims'])
             exit()
 
     def encoder(self):
@@ -176,6 +176,8 @@ class ConvVae:
 
             print('Begin batch number: %d' % step)
             batch_x = batch_generating_fxn()
+            print(batch_x[0])
+            print(len(batch_x))
             norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
             summary, _ = self.sess.run([self.merged, self.optimizer],
                                        feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
