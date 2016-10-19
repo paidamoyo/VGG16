@@ -18,7 +18,7 @@ flags = {
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
     'datasets': ['MNIST'],
-    'restore': True,
+    'restore': False,
     'restore_file': 'starting_point.ckpt'
 }
 
@@ -35,7 +35,7 @@ def main():
 
     seed = 14
     # batch = int(sys.argv[1])
-    batch = 64
+    batch = 128
     params['batch_size'] = batch
     params['lr'] = 0.00005  # generate_lr(int(sys.argv[2]))
     lr_str = str(params['lr'])
