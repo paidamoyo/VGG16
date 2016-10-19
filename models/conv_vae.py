@@ -3,6 +3,7 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
+import tflearn
 
 from functions.tf import conv2d, deconv2d, fc, weight_variable, bias_variable, deconv_weight_variable
 from functions.record import print_log, record_metrics
@@ -48,7 +49,7 @@ class ConvVae:
                        'layers': [3*3*128, params['hidden_size'] * 2]}
             self.fc_num = len(self.fc['layers'])-1
             self.deconv = {'input': params['hidden_size'],
-                           'layers': [(128, 5, 1, 'VALID'), (64, 5, 1, 'VALID'), (32, 5, 2, 'VALID'), (1, 5, 2, 'SAME')]}
+                           'layers': [(128, 5, 1, 'VALID'), (64, 5, 1, 'VALID'), (32, 5, 2, 'SAME'), (1, 5, 2, 'SAME')]}
             self.deconv_num = len(self.deconv['layers'])
 
     def summary(self):
@@ -111,7 +112,7 @@ class ConvVae:
             key = 'deconv' + str(d)
             y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=self.deconv['layers'][d][2], padding=self.deconv['layers'][d][3])
         y = tf.nn.sigmoid(y)
-        return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
+        return y, mean, stddev
 
     def _create_network(self):
         print('Creating Network')

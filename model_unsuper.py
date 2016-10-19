@@ -25,7 +25,7 @@ flags = {
 
 params = {
     'image_dim': 28,
-    'hidden_size': 0,
+    'hidden_size': 10,
     'display_step': 5,
     'training_iters': 50000
 }

@@ -95,8 +95,8 @@ def deconv2d(x, w, b, stride=2, padding='SAME'):
     output_shape = tf.pack([batch_size, out_rows, out_cols, out_channels])
     y = tf.nn.conv2d_transpose(x, w, output_shape, [1, stride, stride, 1], padding)
     y = tf.add(y, b)
-    return y
+    return tf.nn.relu(y)
 
 
 def fc(x, w, b):
-    return tf.add(tf.matmul(x, w), b)
+    return tf.nn.relu(tf.add(tf.matmul(x, w), b))
