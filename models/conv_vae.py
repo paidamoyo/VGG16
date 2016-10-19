@@ -43,18 +43,18 @@ class ConvVae:
     def _define_layers(self, params):
         if params['image_dim'] == 512:
             self.depth_conv = [1, 32, 32, 64, 64, 128, 128, 256]
-            self.num_conv = len(self.depth_conv) - 1
+            self.conv_num = len(self.depth_conv) - 1
             self.depth_fc = [3 * 3 * 256, 256, params['hidden_size'] * 2]
-            self.num_fc = len(self.depth_fc) - 1
+            self.fc_num = len(self.depth_fc) - 1
             self.depth_deconv = [params['hidden_size'], 256, 128, 128, 64, 64, 32, 32, 1]
-            self.num_deconv = len(self.depth_deconv) - 1
+            self.deconv_num = len(self.depth_deconv) - 1
         if params['image_dim'] == 128:
             self.depth_conv = [1, 32, 64, 64, 128, 128]
-            self.num_conv = len(self.depth_conv) - 1
+            self.conv_num = len(self.depth_conv) - 1
             self.depth_fc = [3 * 3 * 128, 1024, params['hidden_size'] * 2]
-            self.num_fc = len(self.depth_fc) - 1
+            self.fc_num = len(self.depth_fc) - 1
             self.depth_deconv = [params['hidden_size'], 128, 128, 64, 64, 32, 1]
-            self.num_deconv = len(self.depth_deconv) - 1
+            self.deconv_num = len(self.depth_deconv) - 1
             self.fc_reshape = [-1, 3*3*128]
         if params['image_dim'] == 32:
             self.conv = {'input': 1,
@@ -79,7 +79,7 @@ class ConvVae:
     def _initialize_variables(self):
         weights, biases = dict(), dict()
 
-        for c in range(self.num_conv):
+        for c in range(self.conv_num):
             i = self.conv['layers'][c]
             if c == 0:
                 i_1[0] = self.conv['input']
@@ -87,10 +87,10 @@ class ConvVae:
                 i_1 = self.conv['layers'][c-1]
             weights['conv' + str(c)] = weight_variable('conv' + str(c), [i[1], i[1], i_1[0], i[0]])
             biases['conv' + str(c)] = bias_variable('conv' + str(c), [i[0]])
-        for f in range(self.num_fc):
+        for f in range(self.fc_num):
             weights['fc' + str(f)] = weight_variable('fc' + str(f), [self.depth_fc[f], self.depth_fc[f+1]])
             biases['fc' + str(f)] = bias_variable('fc' + str(f), [self.depth_fc[f+1]])
-        for d in range(self.num_deconv):
+        for d in range(self.deconv_num):
             i = self.deconv['layers'][d]
             if d == 0:
                 i_1[0] = self.deconv['input']
@@ -102,12 +102,12 @@ class ConvVae:
 
     def encoder(self):
         x = self.x
-        for c in range(self.num_conv):
+        for c in range(self.conv_num):
             key = 'conv' + str(c)
             x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=self.depth_conv[c][2], padding=self.depth_conv[c][3])
         print(x.get_shape())
         x = tf.reshape(x, self.fc_reshape)
-        for f in range(self.num_fc):
+        for f in range(self.fc_num):
             key = 'fc' + str(f)
             x = tf.nn.dropout(x, keep_prob=self.keep_prob)
             x = fc(x, w=self.weights[key], b=self.biases[key])
@@ -123,7 +123,7 @@ class ConvVae:
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
         y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
-        for d in range(self.num_deconv):
+        for d in range(self.deconv_num):
             key = 'deconv' + str(d)
             y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=self.depth_deconv[d][2],
                        padding=self.depth_deconv[d][3])
