@@ -116,7 +116,7 @@ class ConvVae:
             if d != self.num_deconv - 1:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
             else:
-                y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')  # to return even number (510 x 510)
+                y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME')  # to return even number (510 x 510)
         return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
 
     def _create_network(self):
