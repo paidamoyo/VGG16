@@ -94,13 +94,7 @@ class ConvVae:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
             else:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME')  # to return even number (510 x 510)
-        if self.params['image_dim'] == 512:
-            return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
-        if self.params['image_dim'] == 128:
-            return y, mean, stddev
-        else:
-            print('Reconstructed Image pad is not defined for Image Dimensions of %d' % self.params['image_dims'])
-            exit()
+        return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
 
     def encoder(self):
         x = self.x
