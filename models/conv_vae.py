@@ -110,6 +110,7 @@ class ConvVae:
         for d in range(self.deconv_num):
             key = 'deconv' + str(d)
             print(key)
+            print(self.deconv['layers'][d])
             y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=self.deconv['layers'][d][2], padding=self.deconv['layers'][d][3])
             print(y.get_shape())
         return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
