@@ -96,7 +96,6 @@ class ConvVae:
                 previous = self.deconv['input']
             else:
                 previous = self.deconv['layers'][d-1][0]
-            print(d)
             weights['deconv' + str(d)] = deconv_weight_variable('deconv' + str(d), [i[1], i[1], i[0], previous])
             biases['deconv' + str(d)] = bias_variable('deconv' + str(d), [previous])
         return weights, biases
@@ -126,6 +125,7 @@ class ConvVae:
         y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
         for d in range(self.deconv_num):
             key = 'deconv' + str(d)
+            print(key)
             y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=self.deconv['layers'][d][2], padding=self.deconv['layers'][d][3])
         return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
 
