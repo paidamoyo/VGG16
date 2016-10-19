@@ -50,7 +50,7 @@ class ConvVae:
         if params['image_dim'] == 128:
             self.depth_conv = [1, 64, 64, 128, 128]
             self.num_conv = len(self.depth_conv) - 1
-            self.depth_fc = [3 * 3 * 64, 1024, params['hidden_size'] * 2]
+            self.depth_fc = [3 * 3 * 128, 1024, params['hidden_size'] * 2]
             self.num_fc = len(self.depth_fc) - 1
             self.depth_deconv = [params['hidden_size'], 64, 64, 32, 32, 1]
             self.num_deconv = len(self.depth_deconv) - 1
@@ -118,6 +118,13 @@ class ConvVae:
         x_reconst, mean, stddev = self.decoder(self.encoder())
         gen, _, _ = self.decoder(z=None)
         return x_reconst, mean, stddev, gen
+
+    def print_variable(self, var):
+        if var == 'x_reconst':
+            return tf.Print(self.x_reconst, [self.x_reconst])
+        else:
+            print('Print Variable not defined .... printing x_reconst')
+            return tf.Print(self.x_reconst, [self.x_reconst])
 
     def _create_loss_optimizer(self, epsilon=1e-8):
         vae = tf.reduce_sum(-self.x * tf.log(self.x_reconst + epsilon) -
