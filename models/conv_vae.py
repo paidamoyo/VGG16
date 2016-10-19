@@ -94,6 +94,8 @@ class ConvVae:
         else:
             mean, stddev = tf.split(1, 2, z)
             stddev = tf.sqrt(tf.exp(stddev))
+            print(mean.get_shape())
+            print(stddev.get_shape())
             input_sample = mean + self.epsilon * stddev
         y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
         for d in range(self.num_deconv):
