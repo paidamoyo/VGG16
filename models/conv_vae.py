@@ -61,7 +61,7 @@ class ConvVae:
             self.num_conv = len(self.depth_conv) - 1
             self.depth_fc = [128, params['hidden_size'] * 2]
             self.num_fc = len(self.depth_fc) - 1
-            self.depth_deconv = [params['hidden_size'], 128, 64, 64, 32, 32, 1]
+            self.depth_deconv = [params['hidden_size'], 128, 64, 64, 32, 32, 32, 1]
             self.num_deconv = len(self.depth_deconv) - 1
             self.fc_reshape = [-1, 128]
 
@@ -114,9 +114,9 @@ class ConvVae:
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
             if d != self.num_deconv - 1:
-                y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME')
+                y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
             else:
-                y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME')  # to return even number (510 x 510)
+                y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')  # to return even number (510 x 510)
         return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
 
     def _create_network(self):
