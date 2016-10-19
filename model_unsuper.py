@@ -24,8 +24,8 @@ flags = {
 
 
 params = {
-    'image_dim': 32,
-    'hidden_size': 10,
+    'image_dim': 28,
+    'hidden_size': 0,
     'display_step': 5,
     'training_iters': 50000
 }
@@ -49,9 +49,9 @@ def main():
     bgf = functools.partial(generate_cluttered_MNIST, dims=[params['image_dim'], params['image_dim']],
                                                   nImages=params['batch_size'], clutter=0.0, numbers=[8], prob=1,
                             train_set=train_set)
-    # print(model.print_variable(var='x_reconst').shape)
+    print(model.print_variable(var='x_reconst').shape)
 
-    model.train(bgf, aux_filenames)
+    # model.train(bgf, aux_filenames)
 
 
 if __name__ == "__main__":

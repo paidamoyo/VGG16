@@ -57,13 +57,15 @@ class ConvVae:
             self.num_deconv = len(self.depth_deconv) - 1
             self.fc_reshape = [-1, 3*3*128]
         if params['image_dim'] == 32:
-            self.depth_conv = [1, 32, 32, 64, 128]
-            self.num_conv = len(self.depth_conv) - 1
-            self.depth_fc = [4*128, params['hidden_size'] * 2]
-            self.num_fc = len(self.depth_fc) - 1
-            self.depth_deconv = [params['hidden_size'], 128, 64, 32, 1]
-            self.num_deconv = len(self.depth_deconv) - 1
-            self.fc_reshape = [-1, 4*128]
+            self.conv = {'input': 1,
+                         'layers': [(32, 5, 2, 'SAME'), (64, 5, 2, 'SAME'), (128, 5, 1, 'VALID')]}
+            self.conv_num = len(self.conv['layers'])
+            self.fc = {'reshape': [-1, 4*128],
+                       'layers': [4*128, params['hidden_size'] * 2]}
+            self.fc_num = len(self.fc['layers'])
+            self.deconv = {'input': params['hidden_size'],
+                           'layers': [(128, 5, 1, 'VALID'), (64, 5, 1, 'VALID'), (32, 5, 2, 'SAME'), (1, 5, 2, 'SAME')]}
+            self.deconv_num = len(self.deconv['layers'])
 
     def summary(self):
         for k in self.weights.keys():
@@ -76,29 +78,39 @@ class ConvVae:
 
     def _initialize_variables(self):
         weights, biases = dict(), dict()
+
         for c in range(self.num_conv):
-            weights['conv' + str(c)] = weight_variable('conv' + str(c), [5, 5, self.depth_conv[c], self.depth_conv[c+1]])
-            biases['conv' + str(c)] = bias_variable('conv' + str(c), [self.depth_conv[c+1]])
+            i = self.conv['layers'][c]
+            if c == 0:
+                i_1[0] = self.conv['input']
+            else:
+                i_1 = self.conv['layers'][c-1]
+            weights['conv' + str(c)] = weight_variable('conv' + str(c), [i[1], i[1], i_1[0], i[0]])
+            biases['conv' + str(c)] = bias_variable('conv' + str(c), [i[0]])
         for f in range(self.num_fc):
             weights['fc' + str(f)] = weight_variable('fc' + str(f), [self.depth_fc[f], self.depth_fc[f+1]])
             biases['fc' + str(f)] = bias_variable('fc' + str(f), [self.depth_fc[f+1]])
         for d in range(self.num_deconv):
-            weights['deconv' + str(d)] = deconv_weight_variable('deconv' + str(d), [5, 5, self.depth_deconv[d+1], self.depth_deconv[d]])
+            i = self.deconv['layers'][d]
+            if d == 0:
+                i_1[0] = self.deconv['input']
+            else:
+                i_1 = self.deconv['layers'][d-1]
+            weights['deconv' + str(d)] = deconv_weight_variable('deconv' + str(d), [i[1], i[1], i[0], i_1[0]])
+            biases['deconv' + str(d)] = bias_variable('deconv' + str(d), [i_1[0]])
         return weights, biases
 
     def encoder(self):
         x = self.x
         for c in range(self.num_conv):
             key = 'conv' + str(c)
-            x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=2, padding='SAME')
+            x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=self.depth_conv[c][2], padding=self.depth_conv[c][3])
         print(x.get_shape())
         x = tf.reshape(x, self.fc_reshape)
         for f in range(self.num_fc):
             key = 'fc' + str(f)
-            print(key)
-
-            x = fc(x, w=self.weights[key], b=self.biases[key])
             x = tf.nn.dropout(x, keep_prob=self.keep_prob)
+            x = fc(x, w=self.weights[key], b=self.biases[key])
         return x
 
     def decoder(self, z):
@@ -113,10 +125,8 @@ class ConvVae:
         y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
         for d in range(self.num_deconv):
             key = 'deconv' + str(d)
-            if d != self.num_deconv - 1:
-                y = deconv2d(y, w=self.weights[key], stride=2, padding='VALID')
-            else:
-                y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME')  # to return even number (510 x 510)
+            y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=self.depth_deconv[d][2],
+                       padding=self.depth_deconv[d][3])
         return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
 
     def _create_network(self):
@@ -182,10 +192,10 @@ class ConvVae:
             print('Begin batch number: %d' % step)
             batch_x = batch_generating_fxn()
             norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
-            summary, _ = self.sess.run([self.merged, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
+            summary, _ = self.sess.run([self.merged, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm})
 
             if step % self.params['display_step'] == 0:
-                summary, loss, _ = self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.5, self.epsilon: norm})
+                summary, loss, _ = self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm})
                 record_metrics(loss=loss, acc=None, batch_y=None, logging=self.logging, step=step, split=None)
             self.writer.add_summary(summary=summary, global_step=step)
             step += 1

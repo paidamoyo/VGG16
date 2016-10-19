@@ -71,8 +71,7 @@ def spp_layer(mapstack, dims, poolnum):
     return tf.reshape(tf.convert_to_tensor(flattened), [1, 2560])
 
 
-def deconv2d(x, w, stride=2, padding='VALID'):
-
+def deconv2d(x, w, b, stride=2, padding='SAME'):
     batch_size = tf.shape(x)[0]
     input_height = tf.shape(x)[1]
     input_width = tf.shape(x)[2]
@@ -92,8 +91,9 @@ def deconv2d(x, w, stride=2, padding='VALID'):
     # batch_size, rows, cols, number of channels #
     output_shape = tf.pack([batch_size, out_rows, out_cols, out_channels])
     y = tf.nn.conv2d_transpose(x, w, output_shape, [1, stride, stride, 1], padding)
-    return tf.nn.relu(y)
+    y = tf.add(y, b)
+    return y
 
 
 def fc(x, w, b):
-    return tf.nn.relu(tf.add(tf.matmul(x, w), b))
+    return tf.add(tf.matmul(x, w), b)
