@@ -27,7 +27,7 @@ params = {
     'image_dim': 32,
     'hidden_size': 32,
     'display_step': 5,
-    'training_iters': 500
+    'training_iters': 50000
 }
 
 
