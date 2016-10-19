@@ -51,7 +51,8 @@ def main():
                                                   nImages=params['batch_size'], clutter=0.0, numbers=[8], prob=1,
                             train_set=train_set)
     model.print_variable(var='x_reconst')
-    model.train(bgf, aux_filenames)
+
+    # model.train(bgf, aux_filenames)
 
 
 if __name__ == "__main__":

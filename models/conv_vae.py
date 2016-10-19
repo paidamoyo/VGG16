@@ -124,7 +124,7 @@ class ConvVae:
 
     def print_variable(self, var):
         if var == 'x_reconst':
-            return tf.Print(self.x_reconst, [self.x_reconst])
+            return self.sess.run(tf.Print(self.x_reconst, [self.x_reconst]))
         else:
             print('Print Variable not defined .... printing x_reconst')
             return tf.Print(self.x_reconst, [self.x_reconst])
