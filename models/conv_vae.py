@@ -63,7 +63,7 @@ class ConvVae:
             self.num_fc = len(self.depth_fc) - 1
             self.depth_deconv = [params['hidden_size'], 128, 128, 64, 64, 32, 1]
             self.num_deconv = len(self.depth_deconv) - 1
-            self.fc_reshape = [-1, ]
+            self.fc_reshape = [-1, 3*3*128]
 
     def summary(self):
         for k in self.weights.keys():
