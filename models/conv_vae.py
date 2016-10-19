@@ -86,6 +86,21 @@ class ConvVae:
             weights['deconv' + str(d)] = weight_variable('deconv' + str(d), [3, 3, self.depth_deconv[d+1], self.depth_deconv[d]])
         return weights, biases
 
+    def encoder(self):
+        x = self.x
+        for c in range(self.num_conv):
+            key = 'conv' + str(c)
+            x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=2, padding='SAME')
+        print(x.get_shape())
+        x = tf.reshape(x, self.fc_reshape)
+        for f in range(self.num_fc):
+            key = 'fc' + str(f)
+            print(key)
+
+            x = fc(x, w=self.weights[key], b=self.biases[key])
+            x = tf.nn.dropout(x, keep_prob=self.keep_prob)
+        return x
+
     def decoder(self, z):
         if z is None:
             mean = None
@@ -94,8 +109,6 @@ class ConvVae:
         else:
             mean, stddev = tf.split(1, 2, z)
             stddev = tf.sqrt(tf.exp(stddev))
-            print(mean.get_shape())
-            print(stddev.get_shape())
             input_sample = mean + self.epsilon * stddev
         y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
         for d in range(self.num_deconv):
@@ -105,20 +118,6 @@ class ConvVae:
             else:
                 y = deconv2d(y, w=self.weights[key], stride=2, padding='SAME')  # to return even number (510 x 510)
         return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
-
-    def encoder(self):
-        x = self.x
-        for c in range(self.num_conv):
-            key = 'conv' + str(c)
-            x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=2, padding='SAME')
-        x = tf.reshape(x, self.fc_reshape)
-        for f in range(self.num_fc):
-            key = 'fc' + str(f)
-            print(key)
-            print(x.get_shape())
-            x = fc(x, w=self.weights[key], b=self.biases[key])
-            x = tf.nn.dropout(x, keep_prob=self.keep_prob)
-        return x
 
     def _create_network(self):
         x_reconst, mean, stddev = self.decoder(z=self.encoder())
