@@ -108,7 +108,7 @@ class ConvVae:
             key = 'conv' + str(c)
             x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=2, padding='VALID')
         print(x.get_shape())
-        x = tf.reshape(x, [-1, 3*3*256])
+        x = tf.reshape(x, [-1, 7*7*128])
         for f in range(self.num_fc):
             key = 'fc' + str(f)
             print(key)
