@@ -7,22 +7,22 @@ from tensorflow.python.framework import tensor_shape
 
 def weight_variable(name, shape):
     if len(shape) == 4:
-        fan_in = int(shape[0]) * int(shape[1]) * int(shape[2])
-        fan_out = int(shape[0]) * int(shape[1]) * int(shape[3])
+        fan_in = shape[0] * shape[1] * shape[2]
+        fan_out = shape[0] * shape[1] * shape[3]
     else:  # len(shape) == 2:
-        fan_in = int(shape[0])
-        fan_out = int(shape[1])
+        fan_in = shape[0]
+        fan_out = shape[1]
     initial = xavier_init(fan_in, fan_out, shape)
     return tf.Variable(initial, name=name)
 
 
 def deconv_weight_variable(name, shape):
     if len(shape) == 4:
-        fan_in = int(shape[0]) * int(shape[1]) * int(shape[3])
-        fan_out = int(shape[0]) * int(shape[1]) * int(shape[2])
+        fan_in = shape[0] * shape[1] * shape[3]
+        fan_out = shape[0] * shape[1] * shape[2]
     else:  # len(shape) == 2:
-        fan_in = int(shape[0])
-        fan_out = int(shape[1])
+        fan_in = shape[0]
+        fan_out = shape[1]
     initial = xavier_init(fan_in, fan_out, shape)
     return tf.Variable(initial, name=name)
 
