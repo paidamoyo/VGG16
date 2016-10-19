@@ -126,10 +126,13 @@ class ConvVae:
         for d in range(self.deconv_num):
             key = 'deconv' + str(d)
             print(key)
+            print(self.weights[key])
+            print(self.biases[key])
             y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=self.deconv['layers'][d][2], padding=self.deconv['layers'][d][3])
         return tf.pad(y, [[0, 0], [1, 1], [1, 1], [0, 0]]), mean, stddev
 
     def _create_network(self):
+        print('Creating Network')
         x_reconst, mean, stddev = self.decoder(z=self.encoder())
         gen, _, _ = self.decoder(z=None)
         return x_reconst, mean, stddev, gen
