@@ -124,10 +124,13 @@ class ConvVae:
 
     def print_variable(self, var):
         if var == 'x_reconst':
-            return self.sess.run(tf.Print(self.x_reconst, [self.x_reconst]))
+            print_var = tf.Print(self.x_reconst, [self.x_reconst])
+            norm = np.random.normal(size=[self.params['batch_size'], self.params['hidden_size']])
+            x = np.zeros([self.params['batch_size'], self.params['image_dim'], self.params['image_dim'], 1])
         else:
             print('Print Variable not defined .... printing x_reconst')
             return tf.Print(self.x_reconst, [self.x_reconst])
+        return self.sess.run(print_var, feed_dict={self.x: x, self.keep_prob: 0.5, self.epsilon: norm})
 
     def _create_loss_optimizer(self, epsilon=1e-8):
         vae = tf.reduce_sum(-self.x * tf.log(self.x_reconst + epsilon) -
