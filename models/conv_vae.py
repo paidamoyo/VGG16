@@ -3,9 +3,8 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
-import tflearn
 
-from functions.tf import conv2d, deconv2d, fc, weight_variable, bias_variable, deconv_weight_variable
+from functions.tf import conv2d, deconv2d, fc, weight_variable, bias_variable, deconv_weight_variable, batch_norm
 from functions.record import print_log, record_metrics
 
 
@@ -49,7 +48,7 @@ class ConvVae:
                        'layers': [3*3*128, params['hidden_size'] * 2]}
             self.fc_num = len(self.fc['layers'])-1
             self.deconv = {'input': params['hidden_size'],
-                           'layers': [(128, 5, 1, 'VALID'), (64, 5, 1, 'VALID'), (32, 5, 2, 'SAME'), (1, 5, 2, 'SAME')]}
+                           'layers': [(128, 3, 1, 'VALID'), (64, 5, 1, 'VALID'), (32, 5, 2, 'SAME'), (1, 5, 2, 'SAME')]}
             self.deconv_num = len(self.deconv['layers'])
 
     def summary(self):
@@ -89,7 +88,8 @@ class ConvVae:
         x = self.x
         for c in range(self.conv_num):
             key = 'conv' + str(c)
-            x = conv2d(x, w=self.weights[key], b=self.biases[key], stride=self.conv['layers'][c][2], padding=self.conv['layers'][c][3])
+            x = conv2d(x, w=self.weights[key], stride=self.conv['layers'][c][2], padding=self.conv['layers'][c][3])
+            x = batch_norm(x=x,  bias=self.biases['conv' + str(c)])
         print(x.get_shape())
         x = tf.reshape(x, self.fc['reshape'])
         for f in range(self.fc_num):
@@ -110,7 +110,8 @@ class ConvVae:
         y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
         for d in range(self.deconv_num):
             key = 'deconv' + str(d)
-            y = deconv2d(y, w=self.weights[key], b=self.biases[key], stride=self.deconv['layers'][d][2], padding=self.deconv['layers'][d][3])
+            y = deconv2d(y, w=self.weights[key], stride=self.deconv['layers'][d][2], padding=self.deconv['layers'][d][3])
+            y = batch_norm(x=y, bias=self.biases['deconv' + str(d)])
         y = tf.nn.sigmoid(y)
         return y, mean, stddev
 
