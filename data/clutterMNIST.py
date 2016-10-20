@@ -86,12 +86,15 @@ def generate_cluttered_MNIST(dims, nImages, numbers, prob, clutter, train_set):
                 digit = train_set[0][np.random.choice(index), :]
                 digit = np.reshape(digit, (28, 28))
 
-                # Randomly choose location
-                x = np.random.randint(low=0, high=dims[0] - 28)
-                y = np.random.randint(low=0, high=dims[1] - 28)
+                if dims[0] != 28 or dims[1] != 28:
+                    # Randomly choose location
+                    x = np.random.randint(low=0, high=dims[0] - 28)
+                    y = np.random.randint(low=0, high=dims[1] - 28)
 
-                # Insert digit
-                images[k, x:x + 28, y:y + 28] += digit
+                    # Insert digit
+                    images[k, x:x + 28, y:y + 28] += digit
+                else:
+                    images[k, :, :] = digit
 
         # Add in clutter
         if clutterPatches != 0:
