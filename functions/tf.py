@@ -41,7 +41,7 @@ def xavier_init(fan_in, fan_out, shape, constant=1):
 
 def conv2d(img, w, stride=1, padding='SAME'):
     img = tf.nn.conv2d(img, w, strides=[1, stride, stride, 1], padding=padding)
-    img = tf.nn.relu(img)
+    # img = tf.nn.relu(img)
     return img
 
 
@@ -99,7 +99,7 @@ def deconv2d(x, w, stride=2, padding='SAME'):
 
 
 def fc(x, w, b):
-    return tf.nn.relu(tf.add(tf.matmul(x, w), b))
+    return tf.nn.tanh(tf.add(tf.matmul(x, w), b))
 
 
 def batch_norm(x, bias, epsilon=1e-3):
@@ -108,5 +108,5 @@ def batch_norm(x, bias, epsilon=1e-3):
 
     # Apply the initial batch normalizing transform
     z1_hat = (x - batch_mean1) / tf.sqrt(batch_var1 + epsilon)
-    BN1 = z1_hat + bias
-    return tf.nn.relu(BN1)
+    BN1 = tf.add(z1_hat, bias)
+    return tf.nn.tanh(BN1)
