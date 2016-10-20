@@ -31,10 +31,10 @@ def print_log(string, logging):
     logging.info(string)
 
 
-def record_metrics(loss, acc, batch_y, logging, step, split):
+def record_metrics(loss, acc, batch_y, logging, step, split, flags):
     if step is not None or loss is not None:
         print(type(np.mean(loss)))
-        print_log("Batch Number " + str(step) + ", Image Loss= " + "{:.6f}".format(np.mean(loss)), logging)
+        print_log("Batch Number " + str(step) + ", Image Loss= " + "{:.6f}".format(np.mean(loss)/(flags['image_dim'] * flags['image_dim'])), logging)
     if batch_y is not None or acc is not None:
         print_log(np.squeeze(batch_y), logging)
         print_log(np.argmax(acc, 1), logging)

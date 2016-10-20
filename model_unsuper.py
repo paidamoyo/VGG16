@@ -37,7 +37,7 @@ def main():
     # batch = int(sys.argv[1])
     batch = 128
     params['batch_size'] = batch
-    params['lr'] = 0.0001  # generate_lr(int(sys.argv[2]))
+    params['lr'] = 0.001  # generate_lr(int(sys.argv[2]))
     lr_str = str(params['lr'])
 
     folder = str(batch) + '/'
