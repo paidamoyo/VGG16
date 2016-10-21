@@ -186,7 +186,6 @@ class ConvVae:
             step = 1
             while step < iters:
 
-
                 print('Batch number: %d' % step)
                 batch_x = batch_generating_fxn()
                 norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
