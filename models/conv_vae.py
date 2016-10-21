@@ -185,7 +185,9 @@ class ConvVae:
             step = 1
             while step < iters:
 
-                print('Begin batch number: %d' % step)
+                print_log('Learning Rate: %d' % lr)
+                print_log('Iterations: %d' % iters)
+                print('Batch number: %d' % step)
                 batch_x = batch_generating_fxn()
                 norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
                 summary, _ = self.sess.run([self.merged, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
