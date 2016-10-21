@@ -114,6 +114,7 @@ class ConvVae:
             key = 'deconv' + str(d)
             y = deconv2d(y, w=self.weights[key], stride=self.deconv['layers'][d][2], padding=self.deconv['layers'][d][3])
             y = batch_norm(x=y, bias=self.biases['deconv' + str(d)], scale=self.biases['deconv' + str(d) + '_scale'])
+        y = tf.nn.sigmoid(y)
         return y, mean, stddev
 
     def _create_network(self):
