@@ -9,10 +9,9 @@ from functions.record import record_metrics, print_log, setup_metrics
 
 
 class ConvVae:
-    def __init__(self, params, flags, logging):
+    def __init__(self, params, flags):
 
         self.params = params
-        self.logging = logging
         self.flags = flags
         self.x = tf.placeholder(tf.float32, [None, params['image_dim'], params['image_dim'], 1], name='x')  # input patches
         self.keep_prob = tf.placeholder(tf.float32, name='dropout')
