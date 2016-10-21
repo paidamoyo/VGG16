@@ -3,6 +3,7 @@
 import numpy as np
 from sklearn import metrics
 import logging
+import datetime
 
 from functions.aux import make_directory
 
@@ -26,15 +27,13 @@ def auc_roc(predictions, labels):  # must input np.arrays
     return auc, tpv/total, fpv/total, tnv/total, fnv/total, total
 
 
-def print_log(string, logging):
+def print_log(string):
     print(string)
     logging.info(string)
 
-
 def record_metrics(loss, acc, batch_y, logging, step, split, params):
     if step is not None or loss is not None:
-        print(type(np.mean(loss)))
-        print_log("Batch Number " + str(step) + ", Image Loss= " + "{:.6f}".format(np.mean(loss)/(params['image_dim'] * params['image_dim'])), logging)
+        print_log("Batch Number " + str(step) + ", Image Loss= " + "{:.6f}".format(loss/(params['image_dim'] * params['image_dim'] * params['batch_size'])), logging)
     if batch_y is not None or acc is not None:
         print_log(np.squeeze(batch_y), logging)
         print_log(np.argmax(acc, 1), logging)
@@ -45,9 +44,21 @@ def record_metrics(loss, acc, batch_y, logging, step, split, params):
         print("Training Split: ", split)
 
 
-def setup_metrics(flags, aux_filenames, folder):
+def setup_metrics(flags, params, lr_iters, run_num):
+    folder = 'Run' + str(run_num) + '/'
     flags['restore_directory'] = flags['aux_directory'] + flags['model_directory']
     flags['logging_directory'] = flags['restore_directory'] + folder
     make_directory(flags['logging_directory'])
-    logging.basicConfig(filename=flags['logging_directory'] + aux_filenames + '.log', level=logging.INFO)
-    return logging
+    logging.basicConfig(filename=flags['logging_directory'] + 'Run' + str(run_num) + '.log', level=logging.INFO)
+
+    # print information
+    logging.info('Date: ' + str(datetime.datetime.now()).split('.')[0])
+    datasets = 'Datasets: '
+    for d in flags['datasets']:
+        datasets += d + ', '
+    print_log(datasets)
+    print_log('Model: ' + flags['model_directory'])
+    for l in range(len(lr_iters)):
+        print_log('EPOCH %d' % l)
+        print_log('Learning Rate: ' + str(lr_iters[l][0]))
+        print_log('Iterations: ' + str(lr_iters[l][1]))
