@@ -181,12 +181,12 @@ class ConvVae:
         for i in range(len(lr_iters)):
             lr = lr_iters[i][0]
             iters = lr_iters[i][1]
-
+            print_log('Learning Rate: %d' % lr)
+            print_log('Iterations: %d' % iters)
             step = 1
             while step < iters:
 
-                print_log('Learning Rate: %d' % lr)
-                print_log('Iterations: %d' % iters)
+
                 print('Batch number: %d' % step)
                 batch_x = batch_generating_fxn()
                 norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
