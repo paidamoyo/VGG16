@@ -102,11 +102,12 @@ def fc(x, w, b):
     return tf.nn.tanh(tf.add(tf.matmul(x, w), b))
 
 
-def batch_norm(x, bias, epsilon=1e-3):
+def batch_norm(x, bias, scale, epsilon=1e-3):
     # Calculate batch mean and variance
     batch_mean1, batch_var1 = tf.nn.moments(x, [0], keep_dims=True)
 
     # Apply the initial batch normalizing transform
     z1_hat = (x - batch_mean1) / tf.sqrt(batch_var1 + epsilon)
+    z1_hat = z1_hat * scale
     BN1 = tf.add(z1_hat, bias)
     return tf.nn.tanh(BN1)
