@@ -1,13 +1,7 @@
 #!/usr/bin/env python
 
-import tensorflow as tf
-import sys
 import functools
-import matplotlib.pyplot as plt
 
-import numpy as np
-from functions.record import record_metrics, print_log, setup_metrics
-from functions.data import generate_lr
 from models.conv_vae import ConvVae
 from data.clutterMNIST import load_data, generate_cluttered_MNIST
 
@@ -24,34 +18,26 @@ flags = {
 
 
 params = {
+    'seed': 14,
     'image_dim': 28,
-    'hidden_size': 10,
-    'display_step': 5,
-    'training_iters': 50000
+    'hidden_size': 15,
+    'batch_size': 128,
+    'display_step': 10,
+    'lr_iters': [(0.01, 750), (750, 0.005), (750, 0.001), (750, 0.0005)],
 }
 
 
 def main():
 
-    seed = 14
-    # batch = int(sys.argv[1])
-    batch = 128
-    params['batch_size'] = batch
-    params['lr'] = 0.01  # generate_lr(int(sys.argv[2]))
-    lr_str = str(params['lr'])
-
-    folder = str(batch) + '/'
-    aux_filenames = 'lr_' + lr_str + '_batch_%d' % params['batch_size']
-    logging = setup_metrics(flags, aux_filenames, folder)
     train_set, valid_set, test_set = load_data(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
-    model = ConvVae(params, flags, logging, seed)
+    model = ConvVae(params, flags)
 
     bgf = functools.partial(generate_cluttered_MNIST, dims=[params['image_dim'], params['image_dim']],
                                                   nImages=params['batch_size'], clutter=0.0, numbers=[8], prob=1,
                             train_set=train_set)
     # print(model.print_variable(var='x_reconst').shape)
 
-    model.train(bgf, aux_filenames)
+    model.train(bgf, lr_iters=params['lr_iters'], run_num=1)
 
 
 if __name__ == "__main__":

@@ -5,12 +5,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from functions.tf import conv2d, deconv2d, fc, weight_variable, bias_variable, deconv_weight_variable, batch_norm
-from functions.record import print_log, record_metrics
+from functions.record import record_metrics, print_log, setup_metrics
 
 
 class ConvVae:
-    def __init__(self, params, flags, logging, seed):
-        tf.set_random_seed(seed)
+    def __init__(self, params, flags, logging):
 
         self.params = params
         self.logging = logging
@@ -18,8 +17,9 @@ class ConvVae:
         self.x = tf.placeholder(tf.float32, [None, params['image_dim'], params['image_dim'], 1], name='x')  # input patches
         self.keep_prob = tf.placeholder(tf.float32, name='dropout')
         self.epsilon = tf.placeholder(tf.float32, [None, params['hidden_size']], name='epsilon')
-        self.lr = params['lr']
+        self.lr = tf.placeholder(tf.float32, name='learning_rate')
 
+        self._set_seed()
         self._define_layers(params)
         self.weights, self.biases = self._initialize_variables()
         self.x_reconst, self.mean, self.stddev, self.gen = self._create_network()
@@ -27,17 +27,7 @@ class ConvVae:
         self.saver = tf.train.Saver()
         self.summary()
         self.merged = tf.merge_all_summaries()
-
-        # Launch the session
         self.sess = tf.InteractiveSession()
-
-        self.writer = tf.train.SummaryWriter(self.flags['logging_directory'], self.sess.graph)
-        if self.flags['restore'] is True:
-            self.saver.restore(self.sess, self.flags['restore_directory'] + self.flags['restore_file'])
-            print_log("Model restored from %s" % self.flags['restore_file'], self.logging)
-        else:
-            self.sess.run(tf.initialize_all_variables())
-            print_log("Mode training from scratch.", logging)
 
     def _define_layers(self, params):
         if params['image_dim'] == 28:
@@ -50,6 +40,10 @@ class ConvVae:
             self.deconv = {'input': params['hidden_size'],
                            'layers': [(128, 3, 1, 'VALID'), (64, 5, 1, 'VALID'), (32, 5, 2, 'SAME'), (1, 5, 2, 'SAME')]}
             self.deconv_num = len(self.deconv['layers'])
+
+    def _set_seed(self):
+        tf.set_random_seed(self.params['seed'])
+        np.random.seed(self.params['seed'])
 
     def summary(self):
         for k in self.weights.keys():
@@ -174,41 +168,39 @@ class ConvVae:
         return self.sess.run(self.x_reconst,
                              feed_dict={self.x: x})
 
-    def train(self, batch_generating_fxn, aux_filenames):
-        step = 1
-        while step < self.params['training_iters']:
+    def train(self, batch_generating_fxn, lr_iters, run_num):
 
-            print('Begin batch number: %d' % step)
-            batch_x = batch_generating_fxn()
-            norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
-            summary, _ = self.sess.run([self.merged, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm})
+        folder = 'Run' + str(run_num) + '/'
+        aux_filenames = 'lr_%d' % self.params['lr'] + '_batch_%d' % self.params['batch_size']
+        logging = setup_metrics(self.flags, aux_filenames, folder)
 
-            if step % self.params['display_step'] == 0:
-                summary, loss, _ = self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm})
-                record_metrics(loss=loss, acc=None, batch_y=None, logging=self.logging, step=step, split=None, params=self.params)
-            self.writer.add_summary(summary=summary, global_step=step)
-            step += 1
+        self.writer = tf.train.SummaryWriter(self.flags['logging_directory'], self.sess.graph)
+        if self.flags['restore'] is True:
+            self.saver.restore(self.sess, self.flags['restore_directory'] + self.flags['restore_file'])
+            print_log("Model restored from %s" % self.flags['restore_file'], logging)
+        else:
+            self.sess.run(tf.initialize_all_variables())
+            print_log("Model training from scratch.", logging)
 
-        print("Optimization Finished!")
-        checkpoint_name = self.flags['logging_directory'] + aux_filenames + '.ckpt'
-        save_path = self.saver.save(self.sess, checkpoint_name)
-        print("Model saved in file: %s" % save_path)
+        for i in range(len(lr_iters)):
+            lr = lr_iters[i][0]
+            iters = lr_iters[i][1]
 
+            step = 1
+            while step < iters:
 
-'''
-        if params['image_dim'] == 512:
-            self.depth_conv = [1, 32, 32, 64, 64, 128, 128, 256]
-            self.conv_num = len(self.depth_conv) - 1
-            self.depth_fc = [3 * 3 * 256, 256, params['hidden_size'] * 2]
-            self.fc_num = len(self.depth_fc) - 1
-            self.depth_deconv = [params['hidden_size'], 256, 128, 128, 64, 64, 32, 32, 1]
-            self.deconv_num = len(self.depth_deconv) - 1
-        if params['image_dim'] == 128:
-            self.depth_conv = [1, 32, 64, 64, 128, 128]
-            self.conv_num = len(self.depth_conv) - 1
-            self.depth_fc = [3 * 3 * 128, 1024, params['hidden_size'] * 2]
-            self.fc_num = len(self.depth_fc) - 1
-            self.depth_deconv = [params['hidden_size'], 128, 128, 64, 64, 32, 1]
-            self.deconv_num = len(self.depth_deconv) - 1
-            self.fc_reshape = [-1, 3*3*128]
-            '''
+                print('Begin batch number: %d' % step)
+                batch_x = batch_generating_fxn()
+                norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
+                summary, _ = self.sess.run([self.merged, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
+
+                if step % self.params['display_step'] == 0:
+                    summary, loss, _ = self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
+                    record_metrics(loss=loss, acc=None, batch_y=None, logging=logging, step=step, split=None, params=self.params)
+                self.writer.add_summary(summary=summary, global_step=step)
+                step += 1
+
+            print("Optimization Finished!")
+            checkpoint_name = self.flags['logging_directory'] + aux_filenames + 'epoch_%d' % i + '.ckpt'
+            save_path = self.saver.save(self.sess, checkpoint_name)
+            print("Model saved in file: %s" % save_path)
