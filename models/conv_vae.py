@@ -169,14 +169,14 @@ class ConvVae:
 
     def train(self, batch_generating_fxn, lr_iters, run_num):
 
-        logging = setup_metrics(self.flags, self.params, lr_iters, run_num)
+        setup_metrics(self.flags, self.params, lr_iters, run_num)
         self.writer = tf.train.SummaryWriter(self.flags['logging_directory'], self.sess.graph)
         if self.flags['restore'] is True:
             self.saver.restore(self.sess, self.flags['restore_directory'] + self.flags['restore_file'])
-            print_log("Model restored from %s" % self.flags['restore_file'], logging)
+            print_log("Model restored from %s" % self.flags['restore_file'])
         else:
             self.sess.run(tf.initialize_all_variables())
-            print_log("Model training from scratch.", logging)
+            print_log("Model training from scratch.")
 
         for i in range(len(lr_iters)):
             lr = lr_iters[i][0]
@@ -197,6 +197,6 @@ class ConvVae:
                 step += 1
 
             print("Optimization Finished!")
-            checkpoint_name = self.flags['logging_directory'] + aux_filenames + 'epoch_%d' % i + '.ckpt'
+            checkpoint_name = self.flags['logging_directory'] + 'Run' + str(run_num) + 'epoch_%d' % i + '.ckpt'
             save_path = self.saver.save(self.sess, checkpoint_name)
             print("Model saved in file: %s" % save_path)
