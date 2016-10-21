@@ -37,7 +37,7 @@ def main():
                             train_set=train_set)
     # print(model.print_variable(var='x_reconst').shape)
 
-    model.train(bgf, lr_iters=params['lr_iters'], run_num=1)
+    model.train(bgf, lr_iters=params['lr_iters'], run_num=2)
 
 
 if __name__ == "__main__":
