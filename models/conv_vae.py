@@ -192,7 +192,7 @@ class ConvVae:
 
                 if step % self.params['display_step'] == 0:
                     summary, loss, _ = self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
-                    record_metrics(loss=loss, acc=None, batch_y=None, logging=logging, step=step, split=None, params=self.params)
+                    record_metrics(loss=loss, acc=None, batch_y=None, step=step, split=None, params=self.params)
                 self.writer.add_summary(summary=summary, global_step=step)
                 step += 1
 

@@ -31,15 +31,15 @@ def print_log(string):
     print(string)
     logging.info(string)
 
-def record_metrics(loss, acc, batch_y, logging, step, split, params):
+def record_metrics(loss, acc, batch_y, step, split, params):
     if step is not None or loss is not None:
         print_log("Batch Number " + str(step) + ", Image Loss= " + "{:.6f}".format(loss/(params['image_dim'] * params['image_dim'] * params['batch_size'])), logging)
     if batch_y is not None or acc is not None:
-        print_log(np.squeeze(batch_y), logging)
-        print_log(np.argmax(acc, 1), logging)
+        print_log(np.squeeze(batch_y))
+        print_log(np.argmax(acc, 1))
         auc, tp, fp, tn, fn, total = auc_roc(acc, batch_y)
         print_log("Error: %.1f%%" % error_rate(acc, batch_y) + ", AUC= %.3f" % auc + ", TP= %.3f" % tp +
-                  ", FP= %.3f" % fp + ", TN= %.3f" % tn + ", FN= %.3f" % fn, logging)
+                  ", FP= %.3f" % fp + ", TN= %.3f" % tn + ", FN= %.3f" % fn)
     if split is not None:
         print("Training Split: ", split)
 
