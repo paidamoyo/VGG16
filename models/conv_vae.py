@@ -71,7 +71,7 @@ class ConvVae:
                 previous = self.conv['layers'][c-1][0]
             weights['conv' + str(c)] = weight_variable('conv' + str(c), [i[1], i[1], previous, i[0]])
             biases['conv' + str(c)] = bias_variable('conv' + str(c), [i[0]])
-            biases['conv' + str(c) + '_scale'] = bias_variable('conv' + str(c) + '_scale', [i[0]])
+            biases['conv' + str(c) + '_scale'] = bias_variable('conv' + str(c) + '_scale', [i[0]], value=1.0)
         for f in range(self.fc_num):
             weights['fc' + str(f)] = weight_variable('fc' + str(f), [self.fc['layers'][f], self.fc['layers'][f+1]])
             biases['fc' + str(f)] = bias_variable('fc' + str(f), [self.fc['layers'][f+1]])
@@ -83,7 +83,7 @@ class ConvVae:
                 previous = self.deconv['layers'][d-1][0]
             weights['deconv' + str(d)] = deconv_weight_variable('deconv' + str(d), [i[1], i[1], i[0], previous])
             biases['deconv' + str(d)] = bias_variable('deconv' + str(d), [i[0]])
-            biases['deconv' + str(d) + '_scale'] = bias_variable('deconv' + str(d) + '_scale', [i[0]])
+            biases['deconv' + str(d) + '_scale'] = bias_variable('deconv' + str(d) + '_scale', [i[0]], value=1.0)
         return weights, biases
 
     def encoder(self):
