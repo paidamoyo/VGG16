@@ -37,7 +37,7 @@ def main():
                                 train_set=train_set)
     if 'MNIST' in flags['datasets']:
         mnist = load_data_MNIST()
-        bgf = generate_MNIST(mnist, 128)
+        bgf = functools.partial(generate_MNIST, mnist, 128)
     model = ConvVae(params, flags)
     # print(model.print_variable(var='x_reconst').shape)
 
