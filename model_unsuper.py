@@ -3,7 +3,8 @@
 import functools
 
 from models.conv_vae import ConvVae
-from data.clutterMNIST import load_data, generate_cluttered_MNIST
+from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIST
+from data.MNIST import load_data_MNIST, generate_MNIST
 
 
 # Global Dictionary of Flags
@@ -29,15 +30,18 @@ params = {
 
 def main():
 
-    train_set, valid_set, test_set = load_data(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
+    if 'Clutter_MNIST' in flags['datasets']:
+        train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
+        bgf = functools.partial(generate_cluttered_MNIST, dims=[params['image_dim'], params['image_dim']],
+                                                      nImages=params['batch_size'], clutter=0.0, numbers=range(9), prob=1,
+                                train_set=train_set)
+    if 'MNIST' in flags['datasets']:
+        mnist = load_data_MNIST()
+        bgf = generate_MNIST(mnist, 128)
     model = ConvVae(params, flags)
-
-    bgf = functools.partial(generate_cluttered_MNIST, dims=[params['image_dim'], params['image_dim']],
-                                                  nImages=params['batch_size'], clutter=0.0, numbers=range(9), prob=1,
-                            train_set=train_set)
     # print(model.print_variable(var='x_reconst').shape)
 
-    model.train(bgf, lr_iters=params['lr_iters'], run_num=2)
+    model.train(bgf, lr_iters=params['lr_iters'], run_num=3)
 
 
 if __name__ == "__main__":
