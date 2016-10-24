@@ -49,7 +49,7 @@ def conv2d(x, w, b, s, stride=1, padding='SAME', act_fn=tf.nn.tanh):
     if b is not None or s is not None:
         batch_norm(x, s)
     x = tf.add(x, b)
-    x = act_fn(x)
+    x = tf.nn.tanh(x)
     return x
 
 
@@ -79,7 +79,7 @@ def deconv2d(x, w, b, s, stride=2, padding='SAME', act_fn=tf.nn.tanh):
     if b is not None or s is not None:
         batch_norm(y, s)
     y = tf.add(y, b)
-    y = act_fn(y)
+    y = tf.nn.tanh(y)
     return y
 
 
