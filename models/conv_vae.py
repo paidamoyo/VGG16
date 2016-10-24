@@ -207,7 +207,7 @@ class ConvVae:
             save_path = self.saver.save(self.sess, checkpoint_name)
             print("Model saved in file: %s" % save_path)
 
-    def test(self, test_data, test_labels):
+    # def test(self, test_data, test_labels):
 
 
     def generate(self):
