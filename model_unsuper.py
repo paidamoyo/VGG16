@@ -24,7 +24,7 @@ params = {
     'hidden_size': 15,
     'batch_size': 128,
     'display_step': 10,
-    'lr_iters': [(0.001, 500), (0.005, 500), (0.001, 750), (0.0005, 1000), (0.0001, 1000)]
+    'lr_iters': [(0.001, 500), (0.005, 500), (0.001, 750), (0.0005, 10000), (0.0001, 10000)]
 }
 
 
@@ -41,7 +41,7 @@ def main():
     model = ConvVae(params, flags)
     # print(model.print_variable(var='x_reconst').shape)
 
-    model.train(bgf, lr_iters=params['lr_iters'], run_num=3)
+    model.train(bgf, lr_iters=params['lr_iters'], run_num=1)
 
 
 if __name__ == "__main__":

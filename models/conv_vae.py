@@ -3,6 +3,8 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import scipy.misc
 
 from functions.tf import conv2d, deconv2d, fc, weight_variable, bias_variable, deconv_weight_variable, batch_norm
 from functions.record import record_metrics, print_log, setup_metrics
@@ -204,3 +206,12 @@ class ConvVae:
             checkpoint_name = self.flags['logging_directory'] + 'Run' + str(run_num) + 'epoch_%d' % i + '.ckpt'
             save_path = self.saver.save(self.sess, checkpoint_name)
             print("Model saved in file: %s" % save_path)
+
+    def test(self, test_data, test_labels):
+
+
+    def generate(self):
+        norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
+        imgs = self.sess.run(self.gen, feed_dict={self.epsilon: norm})
+        for k in range(self.params['batch_size']):
+            scipy.misc.imsave(self.flags['logging_directory'] + 'image_%d.png' % k, imgs[k].reshape(28, 28))
