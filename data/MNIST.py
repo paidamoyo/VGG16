@@ -7,4 +7,4 @@ def load_data_MNIST():
     return mnist
 
 def generate_MNIST(mnist, batch_size):
-    return tf.reshape(mnist.train.next_batch(batch_size), [-1,28,28,1])
+    return tf.reshape(mnist.train.next_batch(batch_size), [batch_size, 28, 28, 1])
