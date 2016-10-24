@@ -10,4 +10,4 @@ def load_data_MNIST():
 def generate_MNIST(mnist, batch_size):
     batch = mnist.train.next_batch(batch_size)
     print(batch[0].shape)
-    batch = np.reshape(batch, [batch_size, 28, 28, 1])
+    batch = np.reshape(batch[0], [batch_size, 28, 28, 1])
