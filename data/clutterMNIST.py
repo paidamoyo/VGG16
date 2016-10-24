@@ -116,6 +116,11 @@ def generate_cluttered_MNIST(dims, nImages, numbers, prob, clutter, train_set):
 
                 # Insert digit fragment
                 images[k, x:x + 8, y:y + 8] += digit[px:px + 8, py:py + 8]
+                for x1 in range(x, x + 8):
+                    for y1 in range(y, y+8):
+                        if images[k, x1, y1] > 255:
+                            images[k, x1, y1] = 255
+
 
 
         # Renormalize image

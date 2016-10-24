@@ -22,7 +22,7 @@ class ConvVae:
         self._define_layers(params)
         self.weights, self.biases = self._initialize_variables()
         self.x_reconst, self.mean, self.stddev, self.gen = self._create_network()
-        self.cost, self.optimizer = self._create_loss_optimizer()
+        self.vae, self.recon, self.cost, self.optimizer = self._create_loss_optimizer()
         self.saver = tf.train.Saver()
         self.summary()
         self.merged = tf.merge_all_summaries()
@@ -49,7 +49,9 @@ class ConvVae:
             tf.histogram_summary("weights_" + k, self.weights[k])
         for k in self.biases.keys():
             tf.histogram_summary("biases_" + k, self.biases[k])
-        tf.scalar_summary("cost", self.cost)
+        tf.scalar_summary("Total Loss", self.cost)
+        tf.scalar_summary("Reconstruction Loss", self.recon)
+        tf.scalar_summary("VAE Loss", self.vae)
         tf.image_summary("x", self.x)
         tf.image_summary("x_reconst", self.x_reconst)
 
@@ -83,9 +85,9 @@ class ConvVae:
         x = self.x
         for c in range(self.conv_num):
             key = 'conv' + str(c)
-            x = conv2d(x, w=self.weights[key], stride=self.conv['layers'][c][2], padding=self.conv['layers'][c][3])
-            x = batch_norm(x=x,  bias=self.biases['conv' + str(c)], scale=self.biases['conv' + str(c) + '_scale'])
-        print(x.get_shape())
+            x = conv2d(x, w=self.weights[key], b=self.biases['conv' + str(c)],
+                       s=self.biases['conv' + str(c) + '_scale'], stride=self.conv['layers'][c][2],
+                       padding=self.conv['layers'][c][3])
         x = tf.reshape(x, self.fc['reshape'])
         for f in range(self.fc_num):
             key = 'fc' + str(f)
@@ -102,13 +104,14 @@ class ConvVae:
             mean, stddev = tf.split(1, 2, z)
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
-        y = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
+        x_reconst = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
         for d in range(self.deconv_num):
             key = 'deconv' + str(d)
-            y = deconv2d(y, w=self.weights[key], stride=self.deconv['layers'][d][2], padding=self.deconv['layers'][d][3])
-            y = batch_norm(x=y, bias=self.biases['deconv' + str(d)], scale=self.biases['deconv' + str(d) + '_scale'])
-        y = tf.nn.sigmoid(y)
-        return y, mean, stddev
+            x_reconst = deconv2d(x_reconst, w=self.weights[key], b=self.biases['deconv' + str(d)],
+                         s=self.biases['deconv' + str(d) + '_scale'], stride=self.deconv['layers'][d][2],
+                         padding=self.deconv['layers'][d][3])
+        x_reconst = tf.nn.sigmoid(x_reconst)
+        return x_reconst, mean, stddev
 
     def _create_network(self):
         print('Creating Network')
@@ -132,7 +135,7 @@ class ConvVae:
         recon = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_mean(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
-        return cost, optimizer
+        return vae, recon, cost, optimizer
 
     def generate_x_reconst(self):
         norm = np.random.normal(size=[10, self.params['hidden_size']])

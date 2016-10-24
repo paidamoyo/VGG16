@@ -33,7 +33,7 @@ def main():
     model = ConvVae(params, flags)
 
     bgf = functools.partial(generate_cluttered_MNIST, dims=[params['image_dim'], params['image_dim']],
-                                                  nImages=params['batch_size'], clutter=0.1, numbers=[8], prob=1,
+                                                  nImages=params['batch_size'], clutter=0.0, numbers=range(9), prob=1,
                             train_set=train_set)
     # print(model.print_variable(var='x_reconst').shape)
 

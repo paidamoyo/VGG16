@@ -39,38 +39,21 @@ def xavier_init(fan_in, fan_out, shape, constant=1):
     return tf.random_uniform(shape, minval=low, maxval=high, dtype=tf.float32)
 
 
-def conv2d(img, w, stride=1, padding='SAME'):
-    img = tf.nn.conv2d(img, w, strides=[1, stride, stride, 1], padding=padding)
-    # img = tf.nn.relu(img)
-    return img
-
-
 def maxpool2d(x, k=2):
     return tf.nn.max_pool(x, ksize=[1, k, k, 1], strides=[1, k, k, 1],
                           padding='SAME')
 
-def spp_layer(mapstack, dims, poolnum):
-    maps = tf.unpack(mapstack, axis=3)
-    flattened = []
-    for mapnum in range(len(maps)):
-        for p in poolnum:
-            div = tf.constant(p, dtype=tf.int32)
-            size = tf.reshape(
-                tf.pack([tf.constant([0], dtype=tf.int32), tf.to_int32(dims[0] / div), tf.to_int32(dims[1] / div)]),
-                [3, ])
-            for i in range(p):
-                i = tf.constant(i, dtype=tf.int32)
-                for j in range(p):
-                    j = tf.constant(j, dtype=tf.int32)
-                    x = tf.to_int32(dims[0] / div)
-                    y = tf.to_int32(dims[0] / div)
-                    begin = tf.reshape(
-                        tf.pack([tf.constant([0], dtype=tf.int32), tf.to_int32(i * x), tf.to_int32(j * y)]), [3, ])
-                    flattened.append(tf.reduce_max(tf.slice(maps[0], begin=begin, size=size)))
-    return tf.reshape(tf.convert_to_tensor(flattened), [1, 2560])
+
+def conv2d(x, w, b, s, stride=1, padding='SAME', act_fn=tf.nn.relu):
+    x = tf.nn.conv2d(x, w, strides=[1, stride, stride, 1], padding=padding)
+    if b is not None or s is not None:
+        batch_norm(x, s)
+    x = tf.add(x, b)
+    x = act_fn(x)
+    return x
 
 
-def deconv2d(x, w, stride=2, padding='SAME'):
+def deconv2d(x, w, b, s, stride=2, padding='SAME', act_fn=tf.nn.relu):
     batch_size = tf.shape(x)[0]
     input_height = tf.shape(x)[1]
     input_width = tf.shape(x)[2]
@@ -93,21 +76,43 @@ def deconv2d(x, w, stride=2, padding='SAME'):
     # batch_size, rows, cols, number of channels #
     output_shape = tf.pack([batch_size, out_rows, out_cols, out_channels])
     y = tf.nn.conv2d_transpose(x, w, output_shape, [1, stride, stride, 1], padding)
-    # y = tf.add(y, b)
-    # y = tf.nn.relu(y)
+    if b is not None or s is not None:
+        batch_norm(y, s)
+    y = tf.add(y, b)
+    y = act_fn(y)
     return y
+
+
+def batch_norm(x, s, epsilon=1e-3):
+    # Calculate batch mean and variance
+    batch_mean1, batch_var1 = tf.nn.moments(x, [0], keep_dims=True)
+
+    # Apply the initial batch normalizing transform
+    z1_hat = (x - batch_mean1) / tf.sqrt(batch_var1 + epsilon)
+    z1_hat = z1_hat * s
+    return z1_hat
 
 
 def fc(x, w, b):
     return tf.nn.tanh(tf.add(tf.matmul(x, w), b))
 
 
-def batch_norm(x, bias, scale, epsilon=1e-3):
-    # Calculate batch mean and variance
-    batch_mean1, batch_var1 = tf.nn.moments(x, [0], keep_dims=True)
-
-    # Apply the initial batch normalizing transform
-    z1_hat = (x - batch_mean1) / tf.sqrt(batch_var1 + epsilon)
-    z1_hat = z1_hat * scale
-    BN1 = tf.add(z1_hat, bias)
-    return tf.nn.tanh(BN1)
+def spp_layer(mapstack, dims, poolnum):
+    maps = tf.unpack(mapstack, axis=3)
+    flattened = []
+    for mapnum in range(len(maps)):
+        for p in poolnum:
+            div = tf.constant(p, dtype=tf.int32)
+            size = tf.reshape(
+                tf.pack([tf.constant([0], dtype=tf.int32), tf.to_int32(dims[0] / div), tf.to_int32(dims[1] / div)]),
+                [3, ])
+            for i in range(p):
+                i = tf.constant(i, dtype=tf.int32)
+                for j in range(p):
+                    j = tf.constant(j, dtype=tf.int32)
+                    x = tf.to_int32(dims[0] / div)
+                    y = tf.to_int32(dims[0] / div)
+                    begin = tf.reshape(
+                        tf.pack([tf.constant([0], dtype=tf.int32), tf.to_int32(i * x), tf.to_int32(j * y)]), [3, ])
+                    flattened.append(tf.reduce_max(tf.slice(maps[0], begin=begin, size=size)))
+    return tf.reshape(tf.convert_to_tensor(flattened), [1, 2560])
