@@ -44,16 +44,16 @@ def maxpool2d(x, k=2):
                           padding='SAME')
 
 
-def conv2d(x, w, b, s, stride=1, padding='SAME', act_fn=tf.nn.tanh):
+def conv2d(x, w, b, s, stride=1, padding='SAME', act_fn=tf.nn.relu):
     x = tf.nn.conv2d(x, w, strides=[1, stride, stride, 1], padding=padding)
     if b is not None or s is not None:
         x = batch_norm(x, s)
     x = tf.add(x, b)
-    x = tf.nn.relu(x)
+    x = act_fn(x)
     return x
 
 
-def deconv2d(x, w, b, s, stride=2, padding='SAME', act_fn=tf.nn.tanh):
+def deconv2d(x, w, b, s, stride=2, padding='SAME', act_fn=tf.nn.relu):
     batch_size = tf.shape(x)[0]
     input_height = tf.shape(x)[1]
     input_width = tf.shape(x)[2]
@@ -79,7 +79,7 @@ def deconv2d(x, w, b, s, stride=2, padding='SAME', act_fn=tf.nn.tanh):
     if b is not None or s is not None:
         x = batch_norm(x, s)
     x = tf.add(x, b)
-    x = tf.nn.relu(x)
+    x = act_fn(x)
     return x
 
 
