@@ -16,7 +16,7 @@ import os
 import pickle
 
 
-def load_data(dataset):
+def load_data_cluttered_MNIST(dataset):
     ''' Loads the dataset
     :type dataset: string
     :param dataset: the path to the dataset (here MNIST)
