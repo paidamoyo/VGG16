@@ -19,7 +19,7 @@ class Layers:
     def conv2d(self, filter_size, output_channels, stride=1, padding='SAME', activation_fn=tf.nn.relu):
         scope = 'conv_' + str(self.count['conv'])
         input_channels = self.input_shape[3]
-        output_shape = [filter_size, filter_size, input_channels, output_channels]
+        output_shape = tf.pack([filter_size, filter_size, input_channels, output_channels])
         print(output_shape)
         with tf.variable_scope(scope):
             w = conv_weight_variable(name='weights', shape=output_shape)
@@ -32,7 +32,7 @@ class Layers:
     def deconv2d(self, filter_size, output_channels, stride=1, padding='SAME', activation_fn=tf.nn.relu):
         scope = 'conv_' + str(self.count['deconv'])
         input_channels = self.input_shape[3]
-        output_shape = [filter_size, filter_size, output_channels, input_channels]
+        output_shape = tf.pack([filter_size, filter_size, output_channels, input_channels])
         with tf.variable_scope(scope):
             w = deconv_weight_variable(name='weights', shape=output_shape)
             b = const_variable(name='bias', shape=[output_channels], value=0.0)
@@ -54,7 +54,7 @@ class Layers:
     def fc(self, output_nodes, keep_prob=1, activation_fn=tf.nn.relu):
         scope = 'fc_' + str(self.count['fc'])
         input_nodes = self.input_shape[1]
-        output_shape = [input_nodes, output_nodes]
+        output_shape = tf.pack([input_nodes, output_nodes])
         with tf.variable_scope(scope):
             w = conv_weight_variable(name='weights', shape=output_shape)
             b = const_variable(name='bias', shape=[output_nodes], value=0.0)
