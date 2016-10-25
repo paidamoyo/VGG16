@@ -24,7 +24,7 @@ class ConvVae:
         self._define_layers(params)
         self.weights, self.biases = self._initialize_variables()
         self.x_reconst, self.mean, self.stddev, self.gen = self._create_network()
-        self.vae, self.recon, self.cost, self.vae_optimizer, self.svm_optimizer = self._create_loss_optimizer()
+        self.vae, self.recon, self.cost, self.vae_optimizer = self._create_loss_optimizer()
         self.saver = tf.train.Saver()
         self.summary()
         self.merged = tf.merge_all_summaries()
@@ -123,7 +123,6 @@ class ConvVae:
         print('Creating Network')
         latent = self.encoder()
         x_reconst, mean, stddev = self.decoder(z=latent)
-        vectors = self.svm(x=latent)
         gen, _, _ = self.decoder(z=None)
         return x_reconst, mean, stddev, gen
 
@@ -143,7 +142,7 @@ class ConvVae:
         vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_mean(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
-        return vae, recon, cost, vae_optimizer, svm_optimizer
+        return vae, recon, cost, optimizer
 
     def generate_x_reconst(self):
         norm = np.random.normal(size=[10, self.params['hidden_size']])
