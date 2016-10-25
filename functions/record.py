@@ -31,9 +31,10 @@ def print_log(string):
     print(string)
     logging.info(string)
 
-def record_metrics(loss, acc, batch_y, step, split, params):
+
+def record_metrics(loss, acc, batch_y, step, split, flags):
     if step is not None or loss is not None:
-        print_log("Batch Number " + str(step) + ", Image Loss= " + "{:.6f}".format(loss/(params['image_dim'] * params['image_dim'] * params['batch_size'])))
+        print_log("Batch Number " + str(step) + ", Image Loss= " + "{:.6f}".format(loss/(flags['image_dim'] * flags['image_dim'] * flags['batch_size'])))
     if batch_y is not None or acc is not None:
         print_log(np.squeeze(batch_y))
         print_log(np.argmax(acc, 1))
@@ -44,7 +45,7 @@ def record_metrics(loss, acc, batch_y, step, split, params):
         print("Training Split: ", split)
 
 
-def setup_metrics(flags, params, lr_iters, run_num):
+def setup_metrics(flags, lr_iters, run_num):
     folder = 'Run' + str(run_num) + '/'
     flags['restore_directory'] = flags['aux_directory'] + flags['model_directory']
     flags['logging_directory'] = flags['restore_directory'] + folder
