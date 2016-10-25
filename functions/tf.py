@@ -29,8 +29,8 @@ def const_variable(name, shape, value=0.0):
 def xavier_init(fan_in, fan_out, shape, constant=1):
     """ Xavier initialization of network weights"""
     # https://stackoverflow.com/questions/33640581/how-to-do-xavier-initialization-on-tensorflow
-    low = -constant*tf.sqrt(6.0/(fan_in + fan_out))
-    high = constant*tf.sqrt(6.0/(fan_in + fan_out))
+    low = -constant*tf.sqrt(tf.cast(6.0, dtype=tf.int32)/(fan_in + fan_out))
+    high = constant*tf.sqrt(tf.cast(6.0, dtype=tf.int32)/(fan_in + fan_out))
     return tf.random_uniform(shape, minval=low, maxval=high, dtype=tf.float32)
 
 
