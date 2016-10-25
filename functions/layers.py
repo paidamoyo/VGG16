@@ -58,6 +58,8 @@ class Layers:
             output_shape = [input_nodes, output_nodes]
             w = weight_variable(name='weights', shape=output_shape)
             b = const_variable(name='bias', shape=[output_nodes], value=0.0)
+            print(w)
+            print(b)
             self.input = fc(self.input, w, b, act_fn=activation_fn)
             if keep_prob != 1:
                 self.input = dropout(self.input, keep_prob=keep_prob)
