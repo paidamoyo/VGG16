@@ -181,7 +181,7 @@ class ConvVae:
 
     def train(self, batch_generating_fxn, lr_iters, run_num):
 
-        setup_metrics(self.flags, self.flags, lr_iters, run_num)
+        setup_metrics(self.flags, lr_iters, run_num)
         self.writer = tf.train.SummaryWriter(self.flags['logging_directory'], self.sess.graph)
         if self.flags['restore'] is True:
             self.saver.restore(self.sess, self.flags['restore_directory'] + self.flags['restore_file'])
