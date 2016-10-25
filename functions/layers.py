@@ -7,7 +7,7 @@ class Layers:
     def __init__(self, x):
 
         self.input = x
-        self.input_shape = x.shape
+        self.input_shape = tf.shape(x)
         self.count = {
             'conv': 1,
             'deconv': 1,
