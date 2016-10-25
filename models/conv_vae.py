@@ -24,7 +24,7 @@ class ConvVae:
         self._define_layers(params)
         self.weights, self.biases = self._initialize_variables()
         self.x_reconst, self.mean, self.stddev, self.gen = self._create_network()
-        self.vae, self.recon, self.cost, self.optimizer = self._create_loss_optimizer()
+        self.vae, self.recon, self.cost, self.vae_optimizer, self.svm_optimizer = self._create_loss_optimizer()
         self.saver = tf.train.Saver()
         self.summary()
         self.merged = tf.merge_all_summaries()
@@ -109,15 +109,21 @@ class ConvVae:
         x_reconst = tf.expand_dims(tf.expand_dims(input_sample, 1), 1)
         for d in range(self.deconv_num):
             key = 'deconv' + str(d)
-            x_reconst = deconv2d(x_reconst, w=self.weights[key], b=self.biases['deconv' + str(d)],
-                         s=self.biases['deconv' + str(d) + '_scale'], stride=self.deconv['layers'][d][2],
-                         padding=self.deconv['layers'][d][3])
-        x_reconst = tf.nn.sigmoid(x_reconst)
+            if d != self.deconv_num:
+                x_reconst = deconv2d(x_reconst, w=self.weights[key], b=self.biases['deconv' + str(d)],
+                                     s=self.biases['deconv' + str(d) + '_scale'], stride=self.deconv['layers'][d][2],
+                                     padding=self.deconv['layers'][d][3])
+            else:
+                x_reconst = deconv2d(x_reconst, w=self.weights[key], b=self.biases['deconv' + str(d)],
+                                     s=self.biases['deconv' + str(d) + '_scale'], stride=self.deconv['layers'][d][2],
+                                     padding=self.deconv['layers'][d][3], act_fn=tf.nn.sigmoid)
         return x_reconst, mean, stddev
 
     def _create_network(self):
         print('Creating Network')
-        x_reconst, mean, stddev = self.decoder(z=self.encoder())
+        latent = self.encoder()
+        x_reconst, mean, stddev = self.decoder(z=latent)
+        vectors = self.svm(x=latent)
         gen, _, _ = self.decoder(z=None)
         return x_reconst, mean, stddev, gen
 
@@ -132,12 +138,12 @@ class ConvVae:
         return self.sess.run(print_var, feed_dict={self.x: x, self.keep_prob: 0.5, self.epsilon: norm})
 
     def _create_loss_optimizer(self, epsilon=1e-8):
-        vae = tf.reduce_sum(-self.x * tf.log(self.x_reconst + epsilon) -
+        recon = tf.reduce_sum(-self.x * tf.log(self.x_reconst + epsilon) -
                             (1.0 - self.x) * tf.log(1.0 - self.x_reconst + epsilon))
-        recon = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
+        vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_mean(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
-        return vae, recon, cost, optimizer
+        return vae, recon, cost, vae_optimizer, svm_optimizer
 
     def generate_x_reconst(self):
         norm = np.random.normal(size=[10, self.params['hidden_size']])
