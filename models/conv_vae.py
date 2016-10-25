@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import scipy.misc
 
-from functions.tf import conv2d, deconv2d, fc, conv_weight_variable, bias_variable, deconv_weight_variable
+from functions.tf import conv2d, deconv2d, fc, conv_weight_variable, const_variable, deconv_weight_variable
 from functions.record import record_metrics, print_log, setup_metrics
 from functions.layers import Layers
 
