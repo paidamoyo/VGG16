@@ -41,12 +41,15 @@ class ConvVae:
     def _encoder(self, x):
         encoder = Layers(x)
         encoder.conv2d(5, 32, stride=2)
-        xy = encoder.get_output()
-        print(xy.get_shape())
+        print(encoder.get_output().get_shape())
         encoder.conv2d(5, 64, stride=2)
+        print(encoder.get_output().get_shape())
         encoder.conv2d(5, 128, padding='VALID')
+        print(encoder.get_output().get_shape())
         encoder.flatten(self.keep_prob)
+        print(encoder.get_output().get_shape())
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
+        print(encoder.get_output().get_shape())
         return encoder.get_output()
 
     def _decoder(self, z):
