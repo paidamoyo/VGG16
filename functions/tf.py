@@ -85,7 +85,8 @@ def batch_norm(x, s, epsilon=1e-3):
 
 
 def fc(x, w, b, act_fn):
-    x = tf.add(tf.matmul(x, w), b)
+    x = tf.matmul(x, w)
+    x = tf.add(x, b)
     if act_fn is not None:
         x = act_fn(x)
     return x
