@@ -24,7 +24,7 @@ class ConvVae:
         self._define_layers(params)
         self.weights, self.biases = self._initialize_variables()
         self.x_reconst, self.mean, self.stddev, self.gen = self._create_network()
-        self.vae, self.recon, self.cost, self.vae_optimizer = self._create_loss_optimizer()
+        self.vae, self.recon, self.cost, self.optimizer = self._create_loss_optimizer()
         self.saver = tf.train.Saver()
         self.summary()
         self.merged = tf.merge_all_summaries()
