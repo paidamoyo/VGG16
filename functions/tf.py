@@ -1,26 +1,23 @@
 #!/usr/bin/env python
 
 import tensorflow as tf
-import numpy as np
 
 
 def conv_weight_variable(name, shape):
-    if len(shape) == 4:
-        fan_in = shape[0] * shape[1] * shape[2]
-        fan_out = shape[0] * shape[1] * shape[3]
-    else:  # len(shape) == 2:
-        fan_in = shape[0]
-        fan_out = shape[1]
+    fan_in = shape[0] * shape[1] * shape[2]
+    fan_out = shape[0] * shape[1] * shape[3]
     return tf.get_variable(name=name, shape=shape, initializer=xavier_init(fan_in, fan_out, shape))
 
 
+def weight_variable(name, shape):
+    fan_in = shape[0]
+    fan_out = shape[1]
+    tf.get_variable(name=name, shape=shape, initializer=xavier_init(fan_in, fan_out, shape))
+
+
 def deconv_weight_variable(name, shape):
-    if len(shape) == 4:
-        fan_in = shape[0] * shape[1] * shape[3]
-        fan_out = shape[0] * shape[1] * shape[2]
-    else:  # len(shape) == 2:
-        fan_in = shape[0]
-        fan_out = shape[1]
+    fan_in = shape[0] * shape[1] * shape[3]
+    fan_out = shape[0] * shape[1] * shape[2]
     return tf.get_variable(name=name, shape=shape, initializer=xavier_init(fan_in, fan_out, shape))
 
 
@@ -31,8 +28,8 @@ def const_variable(name, shape, value=0.0):
 def xavier_init(fan_in, fan_out, shape, constant=1):
     """ Xavier initialization of network weights"""
     # https://stackoverflow.com/questions/33640581/how-to-do-xavier-initialization-on-tensorflow
-    low = -constant*np.sqrt(6.0/(fan_in + fan_out))
-    high = constant*np.sqrt(6.0/(fan_in + fan_out))
+    low = -constant*tf.sqrt(6.0/(fan_in + fan_out))
+    high = constant*tf.sqrt(6.0/(fan_in + fan_out))
     return tf.random_uniform(shape, minval=low, maxval=high, dtype=tf.float32)
 
 

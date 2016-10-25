@@ -56,7 +56,7 @@ class Layers:
         input_nodes = self.input_shape[1]
         output_shape = tf.pack([input_nodes, output_nodes])
         with tf.variable_scope(scope):
-            w = conv_weight_variable(name='weights', shape=output_shape)
+            w = weight_variable(name='weights', shape=output_shape)
             b = const_variable(name='bias', shape=[output_nodes], value=0.0)
             self.input = fc(self.input, w, b, act_fn=activation_fn)
             if keep_prob != 1:
