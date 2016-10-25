@@ -29,7 +29,7 @@ def main():
     if 'Clutter_MNIST' in flags['datasets']:
         train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
         bgf = functools.partial(generate_cluttered_MNIST, dims=[flags['image_dim'], flags['image_dim']],
-                                nImages=flags['batch_size'], clutter=0.2, numbers=[], prob=1,
+                                nImages=flags['batch_size'], clutter=0.5, numbers=[], prob=1,
                                 train_set=train_set)
     if 'MNIST' in flags['datasets']:
         mnist = load_data_MNIST()
@@ -38,6 +38,7 @@ def main():
     # print(model.print_variable(var='x_reconst').shape)
 
     model.train(bgf, lr_iters=flags['lr_iters'], run_num=1)
+    model.x_recon()
 
 
 if __name__ == "__main__":

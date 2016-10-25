@@ -88,18 +88,18 @@ class ConvVae:
             return tf.Print(self.x_recon, [self.x_recon])
         return self.sess.run(print_var, feed_dict={self.x: x, self.keep_prob: 0.5, self.epsilon: norm})
 
-    def x_recon(self):
-        norm = np.random.normal(size=[10, self.flags['hidden_size']])
+    def x_recon(self, n):
+        norm = np.random.normal(size=[n, self.flags['hidden_size']])
         images = self.sess.run(self.gen, feed_dict={self.epsilon: norm})
         for i in range(len(images)):
             plt.imshow(np.squeeze(images[i]), cmap='gray')
-            plt.savefig(self.flags['logging_directory'] + 'image' + str(i))
+            plt.savefig(self.flags['logging_directory'] + 'x_recon_' + str(i))
 
     def x(self, image_generating_fxn):
         images = image_generating_fxn()
         for i in range(len(images)):
             plt.imshow(np.squeeze(images[i]), cmap='gray')
-            plt.savefig(self.flags['logging_directory'] + 'image' + str(i))
+            plt.savefig(self.flags['logging_directory'] + 'x_' + str(i))
 
     def transform(self, x):
         """Transform data by mapping it into the latent space."""
@@ -116,6 +116,7 @@ class ConvVae:
             self.sess.run(tf.initialize_all_variables())
             print_log("Model training from scratch.")
 
+        global_step = 1
         for i in range(len(lr_iters)):
             lr = lr_iters[i][0]
             iters = lr_iters[i][1]
@@ -132,8 +133,9 @@ class ConvVae:
                 if step % self.flags['display_step'] == 0:
                     summary, loss, _ = self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
                     record_metrics(loss=loss, acc=None, batch_y=None, step=step, split=None, flags=self.flags)
-                writer.add_summary(summary=summary, global_step=step)
+                writer.add_summary(summary=summary, global_step=global_step)
                 step += 1
+                global_step += 1
 
             print("Optimization Finished!")
             checkpoint_name = self.flags['logging_directory'] + 'Run' + str(run_num) + 'epoch_%d' % i + '.ckpt'
@@ -141,10 +143,3 @@ class ConvVae:
             print("Model saved in file: %s" % save_path)
 
     # def test(self, test_data, test_labels):
-
-
-    def generate(self):
-        norm = np.random.standard_normal([self.flags['batch_size'], self.flags['hidden_size']])
-        imgs = self.sess.run(self.gen, feed_dict={self.epsilon: norm})
-        for k in range(self.flags['batch_size']):
-            scipy.misc.imsave(self.flags['logging_directory'] + 'image_%d.png' % k, imgs[k].reshape(28, 28))
