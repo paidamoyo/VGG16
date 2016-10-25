@@ -17,7 +17,7 @@ class Layers:
 
     def conv2d(self, filter_size, output_channels, stride=1, padding='SAME', activation_fn=tf.nn.relu):
         scope = 'conv_' + str(self.count['conv'])
-        input_channels = self.input_shape[3]
+        input_channels = self.input.get_shape()[3]
         output_shape = [filter_size, filter_size, input_channels, output_channels]
         with tf.variable_scope(scope):
             w = conv_weight_variable(name='weights', shape=output_shape)
