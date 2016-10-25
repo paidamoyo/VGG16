@@ -5,21 +5,14 @@ import tensorflow.contrib.layers as init
 
 
 def conv_weight_variable(name, shape):
-    print(shape)
-    fan_in = shape[0] * shape[1] * shape[2]
-    fan_out = shape[0] * shape[1] * shape[3]
     return tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer())
 
 
 def weight_variable(name, shape):
-    fan_in = shape[0]
-    fan_out = shape[1]
     tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer())
 
 
 def deconv_weight_variable(name, shape):
-    fan_in = shape[0] * shape[1] * shape[3]
-    fan_out = shape[0] * shape[1] * shape[2]
     return tf.get_variable(name=name, shape=shape, initializer=tf.constant_initializer())
 
 
