@@ -41,7 +41,8 @@ class ConvVae:
     def _encoder(self, x):
         encoder = Layers(x)
         encoder.conv2d(5, 32, stride=2)
-        print(encoder.get_ouput().get_shape())
+        xy = encoder.get_ouput()
+        print(xy.get_shape())
         encoder.conv2d(5, 64, stride=2)
         encoder.conv2d(5, 128, padding='VALID')
         encoder.flatten(self.keep_prob)
