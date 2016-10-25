@@ -56,6 +56,7 @@ class Layers:
         with tf.variable_scope(scope):
             input_nodes = self.input.get_shape()[1]
             output_shape = [input_nodes, output_nodes]
+            print(output_shape)
             w = weight_variable(name='weights', shape=output_shape)
             b = const_variable(name='bias', shape=[output_nodes], value=0.0)
             print(w)
