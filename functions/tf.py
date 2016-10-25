@@ -5,6 +5,7 @@ import tensorflow.contrib.layers as init
 
 
 def conv_weight_variable(name, shape):
+    print(shape)
     fan_in = shape[0] * shape[1] * shape[2]
     fan_out = shape[0] * shape[1] * shape[3]
     print(fan_in)
