@@ -42,10 +42,9 @@ class Layers:
     def flatten(self, keep_prob=1):
         scope = 'flat_' + str(self.count['flat'])
         with tf.variable_scope(scope):
-            input_nodes = tf.mul(tf.mul(self.input.get_shape()[1], self.input.get_shape()[2]), self.input.get_shape()[3])
+            input_nodes = 9 * self.input.get_shape()[3])
             output_shape = tf.pack([tf.constant(-1), input_nodes])
             self.input = tf.reshape(self.input, output_shape)
-            print(self.input.get_shape())
             if keep_prob != 1:
                 self.input = dropout(self.input, keep_prob=keep_prob)
         self.input_shape = output_shape
