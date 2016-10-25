@@ -9,17 +9,17 @@ from functions.record import record_metrics, print_log, setup_metrics
 
 
 class ConvVae:
-    def __init__(self, params, flags):
+    def __init__(self, flags):
 
-        self.params = params
         self.flags = flags
-        self.x = tf.placeholder(tf.float32, [None, params['image_dim'], params['image_dim'], 1], name='x')  # input patches
+        self.flags = flags
+        self.x = tf.placeholder(tf.float32, [None, flags['image_dim'], flags['image_dim'], 1], name='x')  # input patches
         self.keep_prob = tf.placeholder(tf.float32, name='dropout')
-        self.epsilon = tf.placeholder(tf.float32, [None, params['hidden_size']], name='epsilon')
+        self.epsilon = tf.placeholder(tf.float32, [None, flags['hidden_size']], name='epsilon')
         self.lr = tf.placeholder(tf.float32, name='learning_rate')
 
         self._set_seed()
-        self._define_layers(params)
+        self._define_layers(flags)
         self.weights, self.biases = self._initialize_variables()
         self.x_reconst, self.mean, self.stddev, self.gen = self._create_network()
         self.vae, self.recon, self.cost, self.optimizer = self._create_loss_optimizer()
@@ -28,21 +28,21 @@ class ConvVae:
         self.merged = tf.merge_all_summaries()
         self.sess = tf.InteractiveSession()
 
-    def _define_layers(self, params):
-        if params['image_dim'] == 28:
+    def _define_layers(self, flags):
+        if flags['image_dim'] == 28:
             self.conv = {'input': 1,
                          'layers': [(32, 5, 2, 'SAME'), (64, 5, 2, 'SAME'), (128, 5, 1, 'VALID')]}
             self.conv_num = len(self.conv['layers'])
             self.fc = {'reshape': [-1, 3*3*128],
-                       'layers': [3*3*128, params['hidden_size'] * 2]}
+                       'layers': [3*3*128, flags['hidden_size'] * 2]}
             self.fc_num = len(self.fc['layers'])-1
-            self.deconv = {'input': params['hidden_size'],
+            self.deconv = {'input': flags['hidden_size'],
                            'layers': [(128, 3, 1, 'VALID'), (64, 5, 1, 'VALID'), (32, 5, 2, 'SAME'), (1, 5, 2, 'SAME')]}
             self.deconv_num = len(self.deconv['layers'])
 
     def _set_seed(self):
-        tf.set_random_seed(self.params['seed'])
-        np.random.seed(self.params['seed'])
+        tf.set_random_seed(self.flags['seed'])
+        np.random.seed(self.flags['seed'])
 
     def summary(self):
         for k in self.weights.keys():
@@ -126,8 +126,8 @@ class ConvVae:
     def print_variable(self, var):
         if var == 'x_reconst':
             print_var = tf.Print(self.x_reconst, [self.x_reconst])
-            norm = np.random.normal(size=[self.params['batch_size'], self.params['hidden_size']])
-            x = np.zeros([self.params['batch_size'], self.params['image_dim'], self.params['image_dim'], 1])
+            norm = np.random.normal(size=[self.flags['batch_size'], self.flags['hidden_size']])
+            x = np.zeros([self.flags['batch_size'], self.flags['image_dim'], self.flags['image_dim'], 1])
         else:
             print('Print Variable not defined .... printing x_reconst')
             return tf.Print(self.x_reconst, [self.x_reconst])
@@ -142,7 +142,7 @@ class ConvVae:
         return vae, recon, cost, optimizer
 
     def generate_x_reconst(self):
-        norm = np.random.normal(size=[10, self.params['hidden_size']])
+        norm = np.random.normal(size=[10, self.flags['hidden_size']])
         images = self.sess.run(self.gen, feed_dict={self.epsilon: norm})
         for i in range(len(images)):
             plt.imshow(np.squeeze(images[i]), cmap='gray')
@@ -176,7 +176,7 @@ class ConvVae:
 
     def train(self, batch_generating_fxn, lr_iters, run_num):
 
-        setup_metrics(self.flags, self.params, lr_iters, run_num)
+        setup_metrics(self.flags, self.flags, lr_iters, run_num)
         self.writer = tf.train.SummaryWriter(self.flags['logging_directory'], self.sess.graph)
         if self.flags['restore'] is True:
             self.saver.restore(self.sess, self.flags['restore_directory'] + self.flags['restore_file'])
@@ -195,12 +195,12 @@ class ConvVae:
 
                 print('Batch number: %d' % step)
                 batch_x = batch_generating_fxn()
-                norm = np.random.standard_normal([self.params['batch_size'], self.params['hidden_size']])
+                norm = np.random.standard_normal([self.flags['batch_size'], self.flags['hidden_size']])
                 summary, _ = self.sess.run([self.merged, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
 
-                if step % self.params['display_step'] == 0:
+                if step % self.flags['display_step'] == 0:
                     summary, loss, _ = self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
-                    record_metrics(loss=loss, acc=None, batch_y=None, step=step, split=None, params=self.params)
+                    record_metrics(loss=loss, acc=None, batch_y=None, step=step, split=None, flags=self.flags)
                 self.writer.add_summary(summary=summary, global_step=step)
                 step += 1
 

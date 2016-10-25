@@ -47,8 +47,10 @@ class ConvVae:
         np.random.seed(self.flags['seed'])
 
     def summary(self):
-        for k in self.params.keys():
-            tf.histogram_summary(k, self.weights[k])
+        for k in self.weights.keys():
+            tf.histogram_summary("weights_" + k, self.weights[k])
+        for k in self.biases.keys():
+            tf.histogram_summary("biases_" + k, self.biases[k])
         tf.scalar_summary("Total Loss", self.cost)
         tf.scalar_summary("Reconstruction Loss", self.recon)
         tf.scalar_summary("VAE Loss", self.vae)
