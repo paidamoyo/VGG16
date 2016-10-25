@@ -9,7 +9,7 @@ def conv_weight_variable(name, shape):
 
 
 def weight_variable(name, shape):
-    tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer())
+    tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer(), validate_shape=False)
 
 
 def deconv_weight_variable(name, shape):
