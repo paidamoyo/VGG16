@@ -4,15 +4,14 @@ import tensorflow as tf
 import numpy as np
 
 
-def weight_variable(name, shape):
+def conv_weight_variable(name, shape):
     if len(shape) == 4:
         fan_in = shape[0] * shape[1] * shape[2]
         fan_out = shape[0] * shape[1] * shape[3]
     else:  # len(shape) == 2:
         fan_in = shape[0]
         fan_out = shape[1]
-    initial = xavier_init(fan_in, fan_out, shape)
-    return tf.Variable(initial, name=name)
+    return tf.get_variable(name=name, shape=shape, initializer=xavier_init(fan_in, fan_out, shape))
 
 
 def deconv_weight_variable(name, shape):
@@ -22,13 +21,11 @@ def deconv_weight_variable(name, shape):
     else:  # len(shape) == 2:
         fan_in = shape[0]
         fan_out = shape[1]
-    initial = xavier_init(fan_in, fan_out, shape)
-    return tf.Variable(initial, name=name)
+    return tf.get_variable(name=name, shape=shape, initializer=xavier_init(fan_in, fan_out, shape))
 
 
-def bias_variable(name, shape, value=0.0):
-    initial = tf.constant(value, shape=shape, dtype=tf.float32)
-    return tf.Variable(initial, name)
+def const_variable(name, shape, value=0.0):
+    return tf.get_variable(name, shape, tf.constant(value, shape=shape, dtype=tf.float32))
 
 
 def xavier_init(fan_in, fan_out, shape, constant=1):
@@ -44,16 +41,17 @@ def maxpool2d(x, k=2):
                           padding='SAME')
 
 
-def conv2d(x, w, b, s, stride=1, padding='SAME', act_fn=tf.nn.relu):
+def conv2d(x, w, b, s, stride, padding, act_fn):
     x = tf.nn.conv2d(x, w, strides=[1, stride, stride, 1], padding=padding)
     if b is not None or s is not None:
         x = batch_norm(x, s)
     x = tf.add(x, b)
-    x = act_fn(x)
+    if act_fn is not None:
+        x = act_fn(x)
     return x
 
 
-def deconv2d(x, w, b, s, stride=2, padding='SAME', act_fn=tf.nn.relu):
+def deconv2d(x, w, b, s, stride, padding, act_fn):
     batch_size = tf.shape(x)[0]
     input_height = tf.shape(x)[1]
     input_width = tf.shape(x)[2]
@@ -79,7 +77,8 @@ def deconv2d(x, w, b, s, stride=2, padding='SAME', act_fn=tf.nn.relu):
     if b is not None or s is not None:
         x = batch_norm(x, s)
     x = tf.add(x, b)
-    x = act_fn(x)
+    if act_fn is not None:
+        x = act_fn(x)
     return x
 
 
@@ -93,8 +92,15 @@ def batch_norm(x, s, epsilon=1e-3):
     return z1_hat
 
 
-def fc(x, w, b):
-    return tf.nn.tanh(tf.add(tf.matmul(x, w), b))
+def fc(x, w, b, act_fn):
+    x = tf.add(tf.matmul(x, w), b)
+    if act_fn is not None:
+        x = act_fn(x)
+    return x
+
+
+def dropout(x, keep_prob):
+    return tf.nn.dropout(x, keep_prob=keep_prob)
 
 
 def spp_layer(mapstack, dims, poolnum):
