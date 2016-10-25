@@ -1,25 +1,26 @@
 #!/usr/bin/env python
 
 import tensorflow as tf
+import tensorflow.contrib.layers as init
 
 
 def conv_weight_variable(name, shape):
     fan_in = shape[0] * shape[1] * shape[2]
     fan_out = shape[0] * shape[1] * shape[3]
     print(fan_in)
-    return tf.get_variable(name=name, shape=shape, initializer=xavier_init(fan_in, fan_out, shape))
+    return tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer)
 
 
 def weight_variable(name, shape):
     fan_in = shape[0]
     fan_out = shape[1]
-    tf.get_variable(name=name, shape=shape, initializer=xavier_init(fan_in, fan_out, shape))
+    tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer)
 
 
 def deconv_weight_variable(name, shape):
     fan_in = shape[0] * shape[1] * shape[3]
     fan_out = shape[0] * shape[1] * shape[2]
-    return tf.get_variable(name=name, shape=shape, initializer=xavier_init(fan_in, fan_out, shape))
+    return tf.get_variable(name=name, shape=shape, initializer=tf.constant_initializer)
 
 
 def const_variable(name, shape, value=0.0):
