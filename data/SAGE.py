@@ -11,6 +11,7 @@ def generate_SAGE(flags, image_dict):
     all_inds = sage.columns.values
     batch_ind = np.random.randint(low=0, high=len(all_inds), size=1)
     inds = all_inds[batch_ind]
+    print(inds)
     data_directory = flags['data_directory'] + 'SAGE/Preprocessed/' + flags['previous_processed_directory']
     image_path = data_directory + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
     with open(image_path, 'rb') as basefile:
