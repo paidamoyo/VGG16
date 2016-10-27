@@ -44,8 +44,12 @@ def main():
         bgf = None
         print('Dataset not defined for batch generation')
         exit()
-    model = ConvVae(flags)
-    model.x(bgf)
+    labels, images = bgf()
+    for i in range(len(images)):
+        plt.imshow(np.squeeze(images[i]), cmap='gray')
+        plt.savefig(self.flags['logging_directory'] + 'x_' + str(i))
+    # model = ConvVae(flags)
+    # model.x(bgf)
     # model.train(bgf, lr_iters=flags['lr_iters'], run_num=1)
     # model.x_recon()
 
