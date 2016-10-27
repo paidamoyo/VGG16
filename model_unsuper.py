@@ -17,7 +17,7 @@ flags = {
     'previous_processed_directory': '1_Cropped/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
-    'datasets': ['MNIST'],
+    'datasets': ['SAGE'],
     'restore': False,
     'restore_file': 'starting_point.ckpt',
     'seed': 14,
