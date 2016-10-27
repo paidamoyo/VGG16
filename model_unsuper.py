@@ -39,7 +39,7 @@ def main():
         bgf = functools.partial(generate_MNIST, mnist, flags['batch_size'])
     elif 'SAGE' in flags['datasets']:
         image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
-        bgf = functools.partial(generate_SAGE, flags, image_dict, flags['batch_size'])
+        bgf = functools.partial(generate_SAGE, flags, image_dict)
     else:
         bgf = None
         print('Dataset not defined for batch generation')
