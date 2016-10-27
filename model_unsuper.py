@@ -49,7 +49,7 @@ def main():
     labels, images = bgf()
     for i in range(len(images)):
         plt.imshow(np.squeeze(images[i]), cmap='gray')
-        plt.savefig(flags['logging_directory'] + 'x_' + str(i))
+        plt.savefig('./'+ 'x_' + str(i))
     # model = ConvVae(flags)
     # model.x(bgf)
     # model.train(bgf, lr_iters=flags['lr_iters'], run_num=1)
