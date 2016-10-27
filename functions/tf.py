@@ -4,20 +4,32 @@ import tensorflow as tf
 import tensorflow.contrib.layers as init
 
 
-def conv_weight_variable(name, shape):
-    return tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer())
+def conv_weight_variable(name, shape, summary):
+    v = tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer())
+    if summary is True:
+        tf.scalar_summary(v)
+    return v
 
 
-def weight_variable(name, shape):
-    return tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer())
+def weight_variable(name, shape, summary):
+    v = tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer())
+    if summary is True:
+        tf.scalar_summary(v)
+    return v
 
 
-def deconv_weight_variable(name, shape):
-    return tf.get_variable(name=name, shape=shape, initializer=tf.constant_initializer())
+def deconv_weight_variable(name, shape, summary):
+    v = tf.get_variable(name=name, shape=shape, initializer=tf.constant_initializer())
+    if summary is True:
+        tf.scalar_summary(v)
+    return v
 
 
-def const_variable(name, shape, value=0.0):
-    return tf.get_variable(name, shape, initializer=tf.constant_initializer(value))
+def const_variable(name, shape, value, summary):
+    v = tf.get_variable(name, shape, initializer=tf.constant_initializer(value))
+    if summary is True:
+        tf.scalar_summary(v)
+    return v
 
 
 def xavier_init(fan_in, fan_out, shape, constant=1):

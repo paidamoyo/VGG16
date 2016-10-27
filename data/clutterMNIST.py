@@ -71,6 +71,7 @@ def generate_cluttered_MNIST(dims, nImages, numbers, prob, clutter, train_set):
         images: 3D stack of cluttered MNIST images (dim[0],dim[1],nImages)
     '''
     images = np.zeros((nImages, dims[0], dims[1]))
+    labels = np.ones((nImages))
 
     # Calculate number of patches of clutter to add in
     clutterPatches = int(clutter * dims[0] * dims[1] / (8 * 8))
@@ -95,6 +96,7 @@ def generate_cluttered_MNIST(dims, nImages, numbers, prob, clutter, train_set):
                     images[k, x:x + 28, y:y + 28] += digit
                 else:
                     images[k, :, :] = digit
+                labels[k] = -1
 
         # Add in clutter
         if clutterPatches != 0:
@@ -124,7 +126,7 @@ def generate_cluttered_MNIST(dims, nImages, numbers, prob, clutter, train_set):
         # Renormalize image
         # images[k, :, :] = images[k, :, :] / images[k, :, :].max()
 
-    return np.expand_dims(images, 3)
+    return labels, np.expand_dims(images, 3)
 
 
 if __name__ == '__main__':

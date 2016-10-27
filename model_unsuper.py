@@ -3,16 +3,19 @@
 import functools
 
 from models.conv_vae import ConvVae
+import pickle
 from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIST
 from data.MNIST import load_data_MNIST, generate_MNIST
+from data.SAGE import generate_SAGE
 
 
 # Global Dictionary of Flags
 flags = {
     'data_directory': '../../../Data/',  # in relationship to the code_directory
+    'preprocessed_directory': '1_Cropped/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
-    'datasets': ['Clutter_MNIST'],
+    'datasets': ['SAGE'],
     'restore': False,
     'restore_file': 'starting_point.ckpt',
     'seed': 14,
@@ -29,14 +32,19 @@ def main():
     if 'Clutter_MNIST' in flags['datasets']:
         train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
         bgf = functools.partial(generate_cluttered_MNIST, dims=[flags['image_dim'], flags['image_dim']],
-                                nImages=flags['batch_size'], clutter=0.5, numbers=[], prob=1,
+                                nImages=flags['batch_size'], clutter=0.5, numbers=[8], prob=0.5,
                                 train_set=train_set)
-    if 'MNIST' in flags['datasets']:
+    elif 'MNIST' in flags['datasets']:
         mnist = load_data_MNIST()
         bgf = functools.partial(generate_MNIST, mnist, flags['batch_size'])
+    elif 'SAGE' in flags['datasets']:
+        image_dict = pickle.load(open(flags['axu_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
+        bgf = functools.partial(generate_SAGE, flags, image_dict, flags['batch_size'])
+    else:
+        bgf = None
+        print('Dataset not defined for batch generation')
+        exit()
     model = ConvVae(flags)
-    # print(model.print_variable(var='x_reconst').shape)
-
     model.train(bgf, lr_iters=flags['lr_iters'], run_num=1)
     model.x_recon()
 

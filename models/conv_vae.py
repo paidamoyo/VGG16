@@ -3,7 +3,6 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
-import scipy.misc
 
 from functions.record import record_metrics, print_log, setup_metrics
 from functions.layers import Layers
@@ -13,6 +12,7 @@ class ConvVae:
 
         self.flags = flags
         self.x = tf.placeholder(tf.float32, [None, flags['image_dim'], flags['image_dim'], 1], name='x')  # input patches
+        self.y = tf.placeholder(tf.int32, shape=[1])
         self.keep_prob = tf.placeholder(tf.float32, name='dropout')
         self.epsilon = tf.placeholder(tf.float32, [None, flags['hidden_size']], name='epsilon')
         self.lr = tf.placeholder(tf.float32, name='learning_rate')
@@ -35,6 +35,8 @@ class ConvVae:
         tf.scalar_summary("Total Loss", self.cost)
         tf.scalar_summary("Reconstruction Loss", self.recon)
         tf.scalar_summary("VAE Loss", self.vae)
+        tf.histogram_summary("Mean", self.mean)
+        tf.histogram_summary("Stddev", self.stddev)
         tf.image_summary("x", self.x)
         tf.image_summary("x_recon", self.x_recon)
 
@@ -126,7 +128,7 @@ class ConvVae:
             while step < iters:
 
                 print('Batch number: %d' % step)
-                batch_x = batch_generating_fxn()
+                labels_x, batch_x = batch_generating_fxn()
                 norm = np.random.standard_normal([self.flags['batch_size'], self.flags['hidden_size']])
                 summary, _ = self.sess.run([self.merged, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
 
