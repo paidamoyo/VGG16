@@ -7,6 +7,6 @@ def load_data_MNIST():
     return mnist
 
 def generate_MNIST(mnist, batch_size):
-    batch = mnist.train.next_batch(batch_size)
-    batch = np.reshape(batch[0], [batch_size, 28, 28, 1])
-    return batch
+    batch_x, labels = mnist.train.next_batch(batch_size)
+    batch_x = np.reshape(batch_x[0], [batch_size, 28, 28, 1])
+    return labels, batch_x
