@@ -17,7 +17,7 @@ flags = {
     'previous_processed_directory': '1_Cropped/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
-    'datasets': ['SAGE'],
+    'datasets': ['MNIST'],
     'restore': False,
     'restore_file': 'starting_point.ckpt',
     'seed': 14,
@@ -46,14 +46,8 @@ def main():
         bgf = None
         print('Dataset not defined for batch generation')
         exit()
-    labels, images = bgf()
-    for i in range(len(images)):
-        plt.imshow(np.squeeze(images[i]), cmap='gray')
-        plt.savefig('./'+ 'x_' + str(i))
-    # model = ConvVae(flags)
-    # model.x(bgf)
-    # model.train(bgf, lr_iters=flags['lr_iters'], run_num=1)
-    # model.x_recon()
+    model = ConvVae(flags)
+    model.train(bgf, lr_iters=flags['lr_iters'], run_num=2)
 
 
 if __name__ == "__main__":
