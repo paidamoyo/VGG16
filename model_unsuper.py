@@ -45,8 +45,9 @@ def main():
         print('Dataset not defined for batch generation')
         exit()
     model = ConvVae(flags)
-    model.train(bgf, lr_iters=flags['lr_iters'], run_num=1)
-    model.x_recon()
+    model.x()
+    # model.train(bgf, lr_iters=flags['lr_iters'], run_num=1)
+    # model.x_recon()
 
 
 if __name__ == "__main__":
