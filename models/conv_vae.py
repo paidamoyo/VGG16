@@ -37,6 +37,8 @@ class ConvVae:
         tf.scalar_summary("Total Loss", self.cost)
         tf.scalar_summary("Reconstruction Loss", self.recon)
         tf.scalar_summary("VAE Loss", self.vae)
+        tf.scalar_summary("Recon A", tf.reduce_sum(self.recon_a))
+        tf.scalar_summary("Recon B", tf.reduce_sum(self.recon_b))
         tf.histogram_summary("Mean", self.mean)
         tf.histogram_summary("Stddev", self.stddev)
         tf.image_summary("x", self.x)
@@ -76,7 +78,9 @@ class ConvVae:
         return x_recon, mean, stddev, x_gen
 
     def _create_loss_optimizer(self, epsilon=1e-8):
-        recon = tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon))
+        self.recon_a = -self.x * tf.log(self.x_recon + epsilon)
+        self.recon_b = (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)
+        recon = tf.reduce_sum(self.recon_a - self.recon_b)
         vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_mean(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
