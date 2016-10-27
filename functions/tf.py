@@ -4,31 +4,23 @@ import tensorflow as tf
 import tensorflow.contrib.layers as init
 
 
-def conv_weight_variable(name, shape, summary):
+def conv_weight_variable(name, shape):
     v = tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer())
-    if summary is True:
-        tf.histogram_summary(name, v)
     return v
 
 
-def weight_variable(name, shape, summary):
+def weight_variable(name, shape):
     v = tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer())
-    if summary is True:
-        tf.histogram_summary(name, v)
     return v
 
 
-def deconv_weight_variable(name, shape, summary):
+def deconv_weight_variable(name, shape):
     v = tf.get_variable(name=name, shape=shape, initializer=tf.constant_initializer())
-    if summary is True:
-        tf.histogram_summary(name, v)
     return v
 
 
-def const_variable(name, shape, value, summary):
+def const_variable(name, shape, value):
     v = tf.get_variable(name, shape, initializer=tf.constant_initializer(value))
-    if summary is True:
-        tf.histogram_summary(name, v)
     return v
 
 
