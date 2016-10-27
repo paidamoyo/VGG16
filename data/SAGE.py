@@ -11,7 +11,6 @@ def generate_SAGE(flags, image_dict):
     all_inds = sage.columns.values
     batch_ind = np.random.randint(low=0, high=len(all_inds), size=1)
     inds = all_inds[batch_ind][0]
-    print(inds)
     data_directory = flags['data_directory'] + 'SAGE/Preprocessed/' + flags['previous_processed_directory']
     image_path = data_directory + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
     with open(image_path, 'rb') as basefile:
@@ -24,7 +23,7 @@ def generate_SAGE(flags, image_dict):
             # Randomly select 28x28 patch from breast image
             x = np.random.randint(low=0, high=dims[0] - 28)
             y = np.random.randint(low=0, high=dims[1] - 28)
-            patches[b] = image[x:x + 28, y:y + 28]
+            patches[b, :, :, 0] = image[x:x + 28, y:y + 28]
             labels[b] = label
     unshuffled_batch.append((patches, labels))
     np.random.shuffle(unshuffled_batch)
