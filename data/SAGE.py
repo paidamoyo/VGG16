@@ -25,8 +25,4 @@ def generate_SAGE(flags, image_dict):
             y = np.random.randint(low=0, high=dims[1] - 28)
             patches[b, :, :, 0] = image[x:x + 28, y:y + 28]
             labels[b] = label
-    unshuffled_batch.append((patches, labels))
-    np.random.shuffle(unshuffled_batch)
-    batch_data = [map_stack for (map_stack, i) in unshuffled_batch]
-    batch_labels = [i for (map_stack, i) in unshuffled_batch]
-    return np.array(batch_data), np.array(batch_labels)
+    return labels, patches
