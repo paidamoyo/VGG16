@@ -12,7 +12,7 @@ from data.SAGE import generate_SAGE
 # Global Dictionary of Flags
 flags = {
     'data_directory': '../../../Data/',  # in relationship to the code_directory
-    'preprocessed_directory': '1_Cropped/',
+    'previous_processed_directory': '1_Cropped/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
     'datasets': ['SAGE'],
