@@ -78,10 +78,10 @@ class ConvVae:
         return x_recon, mean, stddev, x_gen
 
     def _create_loss_optimizer(self, epsilon=1e-8):
-        self.log_x_recon = tf.log(self.x_recon + epsilon)
-        self.recon_a = -self.x * tf.log(self.x_recon + epsilon)
-        self.recon_b = (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)
-        recon = tf.reduce_sum(self.recon_a - self.recon_b)
+        if 'SAGE' in self.flags['datasets']:
+            recon = tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
+        else:
+            recon = tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon))
         vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_mean(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
@@ -137,9 +137,12 @@ class ConvVae:
                 print('Batch number: %d' % step)
                 labels_x, batch_x = batch_generating_fxn()
                 norm = np.random.standard_normal([self.flags['batch_size'], self.flags['hidden_size']])
-                summary, _ = self.sess.run([self.merged, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
 
-                if step % self.flags['display_step'] == 0:
+                if step % self.flags['display_step'] != 0:
+                    summary, _ = self.sess.run([self.merged, self.optimizer],
+                                               feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm,
+                                                          self.lr: lr})
+                else:
                     recon_a, recon_b, log_x, summary, loss, _ = self.sess.run([self.recon_a, self.recon_b, self.log_x_recon, self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
                     record_metrics(loss=loss, acc=None, batch_y=None, step=step, split=None, flags=self.flags)
                     # print('recon_a')

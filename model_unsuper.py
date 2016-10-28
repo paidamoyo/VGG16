@@ -20,7 +20,7 @@ flags = {
     'datasets': ['SAGE'],
     'restore': False,
     'restore_file': 'starting_point.ckpt',
-    'seed': 143,
+    'seed': 14,
     'image_dim': 28,
     'hidden_size': 64,
     'batch_size': 128,
