@@ -6,10 +6,11 @@ import numpy as np
 import logging
 
 from functions.record import record_metrics, print_log, setup_metrics
+from functions.data import make_directory
 from functions.layers import Layers
 
 class ConvVae:
-    def __init__(self, flags):
+    def __init__(self, flags, run_num):
 
         self.flags = flags
         self.x = tf.placeholder(tf.float32, [None, flags['image_dim'], flags['image_dim'], 1], name='x')  # input patches
@@ -17,6 +18,10 @@ class ConvVae:
         self.keep_prob = tf.placeholder(tf.float32, name='dropout')
         self.epsilon = tf.placeholder(tf.float32, [None, flags['hidden_size']], name='epsilon')
         self.lr = tf.placeholder(tf.float32, name='learning_rate')
+        folder = 'Run' + str(run_num) + '/'
+        flags['restore_directory'] = flags['aux_directory'] + flags['model_directory']
+        flags['logging_directory'] = flags['restore_directory'] + folder
+        make_directory(flags['logging_directory'])
         logging.basicConfig(filename=flags['logging_directory'] + 'ModelInformation.log', level=logging.INFO)
 
         self._set_seed()
