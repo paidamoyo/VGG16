@@ -81,12 +81,10 @@ class ConvVae:
 
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
-        encoder.conv2d(3, 96, stride=2)
-        encoder.conv2d(3, 96, stride=2)
+        encoder.conv2d(5, 96, stride=2)
         encoder.conv2d(5, 128, stride=2)
         encoder.conv2d(5, 256, padding='VALID')
         encoder.flatten(self.keep_prob)
-        encoder.fc(self.flags['hidden_size'] * 4)
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
         return encoder.get_output()
 
