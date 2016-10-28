@@ -19,8 +19,10 @@ class ConvVae:
 
         self._set_seed()
         if 'MNIST' or 'Cluttered_MNIST' in flags['datasets']:
+            print_log('Using MNIST type dataset')
             self.x_recon, self.mean, self.stddev, self.gen = self._create_network_MNIST()
         else:  # breast patches
+            print_log('Using Mammogram type dataset')
             self.x_recon, self.mean, self.stddev, self.gen = self._create_network_BREAST()
         self.vae, self.recon, self.cost, self.optimizer = self._create_loss_optimizer()
 
