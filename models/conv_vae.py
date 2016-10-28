@@ -37,8 +37,6 @@ class ConvVae:
         tf.scalar_summary("Total Loss", self.cost)
         tf.scalar_summary("Reconstruction Loss", self.recon)
         tf.scalar_summary("VAE Loss", self.vae)
-        tf.scalar_summary("Recon A", tf.reduce_sum(self.recon_a))
-        tf.scalar_summary("Recon B", tf.reduce_sum(self.recon_b))
         tf.histogram_summary("Mean", self.mean)
         tf.histogram_summary("Stddev", self.stddev)
         tf.image_summary("x", self.x)
@@ -143,7 +141,7 @@ class ConvVae:
                                                feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm,
                                                           self.lr: lr})
                 else:
-                    recon_a, recon_b, log_x, summary, loss, _ = self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
+                    summary, loss, _ = self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
                     record_metrics(loss=loss, acc=None, batch_y=None, step=step, split=None, flags=self.flags)
                 writer.add_summary(summary=summary, global_step=global_step)
                 step += 1
