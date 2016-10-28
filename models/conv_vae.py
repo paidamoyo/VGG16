@@ -72,7 +72,8 @@ class ConvVae:
 
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
-        encoder.conv2d(5, 96, stride=2)
+        encoder.conv2d(3, 96, stride=2)
+        encoder.conv2d(3, 96, stride=2)
         encoder.conv2d(5, 128, stride=2)
         encoder.conv2d(5, 256, padding='VALID')
         encoder.flatten(self.keep_prob)
@@ -91,7 +92,7 @@ class ConvVae:
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
         decoder.deconv2d(3, 256, padding='VALID')
-        decoder.deconv2d(5, 238, padding='VALID')
+        decoder.deconv2d(5, 128, padding='VALID')
         decoder.deconv2d(5, 96, stride=2)
         decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.sigmoid)
         return decoder.get_output(), mean, stddev
