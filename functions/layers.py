@@ -1,6 +1,6 @@
 from functions.tf import conv2d, deconv2d, fc, conv_weight_variable, weight_variable, const_variable, dropout
 import tensorflow as tf
-
+from functions.record import print_log
 
 class Layers:
 
@@ -24,6 +24,7 @@ class Layers:
             b = const_variable(name='bias', shape=[output_channels], value=0.0)
             s = const_variable(name='scale', shape=[output_channels], value=1.0)
             self.input = conv2d(self.input, w, s, b, stride, padding, activation_fn)
+        print_log(scope + ' output: ' + str(self.input.get_shape()))
         self.input_shape = output_shape
         self.count['conv'] += 1
 
@@ -36,6 +37,7 @@ class Layers:
             b = const_variable(name='bias', shape=[output_channels], value=0.0)
             s = const_variable(name='scale', shape=[output_channels], value=1.0)
             self.input = deconv2d(self.input, w, s, b, stride, padding, activation_fn)
+        print_log(scope + ' output: ' + str(self.input.get_shape()))
         self.input_shape = output_shape
         self.count['deconv'] += 1
 
@@ -47,6 +49,7 @@ class Layers:
             self.input = tf.reshape(self.input, output_shape)
             if keep_prob != 1:
                 self.input = dropout(self.input, keep_prob=keep_prob)
+        print_log(scope + ' output: ' + str(self.input.get_shape()))
         self.input_shape = output_shape
         self.count['flat'] += 1
 
@@ -60,6 +63,7 @@ class Layers:
             self.input = fc(self.input, w, b, act_fn=activation_fn)
             if keep_prob != 1:
                 self.input = dropout(self.input, keep_prob=keep_prob)
+        print_log(scope + ' output: ' + str(self.input.get_shape()))
         self.input_shape = output_shape
         self.count['fc'] += 1
 

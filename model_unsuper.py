@@ -22,10 +22,10 @@ flags = {
     'restore_file': 'starting_point.ckpt',
     'seed': 14,
     'image_dim': 28,
-    'hidden_size': 128,
+    'hidden_size': 10,
     'batch_size': 128,
     'display_step': 50,
-    'lr_iters': [(0.005, 5000), (0.001, 7500), (0.0005, 10000), (0.0001, 10000)]
+    'lr_iters': [(0.01, 5000), (0.001, 7500), (0.0005, 10000), (0.0001, 10000)]
 }
 
 
