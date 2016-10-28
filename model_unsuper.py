@@ -17,15 +17,15 @@ flags = {
     'previous_processed_directory': '1_Cropped/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
-    'datasets': ['SAGE'],
+    'datasets': ['MNIST'],
     'restore': False,
     'restore_file': 'starting_point.ckpt',
-    'seed': 14,
+    'seed': 143,
     'image_dim': 28,
-    'hidden_size': 128,
+    'hidden_size': 64,
     'batch_size': 128,
-    'display_step': 100,
-    'lr_iters': [(0.001, 100), (0.005, 100), (0.001, 7500), (0.0005, 10000), (0.0001, 10000)]
+    'display_step': 1,
+    'lr_iters': [(0.001, 1000), (0.005, 1000), (0.001, 1000), (0.0005, 1000), (0.0001, 1000)]
 }
 
 
