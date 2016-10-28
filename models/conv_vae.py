@@ -18,7 +18,10 @@ class ConvVae:
         self.lr = tf.placeholder(tf.float32, name='learning_rate')
 
         self._set_seed()
-        self.x_recon, self.mean, self.stddev, self.gen = self._create_network()
+        if 'MNIST' or 'Cluttered_MNIST' in flags['datasets']:
+            self.x_recon, self.mean, self.stddev, self.gen = self._create_network_MNIST()
+        else:  # breast patches
+            self.x_recon, self.mean, self.stddev, self.gen = self._create_network_BREAST()
         self.vae, self.recon, self.cost, self.optimizer = self._create_loss_optimizer()
 
         self._summary()
@@ -42,7 +45,7 @@ class ConvVae:
         tf.image_summary("x", self.x)
         tf.image_summary("x_recon", self.x_recon)
 
-    def _encoder(self, x):
+    def _encoder_MNIST(self, x):
         encoder = Layers(x)
         encoder.conv2d(5, 32, stride=2)
         encoder.conv2d(5, 64, stride=2)
@@ -51,7 +54,7 @@ class ConvVae:
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
         return encoder.get_output()
 
-    def _decoder(self, z):
+    def _decoder_MNIST(self, z):
         if z is None:
             mean = None
             stddev = None
@@ -67,12 +70,46 @@ class ConvVae:
         decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.sigmoid)
         return decoder.get_output(), mean, stddev
 
-    def _create_network(self):
+    def _encoder_BREAST(self, x):
+        encoder = Layers(x)
+        encoder.conv2d(5, 96, stride=2)
+        encoder.conv2d(5, 128, stride=2)
+        encoder.conv2d(5, 256, padding='VALID')
+        encoder.flatten(self.keep_prob)
+        encoder.fc(self.flags['hidden_size'] * 4)
+        encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
+        return encoder.get_output()
+
+    def _decoder_BREAST(self, z):
+        if z is None:
+            mean = None
+            stddev = None
+            input_sample = self.epsilon
+        else:
+            mean, stddev = tf.split(1, 2, z)
+            stddev = tf.sqrt(tf.exp(stddev))
+            input_sample = mean + self.epsilon * stddev
+        decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
+        decoder.deconv2d(3, 256, padding='VALID')
+        decoder.deconv2d(5, 238, padding='VALID')
+        decoder.deconv2d(5, 96, stride=2)
+        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.sigmoid)
+        return decoder.get_output(), mean, stddev
+
+    def _create_network_MNIST(self):
         with tf.variable_scope("model"):
-            latent = self._encoder(x=self.x)
-            x_recon, mean, stddev = self._decoder(z=latent)
+            latent = self._encoder_MNIST(x=self.x)
+            x_recon, mean, stddev = self._decoder_MNIST(z=latent)
         with tf.variable_scope("model", reuse=True):
-            x_gen, _, _ = self._decoder(z=None)
+            x_gen, _, _ = self._decoder_MNIST(z=None)
+        return x_recon, mean, stddev, x_gen
+
+    def _create_network_BREAST(self):
+        with tf.variable_scope("model"):
+            latent = self._encoder_BREAST(x=self.x)
+            x_recon, mean, stddev = self._decoder_BREAST(z=latent)
+        with tf.variable_scope("model", reuse=True):
+            x_gen, _, _ = self._decoder_BREAST(z=None)
         return x_recon, mean, stddev, x_gen
 
     def _create_loss_optimizer(self, epsilon=1e-8):
