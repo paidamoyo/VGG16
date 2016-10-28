@@ -50,7 +50,6 @@ def setup_metrics(flags, lr_iters, run_num):
     flags['restore_directory'] = flags['aux_directory'] + flags['model_directory']
     flags['logging_directory'] = flags['restore_directory'] + folder
     make_directory(flags['logging_directory'])
-    logging.basicConfig(filename=flags['logging_directory'] + 'Run' + str(run_num) + '.log', level=logging.INFO)
 
     # print information
     logging.info('Date: ' + str(datetime.datetime.now()).split('.')[0])

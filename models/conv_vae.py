@@ -3,6 +3,7 @@
 import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
+import logging
 
 from functions.record import record_metrics, print_log, setup_metrics
 from functions.layers import Layers
@@ -16,6 +17,7 @@ class ConvVae:
         self.keep_prob = tf.placeholder(tf.float32, name='dropout')
         self.epsilon = tf.placeholder(tf.float32, [None, flags['hidden_size']], name='epsilon')
         self.lr = tf.placeholder(tf.float32, name='learning_rate')
+        logging.basicConfig(filename=flags['logging_directory'] + 'ModelInformation.log', level=logging.INFO)
 
         self._set_seed()
         if 'MNIST' or 'Cluttered_MNIST' in flags['datasets']:
@@ -117,9 +119,9 @@ class ConvVae:
 
     def _create_loss_optimizer(self, epsilon=1e-8):
         #if 'SAGE' in self.flags['datasets']:
-        # recon = tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
+        recon = tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
         #else:
-        recon = tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon))
+        # recon = tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon))
         vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_mean(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
