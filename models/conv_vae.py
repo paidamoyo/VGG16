@@ -142,12 +142,12 @@ class ConvVae:
                 if step % self.flags['display_step'] == 0:
                     recon_a, recon_b, log_x, summary, loss, _ = self.sess.run([self.recon_a, self.recon_b, self.log_x_recon, self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
                     record_metrics(loss=loss, acc=None, batch_y=None, step=step, split=None, flags=self.flags)
-                    print('recon_a')
-                    print(recon_a)
-                    print('recon_b')
-                    print(recon_b)
-                    print('log_x')
-                    print(log_x)
+                    # print('recon_a')
+                    # print(recon_a)
+                    #print('recon_b')
+                    #print(recon_b)
+                    #print('log_x')
+                    #print(log_x)
                 writer.add_summary(summary=summary, global_step=global_step)
                 step += 1
                 global_step += 1
