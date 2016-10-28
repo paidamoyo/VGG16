@@ -58,6 +58,7 @@ def setup_metrics(flags, lr_iters, run_num):
     for d in flags['datasets']:
         datasets += d + ', '
     print_log(datasets)
+    print_log('Batch_size: ' + flags['batch_size'])
     print_log('Model: ' + flags['model_directory'])
     for l in range(len(lr_iters)):
         print_log('EPOCH %d' % l)
