@@ -48,7 +48,7 @@ def main():
         exit()
     model = ConvVae(flags, model=1)
     x_recon = model.output_shape()
-    x_recon.shape
+    print(x_recon.shape)
     # model.train(bgf, lr_iters=flags['lr_iters'], model=4)
 
 
