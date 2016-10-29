@@ -26,7 +26,7 @@ class ConvVae:
         logging.basicConfig(filename=flags['logging_directory'] + 'ModelInformation.log', level=logging.INFO)
 
         self._set_seed()
-        if 'MNIST' or 'Cluttered_MNIST' in flags['datasets']:
+        if ('MNIST' in flags['datasets']) or ('Cluttered_MNIST' in flags['datasets']):
             print_log('Using MNIST type dataset')
             self.x_recon, self.mean, self.stddev, self.gen = self._create_network_MNIST()
         else:  # breast patches
