@@ -39,8 +39,6 @@ class ConvVae:
 
         self.saver = tf.train.Saver()
         self.sess = tf.InteractiveSession()
-        print('x_recon:')
-        print(self.print_variable('x_recon'))
 
     def _set_seed(self):
         tf.set_random_seed(self.flags['seed'])
