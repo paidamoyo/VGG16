@@ -139,7 +139,7 @@ def main():
         [process_images(image_data_dict, flags, d) for d in flags['datasets']]
 
     if flags['save_pickled_dictionary'] is True:
-        save_path = flags['aux_directory'] + 'smart_crop_image_dict.pickle'
+        save_path = flags['aux_directory'] + 'preprocessed_image_dict.pickle'
         with open(save_path, "wb") as f:
             pickle.dump(image_data_dict, f, protocol=2)
 
