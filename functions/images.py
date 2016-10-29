@@ -17,7 +17,10 @@ def smart_crop(image):
             if not sum(image[:, i] + image[:, i+1]) < 256*2*brightness:
                 continue
             else:
-                return image[:, 0:i]
+                if i < 512:
+                    return image[:, 0:512]
+                else:
+                    return image[:, 0:i]
     return image
 
 
