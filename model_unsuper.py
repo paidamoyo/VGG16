@@ -40,6 +40,7 @@ def main():
         mnist = load_data_MNIST()
         bgf = functools.partial(generate_MNIST, mnist, flags['batch_size'])
     elif 'SAGE' in flags['datasets']:
+        print('Using SAGE dataset')
         image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
         bgf = functools.partial(generate_SAGE, flags, image_dict)
     else:

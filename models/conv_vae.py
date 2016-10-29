@@ -161,8 +161,7 @@ class ConvVae:
         norm = np.random.normal(size=[n, self.flags['hidden_size']])
         images = self.sess.run(self.gen, feed_dict={self.epsilon: norm})
         for i in range(len(images)):
-            plt.imshow(np.squeeze(images[i]), cmap='gray')
-            plt.savefig(self.flags['logging_directory'] + 'x_recon_' + str(i))
+            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) + '.png', np.squeeze(images[i]))
 
     def save_x(self, image_generating_fxn):
         labels, images = image_generating_fxn()
