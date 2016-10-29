@@ -163,7 +163,7 @@ class ConvVae:
             plt.imshow(np.squeeze(images[i]), cmap='gray')
             plt.savefig(self.flags['logging_directory'] + 'x_recon_' + str(i))
 
-    def x(self, image_generating_fxn):
+    def save_x(self, image_generating_fxn):
         labels, images = image_generating_fxn()
         for i in range(len(images)):
             plt.imshow(np.squeeze(images[i]), cmap='gray')
