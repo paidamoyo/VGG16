@@ -49,7 +49,7 @@ def main():
     model = ConvVae(flags, model=1)
     x_recon = model.output_shape()
     print(x_recon.shape)
-    # model.train(bgf, lr_iters=flags['lr_iters'], model=4)
+    model.train(bgf, lr_iters=flags['lr_iters'], model=4)
 
 
 if __name__ == "__main__":

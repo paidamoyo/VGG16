@@ -117,7 +117,6 @@ class ConvVae:
         decoder.deconv2d(3, 128, stride=2)
         decoder.deconv2d(3, 96, stride=2)
         decoder.deconv2d(3, 96, stride=2)
-        decoder.deconv2d(3, 96, stride=1)
         decoder.deconv2d(3, 1, activation_fn=tf.nn.sigmoid)
         return decoder.get_output(), mean, stddev
 
