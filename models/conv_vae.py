@@ -138,7 +138,7 @@ class ConvVae:
 
     def _create_loss_optimizer(self, epsilon=1e-8):
         if 'SAGE' in self.flags['datasets']:
-            recon = (1/784) * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
+            recon = tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
         else:
             recon = tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon))
         vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
@@ -207,8 +207,10 @@ class ConvVae:
                                                feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm,
                                                           self.lr: lr})
                 else:
-                    summary, loss, _ = self.sess.run([self.merged, self.cost, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
+                    summary, loss, x_recon, _ = self.sess.run([self.merged, self.cost, self.x_recon, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
+                    scipy.misc.imsave(self.flags['logging_directory'] + 'x_recon_' + str(step) + '.png', x_recon)
                     record_metrics(loss=loss, acc=None, batch_y=None, step=step, split=None, flags=self.flags)
+
                 writer.add_summary(summary=summary, global_step=global_step)
                 step += 1
                 global_step += 1
