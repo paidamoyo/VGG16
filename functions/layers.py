@@ -69,7 +69,7 @@ class Layers:
         self.count['fc'] += 1
 
     def maxpool(self, k=2):
-        scope = 'maxpool_' + str(self.count['maxpool'])
+        scope = 'maxpool_' + str(self.count['mp'])
         with tf.variable_scope(scope):
             self.input = maxpool(self.input, k)
         print_log(scope + ' output: ' + str(self.input.get_shape()))
