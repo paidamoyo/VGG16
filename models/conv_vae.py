@@ -167,7 +167,7 @@ class ConvVae:
     def save_x(self, image_generating_fxn):
         labels, images = image_generating_fxn()
         for i in range(len(images)):
-            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i), np.squeeze(images[i]))
+            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) +'.png', np.squeeze(images[i]))
 
     def transform(self, x):
         """Transform data by mapping it into the latent space."""
