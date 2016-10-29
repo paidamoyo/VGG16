@@ -14,7 +14,7 @@ from data.SAGE import generate_SAGE
 # Global Dictionary of Flags
 flags = {
     'data_directory': '../../../Data/',  # in relationship to the code_directory
-    'previous_processed_directory': '1_Cropped/',
+    'previous_processed_directory': 'Smart_Crop/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
     'datasets': ['SAGE'],
