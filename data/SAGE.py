@@ -22,6 +22,6 @@ def generate_SAGE(flags, image_dict):
             # Randomly select 28x28 patch from breast image
             x = np.random.randint(low=0 + dims[0]/4, high=dims[0] - dims[0]/4)
             y = np.random.randint(low=0 + dims[1]/4, high=dims[1] - dims[1]/4)
-            patches[b, :, :, 0] = image[x:x + 28, y:y + 28] / 255
+            patches[b, :, :, 0] = image[x:x + 28, y:y + 28] / image[x:x + 28, y:y + 28].max()
             labels[b] = label
     return labels, patches

@@ -10,7 +10,7 @@ from functions.data import make_directory
 from functions.layers import Layers
 
 class ConvVae:
-    def __init__(self, flags, run_num):
+    def __init__(self, flags, model):
 
         self.flags = flags
         self.x = tf.placeholder(tf.float32, [None, flags['image_dim'], flags['image_dim'], 1], name='x')  # input patches
@@ -18,7 +18,7 @@ class ConvVae:
         self.keep_prob = tf.placeholder(tf.float32, name='dropout')
         self.epsilon = tf.placeholder(tf.float32, [None, flags['hidden_size']], name='epsilon')
         self.lr = tf.placeholder(tf.float32, name='learning_rate')
-        folder = 'Run' + str(run_num) + '/'
+        folder = 'Model' + str(model) + '/'
         flags['restore_directory'] = flags['aux_directory'] + flags['model_directory']
         flags['logging_directory'] = flags['restore_directory'] + folder
         make_directory(flags['logging_directory'])
@@ -81,10 +81,20 @@ class ConvVae:
 
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
-        encoder.conv2d(5, 96, stride=2)
-        encoder.conv2d(5, 128, stride=2)
-        encoder.conv2d(5, 256, padding='VALID')
+        encoder.conv2d(3, 96)
+        encoder.conv2d(3, 96)
+        encoder.maxpool(k=4)
+        encoder.conv2d(3, 128)
+        encoder.conv2d(3, 128)
+        encoder.maxpool()
+        encoder.conv2d(3, 256)
+        encoder.conv2d(3, 256)
+        encoder.maxpool()
+        encoder.conv2d(3, 512)
+        encoder.conv2d(3, 512)
+        encoder.maxpool()
         encoder.flatten(self.keep_prob)
+        encoder.fc(1024)
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
         return encoder.get_output()
 
@@ -98,10 +108,16 @@ class ConvVae:
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
-        decoder.deconv2d(3, 256, padding='VALID')
-        decoder.deconv2d(5, 128, padding='VALID')
-        decoder.deconv2d(5, 96, stride=2)
-        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.sigmoid)
+        decoder.deconv2d(3, 512)
+        decoder.deconv2d(3, 512, stride=2)
+        decoder.deconv2d(3, 256)
+        decoder.deconv2d(3, 256, stride=2)
+        decoder.deconv2d(3, 128)
+        decoder.deconv2d(3, 128, stride=2)
+        decoder.deconv2d(3, 96)
+        decoder.deconv2d(3, 96, stride=2)
+        decoder.deconv2d(3, 96, stride=2)
+        decoder.deconv2d(3, 1, activation_fn=tf.nn.sigmoid)
         return decoder.get_output(), mean, stddev
 
     def _create_network_MNIST(self):
@@ -121,10 +137,10 @@ class ConvVae:
         return x_recon, mean, stddev, x_gen
 
     def _create_loss_optimizer(self, epsilon=1e-8):
-        #if 'SAGE' in self.flags['datasets']:
-        recon = tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
-        #else:
-        # recon = tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon))
+        if 'SAGE' in self.flags['datasets']:
+            recon = (1/784) * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
+        else:
+            recon = tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon))
         vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_mean(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
@@ -157,9 +173,9 @@ class ConvVae:
         """Transform data by mapping it into the latent space."""
         return self.sess.run(self.mean, feed_dict={self.x: x, self.keep_prob: 1.0})
 
-    def train(self, batch_generating_fxn, lr_iters, run_num):
+    def train(self, batch_generating_fxn, lr_iters, model):
 
-        setup_metrics(self.flags, lr_iters, run_num)
+        setup_metrics(self.flags, lr_iters)
         writer = tf.train.SummaryWriter(self.flags['logging_directory'], self.sess.graph)
         if self.flags['restore'] is True:
             self.saver.restore(self.sess, self.flags['restore_directory'] + self.flags['restore_file'])
@@ -194,7 +210,7 @@ class ConvVae:
 
 
             print("Optimization Finished!")
-            checkpoint_name = self.flags['logging_directory'] + 'Run' + str(run_num) + 'epoch_%d' % i + '.ckpt'
+            checkpoint_name = self.flags['logging_directory'] + 'Model' + str(model) + 'epoch_%d' % i + '.ckpt'
             save_path = self.saver.save(self.sess, checkpoint_name)
             print("Model saved in file: %s" % save_path)
 
