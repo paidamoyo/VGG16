@@ -87,7 +87,7 @@ class ConvVae:
         encoder.maxpool(k=4)
         encoder.conv2d(3, 128)
         encoder.conv2d(3, 128)
-        encoder.maxpool()
+        encoder.maxpool(k=4)
         encoder.conv2d(3, 256)
         encoder.conv2d(3, 256)
         encoder.maxpool()
@@ -95,7 +95,6 @@ class ConvVae:
         encoder.conv2d(3, 512)
         encoder.maxpool()
         encoder.flatten(self.keep_prob)
-        encoder.fc(1024)
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
         return encoder.get_output()
 
