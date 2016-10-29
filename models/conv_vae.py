@@ -208,7 +208,8 @@ class ConvVae:
                                                           self.lr: lr})
                 else:
                     summary, loss, x_recon, _ = self.sess.run([self.merged, self.cost, self.x_recon, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
-                    scipy.misc.imsave(self.flags['logging_directory'] + 'x_recon_' + str(step) + '.png', np.squeeze(x_recon))
+                    for i in range(3):
+                        scipy.misc.imsave(self.flags['logging_directory'] + 'x_recon_' + str(step) + '.png', np.squeeze(x_recon[i]))
                     record_metrics(loss=loss, acc=None, batch_y=None, step=step, split=None, flags=self.flags)
 
                 writer.add_summary(summary=summary, global_step=global_step)
