@@ -12,7 +12,7 @@ from functions.layers import Layers
 
 class ConvVae:
     def __init__(self, flags, model):
-
+        print(flags)
         self.flags = flags
         self.x = tf.placeholder(tf.float32, [None, flags['image_dim'], flags['image_dim'], 1], name='x')  # input patches
         self.y = tf.placeholder(tf.int32, shape=[1])

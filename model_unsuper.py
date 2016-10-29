@@ -30,7 +30,6 @@ flags = {
 
 
 def main():
-    print(flags)
     if 'Clutter_MNIST' in flags['datasets']:
         train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
         bgf = functools.partial(generate_cluttered_MNIST, dims=[flags['image_dim'], flags['image_dim']],
