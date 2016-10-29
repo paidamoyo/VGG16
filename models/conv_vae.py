@@ -4,6 +4,7 @@ import tensorflow as tf
 import matplotlib.pyplot as plt
 import numpy as np
 import logging
+import scipy.misc
 
 from functions.record import record_metrics, print_log, setup_metrics
 from functions.data import make_directory
@@ -166,8 +167,7 @@ class ConvVae:
     def save_x(self, image_generating_fxn):
         labels, images = image_generating_fxn()
         for i in range(len(images)):
-            plt.imshow(np.squeeze(images[i]), cmap='gray')
-            plt.savefig(self.flags['logging_directory'] + 'x_' + str(i))
+            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i), np.squeeze(images[i]))
 
     def transform(self, x):
         """Transform data by mapping it into the latent space."""
