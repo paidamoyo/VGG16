@@ -13,7 +13,7 @@ def generate_SAGE(flags, image_dict):
     data_directory = flags['data_directory'] + 'SAGE/Preprocessed/' + flags['previous_processed_directory']
     image_path = data_directory + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
     with open(image_path, 'rb') as basefile:
-        patches = np.zeros((flags['batch_size'], 28, 28, 1))
+        patches = np.zeros((flags['batch_size'], flags['image_dim'], flags['image_dim'], 1))
         labels = np.zeros((flags['batch_size']))
         image = pickle.load(basefile)
         label = sage[inds][4]
