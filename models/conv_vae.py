@@ -148,6 +148,7 @@ class ConvVae:
         return vae, recon, cost, optimizer
 
     def print_variable(self, var):
+        self.sess.run(tf.initialize_all_variables())
         if var == 'x_recon':
             print_var = tf.Print(self.x_recon, [self.x_recon])
             norm = np.random.normal(size=[self.flags['batch_size'], self.flags['hidden_size']])
