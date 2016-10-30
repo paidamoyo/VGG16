@@ -105,13 +105,12 @@ class ConvVae:
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
-        decoder.deconv2d(3, 256, stride=2)
-        decoder.deconv2d(3, 256, stride=2)
-        decoder.deconv2d(3, 128, stride=2)
-        decoder.deconv2d(3, 128, stride=2)
-        decoder.deconv2d(3, 96, stride=2)
-        decoder.deconv2d(3, 96, stride=2)
-        decoder.deconv2d(3, 64, stride=2)
+        decoder.deconv2d(3, 256)
+        decoder.deconv2d(3, 256)
+        decoder.deconv2d(5, 128, stride=3)
+        decoder.deconv2d(5, 96, stride=3)
+        decoder.deconv2d(3, 96, stride=3)
+        decoder.deconv2d(3, 64, stride=3)
         decoder.deconv2d(3, 1, activation_fn=tf.nn.sigmoid)
         return decoder.get_output(), mean, stddev
 
