@@ -17,7 +17,7 @@ flags = {
     'previous_processed_directory': 'Smart_Crop/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
-    'datasets': ['SAGE'],
+    'datasets': ['Clutter_MNIST'],
     'restore': False,
     'restore_file': 'starting_point.ckpt',
     'seed': 14,
@@ -26,7 +26,7 @@ flags = {
     'hidden_size': 128,
     'batch_size': 16,
     'display_step': 50,
-    'lr_iters': [(0.0001, 1000), (0.0001, 1000), (0.0001, 1000), (0.0001, 1000), (0.00005, 1000), (0.00005, 1000), (0.00005, 1000), (0.00005, 1000)]
+    'lr_iters': [(0.0001, 3000), (0.00005, 1000), (0.00005, 1000), (0.00005, 1000), (0.00005, 1000)]
 }
 
 
@@ -34,7 +34,7 @@ def main():
     if 'Clutter_MNIST' in flags['datasets']:
         train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
         bgf = functools.partial(generate_cluttered_MNIST, dims=[flags['image_dim'], flags['image_dim']],
-                                nImages=flags['batch_size'], clutter=0.5, numbers=[8], prob=0.5,
+                                nImages=flags['batch_size'], clutter=0.5, numbers=[], prob=0.5,
                                 train_set=train_set)
     elif 'MNIST' in flags['datasets']:
         mnist = load_data_MNIST()
@@ -47,10 +47,10 @@ def main():
         bgf = None
         print('Dataset not defined for batch generation')
         exit()
-    model = ConvVae(flags, model=1)
+    model = ConvVae(flags, model=3)
     x_recon = model.output_shape()
     print(x_recon.shape)
-    model.train(bgf, lr_iters=flags['lr_iters'], model=4)
+    model.train(bgf, lr_iters=flags['lr_iters'], model=1)
 
 
 if __name__ == "__main__":
