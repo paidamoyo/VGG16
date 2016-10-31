@@ -49,7 +49,7 @@ def main():
     model.save_x(bgf)
     # x_recon = model.output_shape()
     # print(x_recon.shape)
-    # model.train(bgf, lr_iters=flags['lr_iters'], model=1)
+    model.train(bgf, lr_iters=flags['lr_iters'], model=1)
 
 
 if __name__ == "__main__":
