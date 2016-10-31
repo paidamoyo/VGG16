@@ -122,7 +122,8 @@ def generate_cluttered_MNIST(dims, nImages, numbers, prob, clutter, train_set):
                 #            images[k, x1, y1] = 255
 
         # Renormalize image
-        # images[k, :, :] = images[k, :, :] / images[k, :, :].max()
+        save = images[k, :, :] - images[k, :, :].mean()
+        images[k, :, :] = save / save.max()
 
     return labels, np.expand_dims(images, 3)
 

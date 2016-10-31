@@ -26,11 +26,11 @@ class ConvVae:
         logging.basicConfig(filename=flags['logging_directory'] + 'ModelInformation.log', level=logging.INFO)
 
         self._set_seed()
-        if ('MNIST' in flags['datasets']) or ('Cluttered_MNIST' in flags['datasets']):
-            print_log('Using MNIST type dataset')
+        if flags['image_dim'] == 28:
+            print_log('Using 28x28 Architecture')
             self.x_recon, self.mean, self.stddev, self.gen = self._create_network_MNIST()
-        else:  # breast patches
-            print_log('Using Mammogram type dataset')
+        else:  # breast patches of 128
+            print_log('Using 128x128 Architecture')
             self.x_recon, self.mean, self.stddev, self.gen = self._create_network_BREAST()
         self.vae, self.recon, self.cost, self.optimizer = self._create_loss_optimizer()
 
@@ -82,13 +82,16 @@ class ConvVae:
 
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
-        encoder.conv2d(5, 64)
+        encoder.conv2d(3, 64)
+        encoder.conv2d(3, 64)
         encoder.maxpool(k=4)
-        encoder.conv2d(5, 96)
+        encoder.conv2d(3, 96)
+        encoder.conv2d(3, 96)
         encoder.maxpool(k=2)
         encoder.conv2d(3, 128)
+        encoder.conv2d(3, 128)
         encoder.maxpool(k=2)
-        encoder.conv2d(3, 256)
+        encoder.conv2d(3, 144)
         encoder.maxpool(k=2)
         encoder.conv2d(3, 256)
         encoder.flatten(self.keep_prob)
@@ -105,14 +108,15 @@ class ConvVae:
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
-        decoder.deconv2d(3, 256, stride=2)
-        decoder.deconv2d(3, 256, stride=2)
+        decoder.deconv2d(3, 256)
+        decoder.deconv2d(3, 144)
+        decoder.deconv2d(3, 144, stride=2)
         decoder.deconv2d(3, 128, stride=2)
         decoder.deconv2d(3, 128, stride=2)
         decoder.deconv2d(3, 96, stride=2)
         decoder.deconv2d(3, 96, stride=2)
         decoder.deconv2d(5, 64, stride=2)
-        decoder.deconv2d(5, 1, activation_fn=tf.nn.sigmoid)
+        decoder.deconv2d(5, 1, stride=2)
         return decoder.get_output(), mean, stddev
 
     def _create_network_MNIST(self):
