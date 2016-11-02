@@ -8,7 +8,7 @@ import numpy as np
 from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIST
 from data.MNIST import load_data_MNIST, generate_MNIST
 from data.SAGE import generate_SAGE
-import sys
+from functions.record import print_log
 
 
 # Global Dictionary of Flags
@@ -26,14 +26,16 @@ flags = {
     'hidden_size': 128,
     'batch_size': 16,
     'display_step': 500,
-    'lr_iters':
+    'lr_iters': [(0.0001, 10000)]
 }
 
 
 def main():
-    flags['1/sigma2'] = sys.argv[1]
-    lr = np.random.uniform()
-    flags['lr_iters'] = [lr,
+    e = np.random.uniform(-5, 5, 1)
+    flags['1/sigma2'] = np.power(10, e[0])
+    a = np.random.uniform(-7, -4, 1)
+    lr = np.power(10, a[0])
+    flags['lr_iters'] = [(lr, 10)]
 
     if 'Clutter_MNIST' in flags['datasets']:
         train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
@@ -55,6 +57,7 @@ def main():
     # model.save_x(bgf)
     # x_recon = model.output_shape()
     # print(x_recon.shape)
+    print_log("1/sigma2: %f" % flags['1/sigma2'])
     model.train(bgf, lr_iters=flags['lr_iters'], model=1)
 
 
