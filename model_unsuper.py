@@ -38,7 +38,7 @@ def main():
     flags['1/sigma2'] = np.power(10, e[0])
     a = np.random.uniform(-7, -4, 1)
     lr = np.power(10, a[0])
-    flags['lr_iters'] = [(lr, 10)]
+    flags['lr_iters'] = [(lr, 10000)]
     run_num = sys.argv[1]
 
     if 'Clutter_MNIST' in flags['datasets']:
