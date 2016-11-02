@@ -9,6 +9,7 @@ from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIS
 from data.MNIST import load_data_MNIST, generate_MNIST
 from data.SAGE import generate_SAGE
 from functions.record import print_log
+import sys
 
 
 # Global Dictionary of Flags
@@ -31,11 +32,13 @@ flags = {
 
 
 def main():
+    flags['seed'] = np.random.randint
     e = np.random.uniform(-5, 5, 1)
     flags['1/sigma2'] = np.power(10, e[0])
     a = np.random.uniform(-7, -4, 1)
     lr = np.power(10, a[0])
     flags['lr_iters'] = [(lr, 10)]
+    run_num = sys.argv[1]
 
     if 'Clutter_MNIST' in flags['datasets']:
         train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
@@ -53,7 +56,7 @@ def main():
         bgf = None
         print('Dataset not defined for batch generation')
         exit()
-    model = ConvVae(flags, model=4)
+    model = ConvVae(flags, model=run_num)
     # model.save_x(bgf)
     # x_recon = model.output_shape()
     # print(x_recon.shape)
