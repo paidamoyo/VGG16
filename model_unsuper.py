@@ -4,9 +4,11 @@ import functools
 
 from models.conv_vae import ConvVae
 import pickle
+import numpy as np
 from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIST
 from data.MNIST import load_data_MNIST, generate_MNIST
 from data.SAGE import generate_SAGE
+import sys
 
 
 # Global Dictionary of Flags
@@ -24,11 +26,15 @@ flags = {
     'hidden_size': 128,
     'batch_size': 16,
     'display_step': 500,
-    'lr_iters': [(0.0005, 10000), (0.0001, 10000)]
+    'lr_iters':
 }
 
 
 def main():
+    flags['1/sigma2'] = sys.argv[1]
+    lr = np.random.uniform()
+    flags['lr_iters'] = [lr,
+
     if 'Clutter_MNIST' in flags['datasets']:
         train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
         bgf = functools.partial(generate_cluttered_MNIST, dims=[flags['image_dim'], flags['image_dim']],
