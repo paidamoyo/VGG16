@@ -32,8 +32,9 @@ flags = {
 
 
 def main():
-    flags['seed'] = np.random.randint
-    e = np.random.uniform(-5, 5, 1)
+    o = np.random.randint(1, 1000, 1)
+    flags['seed'] = o[0]
+    e = np.random.uniform(-2, 4, 1)
     flags['1/sigma2'] = np.power(10, e[0])
     a = np.random.uniform(-7, -4, 1)
     lr = np.power(10, a[0])
