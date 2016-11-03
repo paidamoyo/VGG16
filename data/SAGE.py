@@ -23,6 +23,5 @@ def generate_SAGE(flags, image_dict):
             x = np.random.randint(low=0, high=dims[0] - flags['image_dim'])
             y = np.random.randint(low=0, high=dims[1] - flags['image_dim'])
             patches[b, :, :, 0] = image[x:x + flags['image_dim'], y:y + flags['image_dim']] - image[x:x + flags['image_dim'], y:y + flags['image_dim']].mean()
-            print(patches[b, :, :])
             labels[b] = label
     return labels, patches
