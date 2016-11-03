@@ -31,7 +31,7 @@ class ConvVae:
             self.x_recon, self.mean, self.stddev, self.gen = self._create_network_MNIST()
         else:  # breast patches of 128
             print_log('Using 128x128 Architecture')
-            self.x_recon, self.mean, self.stddev, self.gen = self._create_network_BREAST()
+            self.x_recon, self.mean, self.stddev, self.gen, self.latent = self._create_network_BREAST()
         self.vae, self.recon, self.cost, self.optimizer = self._create_loss_optimizer()
 
         self._summary()
@@ -133,7 +133,7 @@ class ConvVae:
             x_recon, mean, stddev = self._decoder_BREAST(z=latent)
         with tf.variable_scope("model", reuse=True):
             x_gen, _, _ = self._decoder_BREAST(z=None)
-        return x_recon, mean, stddev, x_gen
+        return x_recon, mean, stddev, x_gen, latent
 
     def _create_loss_optimizer(self, epsilon=1e-8):
         #if 'SAGE' in self.flags['datasets']:
@@ -206,11 +206,19 @@ class ConvVae:
                                                feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm,
                                                           self.lr: lr})
                 else:
-                    summary, loss, x_recon, _ = self.sess.run([self.merged, self.cost, self.x_recon, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
+                    summary, loss, x_recon, latent, _ = self.sess.run([self.merged, self.cost, self.x_recon, self.latent, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
                     for j in range(1):
                         scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(step) + '.png', np.squeeze(batch_x[j]))
                         scipy.misc.imsave(self.flags['logging_directory'] + 'x_recon_' + str(step) + '.png', np.squeeze(x_recon[j]))
                     record_metrics(loss=loss, acc=None, batch_y=None, step=step, split=None, flags=self.flags)
+                    print_log("Max of x: %d" % batch_x[1].max())
+                    print_log("Min of x: %d" % batch_x[1].min())
+                    print_log("Mean of x: %d" % batch_x[1].mean())
+                    print_log("Max of x_recon: %d" % x_recon[1].max())
+                    print_log("Min of x_recon: %d" % x_recon[1].min())
+                    print_log("Mean of x_recon: %d" % x_recon[1].mean())
+                    print_log("Shape of latent" % latent.shape())
+                    print_log("Shape of latent[1]" % latent[1].shape())
 
                 writer.add_summary(summary=summary, global_step=global_step)
                 step += 1
