@@ -70,7 +70,8 @@ class ConvAuto:
         return x_recon, latent
 
     def _create_loss_optimizer(self, epsilon=1e-8):
-        recon = tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon))
+        recon = tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
+        # recon = tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon))
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(recon)
         return recon, optimizer
 
