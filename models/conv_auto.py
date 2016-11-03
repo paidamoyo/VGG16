@@ -74,8 +74,7 @@ class ConvAuto:
         decoder.deconv2d(3, 96, stride=2)
         decoder.deconv2d(3, 96, stride=2)
         decoder.deconv2d(5, 64, stride=2)
-        decoder.deconv2d(5, 1, stride=2)
-        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.sigmoid)
+        decoder.deconv2d(5, 1, stride=2, activation_fn=None)
         return decoder.get_output()
 
     def _create_network(self):
