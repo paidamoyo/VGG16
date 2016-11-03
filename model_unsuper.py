@@ -24,7 +24,7 @@ flags = {
     'restore_file': 'MNIST_starting_point.ckpt',
     'seed': 13,
     'balance': 8,
-    'image_dim': 64,
+    'image_dim': 28,
     'hidden_size': 16,
     'batch_size': 16,
     'display_step': 50,
