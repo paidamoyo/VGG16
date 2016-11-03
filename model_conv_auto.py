@@ -61,7 +61,6 @@ def main():
     # x_recon = model.output_shape()
     # print(x_recon.shape)
     print_log("Seed: %d" % flags['seed'])
-    print_log("Balance: %f" % flags['Balance'])
 
     model_auto.train(bgf, lr_iters=flags['lr_iters'], model=2)
 
