@@ -23,8 +23,8 @@ flags = {
     'restore': False,
     'restore_file': 'starting_point.ckpt',
     'seed': 13,
-    'image_dim': 64,
-    'hidden_size': 32,
+    'image_dim': 28,
+    'hidden_size': 16,
     'batch_size': 16,
     'display_step': 50,
     'lr_iters': [(0.0001, 10000)]
