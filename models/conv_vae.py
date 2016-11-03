@@ -28,7 +28,7 @@ class ConvVae:
         self._set_seed()
         if flags['image_dim'] == 28:
             print_log('Using 28x28 Architecture')
-            self.x_recon, self.mean, self.stddev, self.gen = self._create_network_MNIST()
+            self.x_recon, self.mean, self.stddev, self.gen, self.latent = self._create_network_MNIST()
         else:  # breast patches of 128
             print_log('Using 128x128 Architecture')
             self.x_recon, self.mean, self.stddev, self.gen, self.latent = self._create_network_BREAST()
@@ -114,7 +114,7 @@ class ConvVae:
             x_recon, mean, stddev = self._decoder_MNIST(z=latent)
         with tf.variable_scope("model", reuse=True):
             x_gen, _, _ = self._decoder_MNIST(z=None)
-        return x_recon, mean, stddev, x_gen
+        return x_recon, mean, stddev, x_gen, latent
 
     def _create_network_BREAST(self):
         with tf.variable_scope("model"):
