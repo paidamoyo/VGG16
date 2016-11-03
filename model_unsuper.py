@@ -20,7 +20,7 @@ flags = {
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
     'datasets': ['Clutter_MNIST'],
-    'restore': True,
+    'restore': False,
     'restore_file': 'MNIST_starting_point.ckpt',
     'seed': 13,
     'balance': 8,
