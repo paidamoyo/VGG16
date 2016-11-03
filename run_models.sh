@@ -2,6 +2,8 @@
 
 for NUM in {1..25}
 do
-    python model_unsuper.py ($NUM + 100)
-    python model_conv_auto.py ($NUM + 200)
+    i = $NUM + 100
+    j = $NUM + 200
+    python model_unsuper.py i
+    python model_conv_auto.py j
 done
