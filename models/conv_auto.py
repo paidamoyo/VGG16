@@ -147,8 +147,7 @@ class ConvAuto:
                     print_log("Max of x_recon: %d" % x_recon[1].max())
                     print_log("Min of x_recon: %d" % x_recon[1].min())
                     print_log("Mean of x_recon: %d" % x_recon[1].mean())
-                    print_log("Shape of latent" % latent.shape())
-                    print_log("Shape of latent[1]" % latent[1].shape())
+                    print(latent)
 
                 writer.add_summary(summary=summary, global_step=global_step)
                 step += 1

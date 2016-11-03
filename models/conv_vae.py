@@ -217,7 +217,6 @@ class ConvVae:
                     print_log("Max of x_recon: %f" % x_recon[1].max())
                     print_log("Min of x_recon: %f" % x_recon[1].min())
                     print_log("Mean of x_recon: %f" % x_recon[1].mean())
-                    print(type(latent))
                     print(latent)
 
                 writer.add_summary(summary=summary, global_step=global_step)
