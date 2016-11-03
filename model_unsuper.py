@@ -8,8 +8,6 @@ import numpy as np
 from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIST
 from data.MNIST import load_data_MNIST, generate_MNIST
 from data.SAGE import generate_SAGE
-from functions.record import print_log
-from models.conv_auto import ConvAuto
 import sys
 
 
@@ -28,7 +26,7 @@ flags = {
     'hidden_size': 16,
     'batch_size': 16,
     'display_step': 100,
-    'lr_iters': [(0.01, 10000), (0.001, 7500), (0.0005, 7500)]
+    'lr_iters': [(0.005, 10000), (0.001, 7500), (0.0005, 7500)]
 }
 
 
@@ -61,7 +59,6 @@ def main():
     # x_recon = model_vae.output_shape()
     # print(x_recon.shape)
     # print_log("Seed: %d" % flags['seed'])
-
     model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
 
 

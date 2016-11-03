@@ -48,28 +48,19 @@ class ConvAuto:
 
     def _encoder(self, x):
         encoder = Layers(x)
-        encoder.conv2d(3, 64)
-        encoder.conv2d(3, 64)
-        encoder.maxpool(k=2)
-        encoder.conv2d(3, 96, padding='VALID')
-        encoder.conv2d(3, 96, padding='VALID')
-        encoder.maxpool(k=2)
-        encoder.conv2d(3, 128, padding='VALID')
-        encoder.conv2d(3, 128, padding='VALID')
-        encoder.maxpool(k=2)
-        encoder.conv2d(3, 256, padding='VALID')
+        encoder.conv2d(5, 32, stride=2)
+        encoder.conv2d(5, 64, stride=2)
+        encoder.conv2d(5, 128, padding='VALID')
         encoder.flatten(self.keep_prob)
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
         return encoder.get_output()
 
     def _decoder(self, z):
         decoder = Layers(tf.expand_dims(tf.expand_dims(z, 1), 1))
-        decoder.deconv2d(3, 256, padding='VALID')
-        decoder.deconv2d(3, 144, padding='VALID')
-        decoder.deconv2d(5, 128, padding='VALID')
-        decoder.deconv2d(5, 96, padding='VALiD')
-        decoder.deconv2d(5, 64, stride=2)
-        decoder.deconv2d(5, 1, stride=2, activation_fn=None)
+        decoder.deconv2d(3, 128, padding='VALID')
+        decoder.deconv2d(5, 64, padding='VALID')
+        decoder.deconv2d(5, 32, stride=2)
+        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.sigmoid)
         return decoder.get_output()
 
     def _create_network(self):
