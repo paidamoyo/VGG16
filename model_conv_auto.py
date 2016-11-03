@@ -27,7 +27,7 @@ flags = {
     'image_dim': 128,
     'hidden_size': 256,
     'batch_size': 16,
-    'display_step': 2,
+    'display_step': 50,
     'lr_iters': [(0.0001, 10000)]
 }
 
@@ -37,7 +37,7 @@ def main():
     flags['seed'] = o[0]
     a = np.random.uniform(-7.5, -6.5, 1)
     lr = np.power(10, a[0])
-    flags['lr_iters'] = [(lr, 5)]
+    flags['lr_iters'] = [(lr, 100000)]
     run_num = sys.argv[1]
 
     if 'Clutter_MNIST' in flags['datasets']:

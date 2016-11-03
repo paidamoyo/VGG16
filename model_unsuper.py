@@ -27,7 +27,7 @@ flags = {
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 16,
-    'display_step': 2,
+    'display_step': 50,
     'lr_iters': [(0.0001, 10000)]
 }
 
@@ -35,8 +35,7 @@ flags = {
 def main():
     o = np.random.randint(1, 1000, 1)
     flags['seed'] = o[0]
-    flags['balance'] = np.random.uniform(0, 1, 1)
-    a = np.random.uniform(-7, -6, 1)
+    a = np.random.uniform(-7.5, -6.5, 1)
     lr = np.power(10, a[0])
     flags['lr_iters'] = [(lr, 100000)]
     run_num = sys.argv[1]
