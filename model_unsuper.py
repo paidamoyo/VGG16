@@ -38,7 +38,7 @@ def main():
     a = np.random.uniform(-5.5, -3.5, 1)
     lr = np.power(10, a[0])
     flags['lr_iters'] = [(lr, 10000)]
-    run_num = 1#sys.argv[1]
+    run_num = sys.argv[1]
 
     if 'Clutter_MNIST' in flags['datasets']:
         train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
