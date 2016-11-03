@@ -19,7 +19,7 @@ flags = {
     'previous_processed_directory': 'Smart_Crop/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
-    'datasets': ['Clutter_MNIST'],
+    'datasets': ['SAGE'],
     'restore': False,
     'restore_file': 'MNIST_starting_point.ckpt',
     'seed': 13,
