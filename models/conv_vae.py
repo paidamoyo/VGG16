@@ -128,7 +128,7 @@ class ConvVae:
         #if 'SAGE' in self.flags['datasets']:
         # recon = 0.02 * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
         #else:
-        recon = 0.02 * (tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)))
+        recon = (tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)))
         vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_sum(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
@@ -206,7 +206,7 @@ class ConvVae:
                     print_log("Max of x_recon: %f" % x_recon[1].max())
                     print_log("Min of x_recon: %f" % x_recon[1].min())
                     print_log("Mean of x_recon: %f" % x_recon[1].mean())
-                    print(x_recon[1])
+                    print_log("Latent[1]: %f" % latent[1])
 
                 writer.add_summary(summary=summary, global_step=global_step)
                 step += 1

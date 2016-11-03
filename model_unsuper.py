@@ -27,8 +27,8 @@ flags = {
     'image_dim': 28,
     'hidden_size': 16,
     'batch_size': 16,
-    'display_step': 50,
-    'lr_iters': [(0.0001, 10000)]
+    'display_step': 100,
+    'lr_iters': [(0.005, 10000), (0.001, 7500), (0.0005, 7500)]
 }
 
 
@@ -36,14 +36,14 @@ def main():
     o = np.random.randint(1, 1000, 1)
     flags['seed'] = o[0]
     # a = np.random.uniform(-5.5, -3.5, 1)
-    lr = 0.0001 #np.power(10, a[0])
-    flags['lr_iters'] = [(lr, 10000)]
+    # lr = 0.0001 #np.power(10, a[0])
+    #flags['lr_iters'] = [(lr, 10000)]
     run_num = sys.argv[1]
 
     if 'Clutter_MNIST' in flags['datasets']:
         train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
         bgf = functools.partial(generate_cluttered_MNIST, dims=[flags['image_dim'], flags['image_dim']],
-                                nImages=flags['batch_size'], clutter=0.1, numbers=[], prob=0.5,
+                                nImages=flags['batch_size'], clutter=0.2, numbers=[], prob=0.5,
                                 train_set=train_set)
     elif 'MNIST' in flags['datasets']:
         mnist = load_data_MNIST()
