@@ -24,8 +24,8 @@ flags = {
     'restore_file': 'MNIST_starting_point.ckpt',
     'seed': 13,
     'balance': 8,
-    'image_dim': 128,
-    'hidden_size': 128,
+    'image_dim': 64,
+    'hidden_size': 16,
     'batch_size': 16,
     'display_step': 50,
     'lr_iters': [(0.0001, 10000)]
@@ -35,10 +35,10 @@ flags = {
 def main():
     o = np.random.randint(1, 1000, 1)
     flags['seed'] = o[0]
-    a = np.random.uniform(-7.5, -6.5, 1)
+    a = np.random.uniform(-7.5, -5.5, 1)
     lr = np.power(10, a[0])
-    flags['lr_iters'] = [(lr, 100000)]
-    run_num = sys.argv[1]
+    flags['lr_iters'] = [(lr, 10000)]
+    run_num = 1#sys.argv[1]
 
     if 'Clutter_MNIST' in flags['datasets']:
         train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
@@ -58,11 +58,11 @@ def main():
         exit()
     model_vae = ConvVae(flags, model=run_num)
     # model.save_x(bgf)
-    # x_recon = model.output_shape()
-    # print(x_recon.shape)
+    x_recon = model_vae.output_shape()
+    print(x_recon.shape)
     print_log("Seed: %d" % flags['seed'])
 
-    model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
+    # model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
 
 
 if __name__ == "__main__":

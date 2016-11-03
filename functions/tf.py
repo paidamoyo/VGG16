@@ -84,7 +84,7 @@ def unravel_argmax(argmax, shape):
     return tf.pack(output_list)
 
 
-def unpool2x2(bottom, argmax):
+def unpool2x2(bottom):
     # Source: https://github.com/tensorflow/tensorflow/issues/2169
     bottom_shape = tf.shape(bottom)
     top_shape = [bottom_shape[0], bottom_shape[1] * 2, bottom_shape[2] * 2, bottom_shape[3]]

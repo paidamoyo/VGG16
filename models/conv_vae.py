@@ -82,18 +82,11 @@ class ConvVae:
 
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
-        encoder.conv2d(3, 64)
-        encoder.conv2d(3, 64)
-        encoder.maxpool(k=4)
-        encoder.conv2d(3, 96)
-        encoder.conv2d(3, 96)
-        encoder.maxpool(k=2)
-        encoder.conv2d(3, 128)
-        encoder.conv2d(3, 128)
-        encoder.maxpool(k=2)
-        encoder.conv2d(3, 144)
-        encoder.maxpool(k=2)
-        encoder.conv2d(3, 256)
+        encoder.conv2d(5, 64, stride=2)
+        encoder.conv2d(5, 96, padding='VALID', stride=2)
+        encoder.conv2d(3, 128, padding='VALID')
+        encoder.conv2d(3, 128, stride=2)
+        encoder.conv2d(3, 144, stride=2)
         encoder.flatten(self.keep_prob)
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
         return encoder.get_output()
@@ -108,15 +101,12 @@ class ConvVae:
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
-        decoder.deconv2d(3, 256)
-        decoder.deconv2d(3, 144)
-        decoder.deconv2d(3, 144, stride=2)
+        decoder.deconv2d(4, 144, padding='VALID')
         decoder.deconv2d(3, 128, stride=2)
         decoder.deconv2d(3, 128, stride=2)
-        decoder.deconv2d(3, 96, stride=2)
-        decoder.deconv2d(3, 96, stride=2)
-        decoder.deconv2d(5, 64, stride=2)
-        decoder.deconv2d(5, 1, stride=2, activation_fn=None)
+        decoder.deconv2d(5, 96, stride=2)
+        decoder.deconv2d(5, 12, stride=2)
+        decoder.deconv2d(5, 1, stride=2)
         return decoder.get_output(), mean, stddev
 
     def _create_network_MNIST(self):

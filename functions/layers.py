@@ -1,4 +1,4 @@
-from functions.tf import conv2d, deconv2d, fc, conv_weight_variable, weight_variable, const_variable, dropout, maxpool
+from functions.tf import conv2d, deconv2d, fc, conv_weight_variable, weight_variable, const_variable, dropout, maxpool, unpool2x2
 import tensorflow as tf
 from functions.record import print_log
 
@@ -12,7 +12,8 @@ class Layers:
             'deconv': 1,
             'fc': 1,
             'flat': 1,
-            'mp': 1
+            'mp': 1,
+            'up': 1
         }
         self.params = dict()
 
@@ -74,6 +75,13 @@ class Layers:
             self.input = maxpool(self.input, k)
         print_log(scope + ' output: ' + str(self.input.get_shape()))
         self.count['mp'] += 1
+
+    def unpool2x2(self):
+        scope = 'unpool2x2_' + str(self.count['up'])
+        with tf.variable_scope(scope):
+            self.input = unpool2x2(self.input)
+        print_log(scope + ' output: ' + str(self.input.get_shape()))
+        self.count['up'] += 1
 
     def get_output(self):
         return self.input
