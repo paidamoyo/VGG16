@@ -25,7 +25,7 @@ flags = {
     'seed': 13,
     'balance': 8,
     'image_dim': 128,
-    'hidden_size': 256,
+    'hidden_size': 128,
     'batch_size': 16,
     'display_step': 2,
     'lr_iters': [(0.0001, 10000)]
