@@ -82,11 +82,16 @@ class ConvVae:
 
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
-        encoder.conv2d(5, 64, stride=2)
-        encoder.conv2d(5, 96, padding='VALID', stride=2)
+        encoder.conv2d(3, 64)
+        encoder.conv2d(3, 64)
+        encoder.maxpool(k=2)
+        encoder.conv2d(3, 96, padding='VALID')
+        encoder.conv2d(3, 96, padding='VALID')
+        encoder.maxpool(k=2)
         encoder.conv2d(3, 128, padding='VALID')
-        encoder.conv2d(3, 128, stride=2)
-        encoder.conv2d(3, 144, stride=2)
+        encoder.conv2d(3, 128, padding='VALID')
+        encoder.maxpool(k=2)
+        encoder.conv2d(3, 256, padding='VALID')
         encoder.flatten(self.keep_prob)
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
         return encoder.get_output()
@@ -101,12 +106,12 @@ class ConvVae:
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
-        decoder.deconv2d(4, 144, padding='VALID')
-        decoder.deconv2d(3, 128, stride=2)
-        decoder.deconv2d(3, 128, stride=2)
-        decoder.deconv2d(5, 96, stride=2)
-        decoder.deconv2d(5, 12, stride=2)
-        decoder.deconv2d(5, 1, stride=2)
+        decoder.deconv2d(3, 256, padding='VALID')
+        decoder.deconv2d(3, 144, padding='VALID')
+        decoder.deconv2d(5, 128, padding='VALID')
+        decoder.deconv2d(5, 96, padding='VALiD')
+        decoder.deconv2d(5, 64, stride=2)
+        decoder.deconv2d(5, 1, stride=2, activation_fn=None)
         return decoder.get_output(), mean, stddev
 
     def _create_network_MNIST(self):
@@ -127,9 +132,9 @@ class ConvVae:
 
     def _create_loss_optimizer(self, epsilon=1e-8):
         #if 'SAGE' in self.flags['datasets']:
-        recon = 0.02 * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
+        # recon = 0.02 * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
         #else:
-        #recon = 0.02 * (tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)))
+        recon = 0.02 * (tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)))
         vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_sum(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
