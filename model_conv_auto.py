@@ -57,14 +57,14 @@ def main():
         bgf = None
         print('Dataset not defined for batch generation')
         exit()
-    model_vae = ConvVae(flags, model=run_num)
+    model_auto = ConvAuto(flags, model=run_num)
     # model.save_x(bgf)
     # x_recon = model.output_shape()
     # print(x_recon.shape)
     print_log("Seed: %d" % flags['seed'])
     print_log("1/sigma2: %f" % flags['1/sigma2'])
 
-    model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
+    model_auto.train(bgf, lr_iters=flags['lr_iters'], model=2)
 
 
 if __name__ == "__main__":
