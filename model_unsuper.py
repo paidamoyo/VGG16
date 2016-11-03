@@ -9,6 +9,7 @@ from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIS
 from data.MNIST import load_data_MNIST, generate_MNIST
 from data.SAGE import generate_SAGE
 from functions.record import print_log
+from models.conv_auto import ConvAuto
 import sys
 
 
@@ -22,11 +23,11 @@ flags = {
     'restore': False,
     'restore_file': 'starting_point.ckpt',
     'seed': 13,
-    '1/sigma2': 8,
+    'balance': 8,
     'image_dim': 128,
-    'hidden_size': 128,
+    'hidden_size': 256,
     'batch_size': 16,
-    'display_step': 500,
+    'display_step': 2,
     'lr_iters': [(0.0001, 10000)]
 }
 
@@ -34,11 +35,10 @@ flags = {
 def main():
     o = np.random.randint(1, 1000, 1)
     flags['seed'] = o[0]
-    e = np.random.uniform(-2, 4, 1)
-    flags['1/sigma2'] = np.power(10, e[0])
-    a = np.random.uniform(-7, -4, 1)
+    flags['balance'] = np.random.uniform(0, 1, 1)
+    a = np.random.uniform(-5.5, -4, 1)
     lr = np.power(10, a[0])
-    flags['lr_iters'] = [(lr, 10000)]
+    flags['lr_iters'] = [(lr, 5)]
     run_num = sys.argv[1]
 
     if 'Clutter_MNIST' in flags['datasets']:
@@ -57,12 +57,16 @@ def main():
         bgf = None
         print('Dataset not defined for batch generation')
         exit()
-    model = ConvVae(flags, model=run_num)
+    model_vae = ConvVae(flags, model=run_num)
+    model_auto = ConvAuto(flags, model=run_num)
     # model.save_x(bgf)
     # x_recon = model.output_shape()
     # print(x_recon.shape)
+    print_log("Seed: %d" % flags['seed'])
     print_log("1/sigma2: %f" % flags['1/sigma2'])
-    model.train(bgf, lr_iters=flags['lr_iters'], model=1)
+
+    model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
+    model_auto.train(bgf, lr_iters=flags['lr_iters'], model=2)
 
 
 if __name__ == "__main__":
