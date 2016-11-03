@@ -35,8 +35,7 @@ flags = {
 def main():
     o = np.random.randint(1, 1000, 1)
     flags['seed'] = o[0]
-    flags['balance'] = np.random.uniform(0, 1, 1)
-    a = np.random.uniform(-5.5, -4, 1)
+    a = np.random.uniform(-7.5, -6.5, 1)
     lr = np.power(10, a[0])
     flags['lr_iters'] = [(lr, 5)]
     run_num = sys.argv[1]
@@ -62,7 +61,7 @@ def main():
     # x_recon = model.output_shape()
     # print(x_recon.shape)
     print_log("Seed: %d" % flags['seed'])
-    print_log("1/sigma2: %f" % flags['1/sigma2'])
+    print_log("Balance: %f" % flags['Balance'])
 
     model_auto.train(bgf, lr_iters=flags['lr_iters'], model=2)
 

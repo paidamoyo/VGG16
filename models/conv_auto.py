@@ -103,19 +103,10 @@ class ConvAuto:
         x = np.zeros([self.flags['batch_size'], self.flags['image_dim'], self.flags['image_dim'], 1])
         return self.sess.run(self.x_recon, feed_dict={self.x: x, self.keep_prob: 0.5})
 
-    def x_recon(self):
-        images = self.sess.run(self.gen)
-        for i in range(len(images)):
-            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) + '.png', np.squeeze(images[i]))
-
     def save_x(self, image_generating_fxn):
         labels, images = image_generating_fxn()
         for i in range(len(images)):
             scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) + '.png', np.squeeze(images[i]))
-
-    def transform(self, x):
-        """Transform data by mapping it into the latent space."""
-        return self.sess.run(self.mean, feed_dict={self.x: x, self.keep_prob: 1.0})
 
     def train(self, batch_generating_fxn, lr_iters, model):
 
