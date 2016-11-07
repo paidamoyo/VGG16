@@ -112,9 +112,12 @@ class ConvVae:
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
         decoder.deconv2d(4, 144, padding='VALID')
         decoder.deconv2d(3, 128, stride=2)
-        decoder.deconv2d(5, 96, stride=2)
-        decoder.deconv2d(5, 12, stride=2)
-        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.tanh)
+        decoder.deconv2d(3, 128)
+        decoder.deconv2d(3, 96, stride=2)
+        decoder.deconv2d(3, 96)
+        decoder.deconv2d(5, 64, stride=2)
+        decoder.deconv2d(5, 64, stride=2)
+        decoder.deconv2d(3, 1, activation_fn=tf.nn.tanh)
         return decoder.get_output(), mean, stddev
 
     def _create_network_MNIST(self):
@@ -135,7 +138,7 @@ class ConvVae:
 
     def _create_loss_optimizer(self, epsilon=1e-8):
         #if 'SAGE' in self.flags['datasets']:
-        recon = 125000*self.flags['image_dim']*self.flags['image_dim'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
+        recon = 1250*self.flags['image_dim']*self.flags['image_dim'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
         #else:
         # recon = (tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)))
         vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
