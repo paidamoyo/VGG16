@@ -85,17 +85,13 @@ class ConvVae:
         encoder.conv2d(3, 64)
         encoder.conv2d(3, 64)
         encoder.maxpool()
-        encoder.conv2d(3, 72)
-        encoder.conv2d(3, 72)
+        encoder.conv2d(5, 72)
         encoder.maxpool()
-        encoder.conv2d(3, 96)
-        encoder.conv2d(3, 96)
+        encoder.conv2d(5, 96)
         encoder.maxpool()
-        encoder.conv2d(3, 128)
-        encoder.conv2d(3, 128)
+        encoder.conv2d(5, 128)
         encoder.maxpool()
-        encoder.conv2d(3, 144)
-        encoder.conv2d(3, 144)
+        encoder.conv2d(5, 144)
         encoder.flatten(self.keep_prob)
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
         return encoder.get_output()
@@ -111,16 +107,14 @@ class ConvVae:
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
         decoder.deconv2d(4, 144, padding='VALID')
-        decoder.deconv2d(3, 128, stride=2)
-        decoder.deconv2d(3, 128)
-        decoder.deconv2d(3, 96, stride=2)
-        decoder.deconv2d(3, 96)
+        decoder.deconv2d(5, 128, stride=2)
+        decoder.deconv2d(5, 96, stride=2)
         decoder.deconv2d(3, 72, stride=2)
-        decoder.deconv2d(3, 72)
         decoder.deconv2d(3, 64, stride=2)
-        decoder.deconv2d(3, 64)
         decoder.deconv2d(3, 1, activation_fn=tf.nn.tanh)
         return decoder.get_output(), mean, stddev
+
+
 
     def _create_network_MNIST(self):
         with tf.variable_scope("model"):
