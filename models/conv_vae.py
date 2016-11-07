@@ -96,7 +96,6 @@ class ConvVae:
         encoder.maxpool()
         encoder.conv2d(3, 144)
         encoder.conv2d(3, 144)
-        encoder.maxpool()
         encoder.flatten(self.keep_prob)
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
         return encoder.get_output()
