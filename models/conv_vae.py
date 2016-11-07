@@ -83,15 +83,11 @@ class ConvVae:
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
         encoder.conv2d(3, 64)
-        encoder.conv2d(3, 64)
-        encoder.maxpool()
-        encoder.conv2d(5, 72)
-        encoder.maxpool()
-        encoder.conv2d(5, 96)
-        encoder.maxpool()
-        encoder.conv2d(5, 128)
-        encoder.maxpool()
-        encoder.conv2d(5, 144)
+        encoder.conv2d(3, 64, stride=2)
+        encoder.conv2d(3, 72)
+        encoder.conv2d(3, 72, stride=2)
+        encoder.conv2d(5, 128, stride=2)
+        encoder.conv2d(5, 144, stride=2)
         encoder.flatten(self.keep_prob)
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
         return encoder.get_output()
@@ -107,11 +103,11 @@ class ConvVae:
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
         decoder.deconv2d(4, 144, padding='VALID')
-        decoder.deconv2d(5, 128, stride=2)
-        decoder.deconv2d(5, 96, stride=2)
-        decoder.deconv2d(3, 72, stride=2)
-        decoder.deconv2d(3, 64, stride=2)
-        decoder.deconv2d(3, 1, activation_fn=tf.nn.tanh)
+        decoder.deconv2d(3, 128, stride=2)
+        decoder.deconv2d(3, 96, stride=2)
+        decoder.deconv2d(5, 72, stride=2)
+        decoder.deconv2d(5, 64, stride=2)
+        decoder.deconv2d(5, 1, activation_fn=tf.nn.tanh)
         return decoder.get_output(), mean, stddev
 
 
@@ -137,7 +133,7 @@ class ConvVae:
         recon = 125000*self.flags['image_dim']*self.flags['image_dim'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
         #else:
         # recon = (tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)))
-        vae = 0.001 * tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
+        vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_sum(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
         return vae, recon, cost, optimizer
