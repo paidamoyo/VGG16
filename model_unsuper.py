@@ -20,7 +20,7 @@ flags = {
     'datasets': ['SAGE'],
     'restore': False,
     'restore_file': 'MNIST_starting_point.ckpt',
-    'image_dim': 64,
+    'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 32,
     'display_step': 100,
