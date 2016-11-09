@@ -7,7 +7,7 @@ import pickle
 import numpy as np
 from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIST
 from data.MNIST import load_data_MNIST, generate_MNIST
-from data.SAGE import generate_SAGE
+from data.SAGE import generate_breast_patch
 import sys
 
 
@@ -47,7 +47,7 @@ def main():
     elif 'SAGE' or 'InBREAST' in flags['datasets']:
         print('Using Breast dataset')
         image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
-        bgf = functools.partial(generate_SAGE, flags, image_dict)
+        bgf = functools.partial(generate_breast_patch, flags, image_dict)
     else:
         bgf = None
         print('Dataset not defined for batch generation')
