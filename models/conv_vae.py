@@ -174,7 +174,7 @@ class ConvVae:
         for i in range(len(x)):
             scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) +'.png', np.squeeze(x[i]))
         norm = np.zeros(shape=[len(x), self.flags['hidden_size']])
-        images = self.sess.run(self.x_recon, feed_dict={self.x: x, self.epsilon: norm})
+        images = self.sess.run(self.x_recon, feed_dict={self.x: x, self.keep_prob: 0.5, self.epsilon: norm})
         for i in range(len(images)):
             scipy.misc.imsave(self.flags['logging_directory'] + 'x_recon' + str(i) + '.png', np.squeeze(images[i]))
 
