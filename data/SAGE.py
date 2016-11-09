@@ -17,7 +17,7 @@ def generate_breast_patch(flags, image_dict):
             patches = np.zeros((flags['batch_size'], flags['image_dim'], flags['image_dim'], 1))
             labels = np.zeros((flags['batch_size']))
             image = pickle.load(basefile)
-            label = sage[inds][4]
+            label = breast[inds][4]
             dims = image.shape
             for b in range(flags['batch_size']):
                 # Randomly select 28x28 patch from breast image
