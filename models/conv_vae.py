@@ -45,8 +45,8 @@ class ConvVae:
         np.random.seed(self.flags['seed'])
 
     def _summary(self):
-        for var in tf.trainable_variables():
-            tf.histogram_summary(var.name, var)
+        #for var in tf.trainable_variables():
+        #    tf.histogram_summary(var.name, var)
         tf.scalar_summary("Total Loss", self.cost)
         tf.scalar_summary("Reconstruction Loss", self.recon)
         tf.scalar_summary("VAE Loss", self.vae)
