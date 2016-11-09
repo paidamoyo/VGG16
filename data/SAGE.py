@@ -6,6 +6,7 @@ from functions.aux import check_str, make_directory
 
 def generate_breast_patch(flags, image_dict):
     pdict = pd.DataFrame(image_dict)
+    print(pdict)
     sage = pdict[flags['datasets']]
     all_inds = sage.columns.values
     batch_ind = np.random.randint(low=0, high=len(all_inds), size=1)
