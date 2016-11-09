@@ -17,7 +17,7 @@ flags = {
     'previous_processed_directory': 'Smart_Crop/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
-    'datasets': ['SAGE'],
+    'datasets': ['InBREAST'],
     'restore': False,
     'restore_file': 'SAGE_starting_point.ckpt',
     'image_dim': 128,
@@ -34,7 +34,7 @@ def main():
     # a = np.random.uniform(-5.5, -3.5, 1)
     # lr = 0.0001 #np.power(10, a[0])
     #flags['lr_iters'] = [(lr, 10000)]
-    run_num = sys.argv[1]
+    run_num = 1  # sys.argv[1]
 
     if 'Clutter_MNIST' in flags['datasets']:
         train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
@@ -44,8 +44,8 @@ def main():
     elif 'MNIST' in flags['datasets']:
         mnist = load_data_MNIST()
         bgf = functools.partial(generate_MNIST, mnist, flags['batch_size'])
-    elif 'SAGE' in flags['datasets']:
-        print('Using SAGE dataset')
+    elif 'SAGE' or 'InBREAST' in flags['datasets']:
+        print('Using Breast dataset')
         image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
         bgf = functools.partial(generate_SAGE, flags, image_dict)
     else:
