@@ -15,7 +15,7 @@ def smart_crop(image, dataset):
     if dataset is 'SAGE':
         bright_range = [20, 10, 4]
     elif dataset is 'INbreast':
-        bright_range = [5]
+        bright_range = [3]
     else:
         bright_range = [0]
         print('Dataset not defined for smart_crop')
