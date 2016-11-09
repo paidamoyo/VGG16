@@ -163,22 +163,20 @@ class ConvVae:
         x = np.zeros([self.flags['batch_size'], self.flags['image_dim'], self.flags['image_dim'], 1])
         return self.sess.run(self.x_recon, feed_dict={self.x: x, self.keep_prob: 0.5, self.epsilon: norm})
 
-    def x_recon(self, n):
-        norm = np.zeros(shape=[n, self.flags['hidden_size']])
-        images = self.sess.run(self.x_recon, feed_dict={self.epsilon: norm})
-        for i in range(len(images)):
-            scipy.misc.imsave(self.flags['logging_directory'] + 'x_recon' + str(i) + '.png', np.squeeze(images[i]))
-
     def x_gen(self, n):
         norm = np.random.normal(size=[n, self.flags['hidden_size']])
         images = self.sess.run(self.gen, feed_dict={self.epsilon: norm})
         for i in range(len(images)):
             scipy.misc.imsave(self.flags['logging_directory'] + 'x_gen' + str(i) + '.png', np.squeeze(images[i]))
 
-    def save_x(self, image_generating_fxn):
-        labels, images = image_generating_fxn()
+    def save_x_recon(self, image_generating_fxn):
+        labels, x = image_generating_fxn()
+        for i in range(len(x)):
+            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) +'.png', np.squeeze(x[i]))
+        norm = np.zeros(shape=[len(x), self.flags['hidden_size']])
+        images = self.sess.run(self.x_recon, feed_dict={self.x: x, self.epsilon: norm})
         for i in range(len(images)):
-            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) +'.png', np.squeeze(images[i]))
+            scipy.misc.imsave(self.flags['logging_directory'] + 'x_recon' + str(i) + '.png', np.squeeze(images[i]))
 
     def transform(self, x):
         """Transform data by mapping it into the latent space."""

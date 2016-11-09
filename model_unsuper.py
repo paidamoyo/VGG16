@@ -57,7 +57,9 @@ def main():
     # x_recon = model_vae.output_shape()
     # print(x_recon.shape)
     # print_log("Seed: %d" % flags['seed'])
-    model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
+    # model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
+    model_vae.save_x_recon(bgf)
+
 
 
 if __name__ == "__main__":
