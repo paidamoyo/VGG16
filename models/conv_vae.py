@@ -180,10 +180,11 @@ class ConvVae:
 
     def save_x_gen(self, image_generating_fxn):
         labels, x = image_generating_fxn()
-        for i in range(len(x)):
-            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) +'.png', np.squeeze(x[i]))
-        means = self.transform(x)
-        norm = np.random.normal(loc=means, size=[len(x), self.flags['hidden_size']])
+        for i in range(len(1)):
+            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) +'.png', np.squeeze(x[1]))
+        means = self.transform(x[1])
+        print(means)
+        norm = np.random.normal(loc=means, size=[len(x[1]), self.flags['hidden_size']])
         images = self.sess.run(self.x_gen, feed_dict={self.x: x, self.keep_prob: 1.0, self.epsilon: norm})
         for i in range(len(images)):
             scipy.misc.imsave(self.flags['logging_directory'] + 'x_recon' + str(i) + '.png', np.squeeze(images[i]))
