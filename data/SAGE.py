@@ -6,12 +6,12 @@ from functions.aux import check_str, make_directory
 
 def generate_breast_patch(flags, image_dict):
     pdict = pd.DataFrame(image_dict)
-    print(image_dict)
-    sage = pdict[flags['datasets']]
+    for dataset in flags['datasets']
+    sage = pdict[dataset]
     all_inds = sage.columns.values
     batch_ind = np.random.randint(low=0, high=len(all_inds), size=1)
     inds = all_inds[batch_ind][0]
-    data_directory = flags['data_directory'] + flags['datasets'] +'/Preprocessed/' + flags['previous_processed_directory']
+    data_directory = flags['data_directory'] + dataset +'/Preprocessed/' + flags['previous_processed_directory']
     image_path = data_directory + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
     with open(image_path, 'rb') as basefile:
         patches = np.zeros((flags['batch_size'], flags['image_dim'], flags['image_dim'], 1))
