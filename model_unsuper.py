@@ -18,13 +18,13 @@ flags = {
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
     'datasets': ['INbreast'],
-    'restore': False,
-    'restore_file': 'INbreast_starting_point.ckpt',
+    'restore': True,
+    'restore_file': 'Breast_epoch0.ckpt',
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 32,
-    'display_step': 100,
-    'lr_iters': [(0.001, 400), (0.00075, 600), (0.0005, 1000), (0.00025, 2000), (0.0001, 2000)]
+    'display_step': 50,
+    'lr_iters': [(0.0001, 2000)]
 }
 
 
