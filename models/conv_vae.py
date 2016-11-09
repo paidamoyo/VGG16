@@ -182,13 +182,16 @@ class ConvVae:
         """Transform data by mapping it into the latent space."""
         return self.sess.run(self.mean, feed_dict={self.x: x, self.keep_prob: 1.0})
 
+    def restore(self):
+        self.saver.restore(self.sess, self.flags['restore_directory'] + self.flags['restore_file'])
+        print_log("Model restored from %s" % self.flags['restore_file'])
+
     def train(self, batch_generating_fxn, lr_iters, model):
 
         setup_metrics(self.flags, lr_iters)
         writer = tf.train.SummaryWriter(self.flags['logging_directory'], self.sess.graph)
         if self.flags['restore'] is True:
-            self.saver.restore(self.sess, self.flags['restore_directory'] + self.flags['restore_file'])
-            print_log("Model restored from %s" % self.flags['restore_file'])
+            self.restore()
         else:
             self.sess.run(tf.initialize_all_variables())
             print_log("Model training from scratch.")
