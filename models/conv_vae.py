@@ -180,7 +180,7 @@ class ConvVae:
 
     def save_x_gen(self, image_generating_fxn):
         labels, x = image_generating_fxn()
-        scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) +'.png', np.squeeze(x[1]))
+        scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(1) +'.png', np.squeeze(x[1]))
         means = self.transform(x[1])
         print(means)
         norm = np.random.normal(loc=means, size=[len(x[1]), self.flags['hidden_size']])
