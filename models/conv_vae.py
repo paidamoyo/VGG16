@@ -133,10 +133,11 @@ class ConvVae:
 
     def _create_loss_optimizer(self, epsilon=1e-8):
         #if 'SAGE' in self.flags['datasets']:
-        recon = 125*1000*self.flags['image_dim']*self.flags['image_dim'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
+        recon = tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
+        #125*1000*self.flags['image_dim']*self.flags['image_dim'] *
         #else:
         # recon = (tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)))
-        vae = 0.00001*tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
+        vae = tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_sum(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
         return vae, recon, cost, optimizer
