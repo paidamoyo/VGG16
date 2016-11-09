@@ -26,7 +26,7 @@ flags = {
     'save_processed_jpeg': True,
     'save_original_jpeg': False,
     'save_pickled_dictionary': True,
-    'save_pickled_images': True,
+    'save_pickled_images': False,
 }
 
 
@@ -114,7 +114,7 @@ def process_text_INbreast(flags):
                 IndexError('No DICOM Files match the line in the CSV file! Exiting...')
                 exit()
             line[5] = str.split(list_dicom_files[index[0]], '/')[-1]
-            if line[7] in {'0', '1', '2', '3'}:
+            if line[7] in {'0', '1', '2'}:
                 line[7] = '0'
             else:
                 line[7] = '1'
