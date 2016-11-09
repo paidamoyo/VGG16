@@ -24,7 +24,7 @@ flags = {
     'hidden_size': 128,
     'batch_size': 32,
     'display_step': 100,
-    'lr_iters': [(0.0001, 2500), (0.0001, 2500)]
+    'lr_iters': [(0.001, 2500), (0.0001, 2500)]
 }
 
 
