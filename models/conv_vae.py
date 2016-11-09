@@ -163,12 +163,6 @@ class ConvVae:
         x = np.zeros([self.flags['batch_size'], self.flags['image_dim'], self.flags['image_dim'], 1])
         return self.sess.run(self.x_recon, feed_dict={self.x: x, self.keep_prob: 0.5, self.epsilon: norm})
 
-    def save_x_gen(self, n):
-        norm = np.random.normal(size=[n, self.flags['hidden_size']])
-        images = self.sess.run(self.gen, feed_dict={self.epsilon: norm})
-        for i in range(len(images)):
-            scipy.misc.imsave(self.flags['logging_directory'] + 'x_gen' + str(i) + '.png', np.squeeze(images[i]))
-
     def save_x_recon(self, image_generating_fxn):
         labels, x = image_generating_fxn()
         for i in range(len(x)):
@@ -180,6 +174,7 @@ class ConvVae:
 
     def save_x_gen(self, image_generating_fxn):
         labels, x = image_generating_fxn()
+        print(self.flags['logging_directory'])
         scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(1) +'.png', np.squeeze(x[1]))
         means = self.transform(np.expand_dims(x[0,:,:,:],0))
         print(means)
