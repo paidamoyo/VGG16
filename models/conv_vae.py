@@ -163,7 +163,7 @@ class ConvVae:
         x = np.zeros([self.flags['batch_size'], self.flags['image_dim'], self.flags['image_dim'], 1])
         return self.sess.run(self.x_recon, feed_dict={self.x: x, self.keep_prob: 0.5, self.epsilon: norm})
 
-    def x_gen(self, n):
+    def save_x_gen(self, n):
         norm = np.random.normal(size=[n, self.flags['hidden_size']])
         images = self.sess.run(self.gen, feed_dict={self.epsilon: norm})
         for i in range(len(images)):
