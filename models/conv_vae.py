@@ -28,10 +28,10 @@ class ConvVae:
         self._set_seed()
         if flags['image_dim'] == 28:
             print_log('Using 28x28 Architecture')
-            self.x_recon, self.mean, self.stddev, self.gen, self.latent = self._create_network_MNIST()
+            self.x_recon, self.mean, self.stddev, self.x_gen, self.latent = self._create_network_MNIST()
         else:  # breast patches of 128
             print_log('Using 128x128 Architecture')
-            self.x_recon, self.mean, self.stddev, self.gen, self.latent = self._create_network_BREAST()
+            self.x_recon, self.mean, self.stddev, self.x_gen, self.latent = self._create_network_BREAST()
         self.vae, self.recon, self.cost, self.optimizer = self._create_loss_optimizer()
 
         self._summary()
