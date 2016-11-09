@@ -17,7 +17,7 @@ flags = {
     'previous_processed_directory': 'Smart_Crop/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
-    'datasets': ['InBreast'],
+    'datasets': ['INbreast'],
     'restore': False,
     'restore_file': 'SAGE_starting_point.ckpt',
     'image_dim': 128,
@@ -44,7 +44,7 @@ def main():
     elif 'MNIST' in flags['datasets']:
         mnist = load_data_MNIST()
         bgf = functools.partial(generate_MNIST, mnist, flags['batch_size'])
-    elif 'SAGE' or 'InBreast' in flags['datasets']:
+    elif 'SAGE' or 'INbreast' in flags['datasets']:
         print('Using Breast dataset')
         image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
         bgf = functools.partial(generate_breast_patch, flags, image_dict)
