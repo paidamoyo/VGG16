@@ -5,6 +5,7 @@ import functools
 from models.conv_vae import ConvVae
 import pickle
 import numpy as np
+from functions.record import print_log
 from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIST
 from data.MNIST import load_data_MNIST, generate_MNIST
 from data.SAGE import generate_breast_patch
@@ -56,10 +57,10 @@ def main():
     # model.save_x(bgf)
     # x_recon = model_vae.output_shape()
     # print(x_recon.shape)
-    # print_log("Seed: %d" % flags['seed'])
-    model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
-    #model_vae.restore()
-    # model_vae.save_x_gen(bgf)
+    print_log("Seed: %d" % flags['seed'])
+    # model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
+    model_vae.restore()
+    model_vae.save_x_gen(bgf)
 
 
 
