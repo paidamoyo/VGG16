@@ -18,19 +18,19 @@ flags = {
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
     'datasets': ['SAGE'],
-    'restore': True,
+    'restore': False,
     'restore_file': 'SAGE_starting_point.ckpt',
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 32,
     'display_step': 100,
-    'lr_iters': [(0.000025, 2500),(0.000025, 2500),(0.000025, 2500),(0.000025, 2500)]
+    'lr_iters': [(0.001, 1250), (0.00075, 1250), (0.0005, 2000), (0.00025, 2000), (0.0001, 2000)]
 }
 
 
 def main():
     o = np.random.randint(1, 1000, 1)
-    flags['seed'] = o[0]
+    flags['seed'] = 324#o[0]
     # a = np.random.uniform(-5.5, -3.5, 1)
     # lr = 0.0001 #np.power(10, a[0])
     #flags['lr_iters'] = [(lr, 10000)]
@@ -57,7 +57,7 @@ def main():
     # x_recon = model_vae.output_shape()
     # print(x_recon.shape)
     # print_log("Seed: %d" % flags['seed'])
-    model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
+    # model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
     #model_vae.restore()
     #model_vae.save_x_recon(bgf)
 
