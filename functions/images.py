@@ -5,16 +5,25 @@ import numpy as np
 import dicom as di
 
 
-def smart_crop(image):
+def smart_crop(image, dataset):
     """
     Args: image
         image: numpy array 2D with pixel values, orientated so chest wall is on left side of image: (:,0)
     Returns: numpy 2D array with pixels values cropped at calculated column index... keep (:,0:i). If no
     suitable index can be found, return the original image.
     """
-    for brightness in [10, 5, 2]:  # loop over different brightness levels
+    if dataset is 'SAGE':
+        bright_range = [20, 10, 4]
+    elif dataset is 'INbreast':
+        bright_range = [10, 5, 2]
+    else:
+        bright_range = [0]
+        print('Dataset not defined for smart_crop')
+        exit()
+
+    for brightness in bright_range:  # loop over different brightness levels
         for i in range(0, image.shape[1]-1, 64):
-            if not sum(image[:, i] + image[:, i+1]) < 256*2*brightness:
+            if not sum(image[:, i] + image[:, i+1]) < 255*brightness:
                 continue
             else:
                 if i < 512:
@@ -53,13 +62,13 @@ def clean_image(image, image_data_dict, d, dumb_crop_dims=None):
         image = np.fliplr(image)
         print('Image Flipped.')
     if dumb_crop_dims is None:
-        image = smart_crop(image)
+        image = smart_crop(image, d[0])
     else:
         image = dumb_crop(image, dumb_crop_dims[0], dumb_crop_dims[1])
     if d[0] == 'SAGE':
         gamma = 3.0
     elif d[0] == 'INbreast':
-        gamma = 1.5
+        gamma = 5.0
     image = adjust_gamma(image, gamma=gamma)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
     image = clahe.apply(image)
