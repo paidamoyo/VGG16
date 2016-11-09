@@ -27,9 +27,7 @@ def smart_crop(image, dataset):
                 continue
             else:
                 if i < 512:
-                    print(sum(image[:, i] + image[:, i+1]))
-                    print(i)
-                    exit()
+                    continue
                 else:
                     return image[:, 0:i]
     return image
