@@ -83,15 +83,20 @@ class ConvVae:
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
         encoder.conv2d(3, 64)
-        encoder.conv2d(3, 64, stride=2)
+        encoder.conv2d(3, 64)
+        encoder.maxpool()
         encoder.conv2d(3, 72)
-        encoder.conv2d(3, 72, stride=2)
+        encoder.conv2d(3, 72)
+        encoder.maxpool()
         encoder.conv2d(3, 96)
-        encoder.conv2d(3, 96, stride=2)
+        encoder.conv2d(3, 96)
+        encoder.maxpool()
         encoder.conv2d(3, 128)
-        encoder.conv2d(3, 128, stride=2)
+        encoder.conv2d(3, 128)
+        encoder.maxpool()
         encoder.conv2d(3, 144)
-        encoder.conv2d(3, 144, stride=2)
+        encoder.conv2d(3, 144)
+        encoder.maxpool()
         encoder.flatten(self.keep_prob)
         encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
         return encoder.get_output()
@@ -159,10 +164,16 @@ class ConvVae:
         return self.sess.run(self.x_recon, feed_dict={self.x: x, self.keep_prob: 0.5, self.epsilon: norm})
 
     def x_recon(self, n):
+        norm = np.zeros(shape=[n, self.flags['hidden_size']])
+        images = self.sess.run(self.x_recon, feed_dict={self.epsilon: norm})
+        for i in range(len(images)):
+            scipy.misc.imsave(self.flags['logging_directory'] + 'x_recon' + str(i) + '.png', np.squeeze(images[i]))
+
+    def x_gen(self, n):
         norm = np.random.normal(size=[n, self.flags['hidden_size']])
         images = self.sess.run(self.gen, feed_dict={self.epsilon: norm})
         for i in range(len(images)):
-            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) + '.png', np.squeeze(images[i]))
+            scipy.misc.imsave(self.flags['logging_directory'] + 'x_gen' + str(i) + '.png', np.squeeze(images[i]))
 
     def save_x(self, image_generating_fxn):
         labels, images = image_generating_fxn()
