@@ -68,7 +68,7 @@ def clean_image(image, image_data_dict, d, dumb_crop_dims=None):
     if d[0] == 'SAGE':
         gamma = 3.0
     elif d[0] == 'INbreast':
-        gamma = 0.75
+        gamma = 2.0
     image = adjust_gamma(image, gamma=gamma)
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(16, 16))
     image = clahe.apply(image)
