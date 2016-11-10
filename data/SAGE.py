@@ -28,7 +28,6 @@ def generate_breast_patch(flags, image_dict):
                     img = image[x:x + flags['image_dim'], y:y + flags['image_dim']]
                     if img.max() > 5:
                         successful = True
-                        print(img.max())
                 img = img / img.max()
                 patches[b, :, :, 0] = img - img.mean()
                 labels[b] = label
