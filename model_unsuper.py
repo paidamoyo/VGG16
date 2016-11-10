@@ -23,9 +23,9 @@ flags = {
     'restore_file': 'Breast_epoch0.ckpt',
     'image_dim': 128,
     'hidden_size': 128,
-    'batch_size': 32,
-    'display_step': 25,
-    'lr_iters': [(0.0005, 200), (0.0003, 200), (0.0001, 200), (0.00005, 2000)]
+    'batch_size': 48,
+    'display_step': 50,
+    'lr_iters': [(0.001, 200), (0.0005, 200), (0.0003, 200), (0.0001, 200), (0.00005, 2000)]
 }
 
 
