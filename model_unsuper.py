@@ -25,13 +25,13 @@ flags = {
     'hidden_size': 128,
     'batch_size': 48,
     'display_step': 50,
-    'lr_iters': [(0.001, 200), (0.0005, 200), (0.0003, 200), (0.0001, 200), (0.00005, 2000)]
+    'lr_iters': [(0.00075, 200), (0.0003, 200), (0.0001, 200), (0.00005, 2000)]
 }
 
 
 def main():
     o = np.random.randint(1, 1000, 1)
-    flags['seed'] = 107#o[0]
+    flags['seed'] = o[0]
     # a = np.random.uniform(-5.5, -3.5, 1)
     # lr = 0.0001 #np.power(10, a[0])
     #flags['lr_iters'] = [(lr, 10000)]
