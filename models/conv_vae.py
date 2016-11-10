@@ -117,7 +117,7 @@ class ConvVae:
         decoder.deconv2d(5, 96, stride=2)
         decoder.deconv2d(5, 72, stride=2)
         decoder.deconv2d(5, 64, stride=2)
-        decoder.deconv2d(5, 1, activation_fn=tf.nn.tanh)
+        decoder.deconv2d(5, 1, activation_fn=tf.nn.tanh, s_value=0.5)
         return decoder.get_output(), mean, stddev
 
     def _create_network_MNIST(self):
@@ -141,7 +141,7 @@ class ConvVae:
         recon = 125*10000000*self.flags['image_dim']*self.flags['image_dim'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
         #else:
         # recon = (tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)))
-        vae = 0.00000001*tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
+        vae = 0.000000001*tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_sum(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
         return vae, recon, cost, optimizer
