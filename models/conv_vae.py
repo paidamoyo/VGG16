@@ -178,8 +178,8 @@ class ConvVae:
         means = list()
         for i in range(num):
             scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) +'.png', np.squeeze(x[i]))
-            print(x[num].max())
-            print(x[num].min())
+            print(x[i].max())
+            print(x[i].min())
             # means = self.transform(x[1:num, :, :, :])
             # norm = np.random.normal(loc=means, size=[1, self.flags['hidden_size']])
         #images = self.sess.run(self.x_gen, feed_dict={self.x: x[1:num, :, :, :], self.keep_prob: 1.0, self.epsilon: norm})
