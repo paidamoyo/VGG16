@@ -30,13 +30,13 @@ class Layers:
         self.input_shape = output_shape
         self.count['conv'] += 1
 
-    def deconv2d(self, filter_size, output_channels, stride=1, padding='SAME', activation_fn=tf.nn.relu):
+    def deconv2d(self, filter_size, output_channels, stride=1, padding='SAME', activation_fn=tf.nn.relu, b_value=0.0):
         scope = 'deconv_' + str(self.count['deconv'])
         with tf.variable_scope(scope):
             input_channels = self.input.get_shape()[3]
             output_shape = [filter_size, filter_size, output_channels, input_channels]
             w = conv_weight_variable(name='weights', shape=output_shape)
-            b = const_variable(name='bias', shape=[output_channels], value=0.0)
+            b = const_variable(name='bias', shape=[output_channels], value=b_value)
             s = const_variable(name='scale', shape=[output_channels], value=1.0)
             self.input = deconv2d(self.input, w, s, b, stride, padding, activation_fn)
         print_log(scope + ' output: ' + str(self.input.get_shape()))
