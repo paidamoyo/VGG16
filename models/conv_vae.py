@@ -141,7 +141,7 @@ class ConvVae:
         recon = 125*10000*self.flags['image_dim']*self.flags['image_dim'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
         #else:
         # recon = (tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)))
-        vae = 0.00001*tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
+        vae = 0.000001*tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
         cost = tf.reduce_sum(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
         return vae, recon, cost, optimizer
