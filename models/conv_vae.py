@@ -116,7 +116,7 @@ class ConvVae:
         decoder.deconv2d(5, 128, stride=2)
         decoder.deconv2d(5, 96, stride=2)
         decoder.deconv2d(5, 72, stride=2)
-        decoder.deconv2d(5, 64, stride=2)
+        decoder.deconv2d(5, 64, stride=2, s_value=0.5)
         decoder.deconv2d(5, 1, activation_fn=tf.nn.tanh)
         return decoder.get_output(), mean, stddev
 
