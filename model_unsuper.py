@@ -60,7 +60,7 @@ def main():
     print_log("Seed: %d" % flags['seed'])
     # model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
     model_vae.restore()
-    model_vae.save_x_gen(bgf)
+    model_vae.save_x_gen(bgf, 15)
 
 
 
