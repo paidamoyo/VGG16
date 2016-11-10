@@ -18,14 +18,14 @@ flags = {
     'previous_processed_directory': 'Smart_Crop/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
-    'datasets': ['SAGE'],
-    'restore': True,
+    'datasets': ['INbreast'],
+    'restore': False,
     'restore_file': 'SAGE.ckpt',
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 32,
     'display_step': 50,
-    'lr_iters': [(0.0000000005, 2000)]
+    'lr_iters': [(0.00005, 1000)]
 }
 
 
@@ -58,9 +58,9 @@ def main():
     # x_recon = model_vae.output_shape()
     # print(x_recon.shape)
     print_log("Seed: %d" % flags['seed'])
-    # model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
-    model_vae.restore()
-    model_vae.save_x_gen(bgf, 15)
+    model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
+    # model_vae.restore()
+    # model_vae.save_x_gen(bgf, 15)
 
 
 
