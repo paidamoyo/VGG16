@@ -20,7 +20,7 @@ flags = {
     'model_directory': 'conv_vae/',
     'datasets': ['INbreast'],
     'restore': False,
-    'restore_file': 'SAGE.ckpt',
+    'restore_file': 'INbreast.ckpt',
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 32,
