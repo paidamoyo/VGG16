@@ -24,8 +24,8 @@ flags = {
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 32,
-    'display_step': 50,
-    'lr_iters': [(0.001, 250), (0.00075, 500)]
+    'display_step': 25,
+    'lr_iters': [(0.0005, 250), (0.000075, 500)]
 }
 
 
