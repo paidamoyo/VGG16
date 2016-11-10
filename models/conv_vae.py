@@ -117,7 +117,7 @@ class ConvVae:
         decoder.deconv2d(5, 96, stride=2)
         decoder.deconv2d(5, 72, stride=2)
         decoder.deconv2d(5, 64, stride=2)
-        decoder.deconv2d(5, 1, activation_fn=tf.nn.tanh, b_value=-0.5, s_value=0.5)
+        decoder.deconv2d(5, 1, activation_fn=tf.nn.tanh, b_value=-0.5, s_value=0.3)
         return decoder.get_output(), mean, stddev
 
     def _create_network_MNIST(self):
