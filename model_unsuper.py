@@ -10,6 +10,7 @@ from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIS
 from data.MNIST import load_data_MNIST, generate_MNIST
 from data.SAGE import generate_breast_patch
 import sys
+import scipy.misc
 
 
 # Global Dictionary of Flags
@@ -53,14 +54,17 @@ def main():
         bgf = None
         print('Dataset not defined for batch generation')
         exit()
-    model_vae = ConvVae(flags, model=run_num)
+    # model_vae = ConvVae(flags, model=run_num)
     # model.save_x(bgf)
     # x_recon = model_vae.output_shape()
     # print(x_recon.shape)
-    print_log("Seed: %d" % flags['seed'])
+    #print_log("Seed: %d" % flags['seed'])
     # model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
-    model_vae.restore()
-    model_vae.save_x_gen(bgf, 15)
+    #model_vae.restore()
+    #model_vae.save_x_gen(bgf, 15)
+    labels, x = generate_breast_patch(flags, image_dict)
+    for i in range(15):
+        scipy.misc.imsave('aux/conv_vae/Model4010/' + 'x_gen' + str(i) + '.png', np.squeeze(x[i, :, :, :]))
 
 
 
