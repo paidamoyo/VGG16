@@ -177,7 +177,7 @@ class ConvVae:
         print(self.flags['logging_directory'])
         means = list()
         for i in range(num):
-            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(1) +'.png', np.squeeze(x[num]))
+            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) +'.png', np.squeeze(x[num]))
             print(x[num].max())
             print(x[num].min())
             # means = self.transform(x[1:num, :, :, :])
