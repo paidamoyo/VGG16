@@ -20,7 +20,7 @@ flags = {
     'model_directory': 'conv_vae/',
     'datasets': ['INbreast'],
     'restore': True,
-    'restore_file': 'Mode1epoch_0.ckpt',
+    'restore_file': 'Model1epoch_0.ckpt',
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 24,
