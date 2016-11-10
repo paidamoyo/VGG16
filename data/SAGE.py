@@ -21,13 +21,13 @@ def generate_breast_patch(flags, image_dict):
             dims = image.shape
             for b in range(flags['batch_size']):
                 # Randomly select 28x28 patch from breast image
-                x = np.random.randint(low=0, high=dims[0] - flags['image_dim'])
-                y = np.random.randint(low=0, high=dims[1] - flags['image_dim'])
-                img = image[x:x + flags['image_dim'], y:y + flags['image_dim']]
-                if float(img.mean()) < float(0.001):
-                    print(img.mean())
-                    b -= 1
-                    continue
+                successful = False
+                while not successful:
+                    x = np.random.randint(low=0, high=dims[0] - flags['image_dim'])
+                    y = np.random.randint(low=0, high=dims[1] - flags['image_dim'])
+                    img = image[x:x + flags['image_dim'], y:y + flags['image_dim']]
+                    if img.max() > 0.001:
+                        successful = True
                 img = img / img.max()
                 patches[b, :, :, 0] = img - img.mean()
                 labels[b] = label
