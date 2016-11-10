@@ -23,7 +23,7 @@ flags = {
     'restore_file': 'Model1epoch_0.ckpt',
     'image_dim': 128,
     'hidden_size': 128,
-    'batch_size': 24,
+    'batch_size': 32,
     'display_step': 50,
     'lr_iters': [(0.000005, 2000)]
 }
