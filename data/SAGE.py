@@ -25,6 +25,7 @@ def generate_breast_patch(flags, image_dict):
                 y = np.random.randint(low=0, high=dims[1] - flags['image_dim'])
                 img = image[x:x + flags['image_dim'], y:y + flags['image_dim']]
                 if float(img.mean()) < float(0.001):
+                    print(img.mean())
                     b -= 1
                     continue
                 img = img / img.max()
