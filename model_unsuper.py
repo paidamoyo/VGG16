@@ -24,7 +24,7 @@ flags = {
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 32,
-    'display_step': 25,
+    'display_step': 2,
     'lr_iters': [(0.0005, 250), (0.000075, 500)]
 }
 
@@ -58,9 +58,9 @@ def main():
     # x_recon = model_vae.output_shape()
     # print(x_recon.shape)
     print_log("Seed: %d" % flags['seed'])
-    # model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
-    model_vae.restore()
-    model_vae.save_x_gen(bgf, 15)
+    model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
+    # model_vae.restore()
+    # model_vae.save_x_gen(bgf, 15)
 
 
 
