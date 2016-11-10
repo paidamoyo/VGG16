@@ -138,7 +138,7 @@ class ConvVae:
 
     def _create_loss_optimizer(self, epsilon=1e-8):
         #if 'SAGE' in self.flags['datasets']:
-        recon = 125*100000*self.flags['image_dim']*self.flags['image_dim'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
+        recon = 125*10000*self.flags['image_dim']*self.flags['image_dim'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
         #else:
         # recon = (tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)))
         vae = 0.000001*tf.reduce_sum(0.5 * (tf.square(self.mean) + tf.square(self.stddev) - 2.0 * tf.log(self.stddev + epsilon) - 1.0))
@@ -172,14 +172,15 @@ class ConvVae:
         for i in range(len(images)):
             scipy.misc.imsave(self.flags['logging_directory'] + 'x_recon' + str(i) + '.png', np.squeeze(images[i]))
 
-    def save_x_gen(self, image_generating_fxn):
+    def save_x_gen(self, image_generating_fxn, num):
         labels, x = image_generating_fxn()
         print(self.flags['logging_directory'])
-        scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(1) +'.png', np.squeeze(x[1]))
-        means = self.transform(np.expand_dims(x[0,:,:,:],0))
-        print(means)
-        norm = np.random.normal(loc=means[0], size=[1, self.flags['hidden_size']])
-        images = self.sess.run(self.x_gen, feed_dict={self.x: np.expand_dims(x[0,:,:,:],0), self.keep_prob: 1.0, self.epsilon: norm})
+        means = list()
+        for i in range(num):
+            scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(1) +'.png', np.squeeze(x[num]))
+            means = self.transform(np.expand_dims(x[0, :, :, :], 0))
+            norm = np.random.normal(loc=means, size=[1, self.flags['hidden_size']])
+        images = self.sess.run(self.x_gen, feed_dict={self.x: np.expand_dims(x[1:num, :, :, :],0), self.keep_prob: 1.0, self.epsilon: norm})
         for i in range(len(images)):
             scipy.misc.imsave(self.flags['logging_directory'] + 'x_recon' + str(i) + '.png', np.squeeze(images[i]))
 
