@@ -23,7 +23,11 @@ def generate_breast_patch(flags, image_dict):
                 # Randomly select 28x28 patch from breast image
                 x = np.random.randint(low=0, high=dims[0] - flags['image_dim'])
                 y = np.random.randint(low=0, high=dims[1] - flags['image_dim'])
-                img = image[x:x + flags['image_dim'], y:y + flags['image_dim']] / image[x:x + flags['image_dim'], y:y + flags['image_dim']].max()
+                img = image[x:x + flags['image_dim'], y:y + flags['image_dim']]
+                if img.mean < 0.001:
+                    b -= 1
+                    continue
+                img = img / img.max()
                 patches[b, :, :, 0] = img - img.mean()
                 labels[b] = label
     return labels, patches
