@@ -28,7 +28,7 @@ flags = {
     'hidden_size': 128,
     'batch_size': 32,
     'display_step': 50,
-    'lr_iters': [(0.0005, 5)]
+    'lr_iters': [(0.00075, 2500)]
 }
 
 
@@ -65,7 +65,7 @@ def main():
     print_log("Recon Weight: %d" % flags['recon'])
     model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
     #model_vae.restore()
-    model_vae.save_x_gen(bgf, 15)
+    #model_vae.save_x_gen(bgf, 15)
 
 
 
