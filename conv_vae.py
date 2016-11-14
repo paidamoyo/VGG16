@@ -22,8 +22,8 @@ flags = {
     'datasets': ['INbreast'],
     'restore': False,
     'restore_file': 'INbreast.ckpt',
-    'recon': 1,
-    'vae': 1,
+    'recon': 10000000,
+    'vae': 0.00000001,
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 64,
@@ -246,7 +246,7 @@ def main():
     # x_recon = model_vae.output_shape()
     # print(x_recon.shape)
     print_log("Seed: %d" % flags['seed'])
-    print_log("Vae Weights: %d" % flags['vae'])
+    print_log("Vae Weights: %f" % flags['vae'])
     print_log("Recon Weight: %d" % flags['recon'])
     model_vae.train(image_dict, model=1)
     # model_vae.restore()
