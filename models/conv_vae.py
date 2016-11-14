@@ -117,14 +117,6 @@ class ConvVae:
         decoder.deconv2d(5, 1, activation_fn=tf.nn.tanh, s_value=None)
         return decoder.get_output(), mean, stddev
 
-    def _create_network_MNIST(self):
-        with tf.variable_scope("model"):
-            latent = self._encoder_MNIST(x=self.x)
-            x_recon, mean, stddev = self._decoder_MNIST(z=latent)
-        with tf.variable_scope("model", reuse=True):
-            x_gen, _, _ = self._decoder_MNIST(z=None)
-        return x_recon, mean, stddev, x_gen, latent
-
     def _create_network_BREAST(self):
         with tf.variable_scope("model"):
             latent = self._encoder_BREAST(x=self.x)
@@ -198,7 +190,7 @@ class ConvVae:
             print_log("Model training from scratch.")
 
         global_step = 1
-        data = BreastData.generate_training_patch(self.flags, image_dict)
+        data = BreastData.generate_training_batch(self.flags, image_dict)
         for i in range(len(self.flags['lr_iters'])):
             lr = self.flags['lr_iters'][i][0]
             iters = self.flags['lr_iters'][i][1]
