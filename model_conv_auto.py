@@ -7,7 +7,7 @@ import pickle
 import numpy as np
 from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIST
 from data.MNIST import load_data_MNIST, generate_MNIST
-from data.SAGE import generate_SAGE
+from data.BREAST import generate_SAGE
 from functions.record import print_log
 from models.conv_auto import ConvAuto
 import sys

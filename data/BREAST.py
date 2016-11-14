@@ -4,20 +4,24 @@ import pandas as pd
 from functions.aux import check_str, make_directory
 
 
-def generate_breast_patch(flags, image_dict):
-    pdict = pd.DataFrame(image_dict)
-    for dataset in flags['datasets']:
-        breast = pdict[dataset]
-        all_inds = breast.columns.values
-        batch_ind = np.random.randint(low=0, high=len(all_inds) - 80, size=1)
-        inds = all_inds[batch_ind][0]
-        data_directory = flags['data_directory'] + dataset +'/Preprocessed/' + flags['previous_processed_directory']
-        image_path = data_directory + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
+class BreastData:
+    def __init__(self, image_dict, flags):
+        self.pdict = pd.DataFrame(image_dict)
+        self.dataset = flags['datasets'][0]
+        self.flags = flags
+        self.training_num = len(image_dict) - 80
+        self.breast = self.pdict[self.dataset]
+        self.all_inds = self.breast.columns.values
+        self.data_directory = flags['data_directory'] + self.dataset + '/Preprocessed/' + flags['previous_processed_directory']
+
+    def generate_training_patch(self, flags, image_dict, global_step):
+        inds = self.all_inds[global_step % self.training_num][0]
+        image_path = self.data_directory + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
         with open(image_path, 'rb') as basefile:
             patches = np.zeros((flags['batch_size'], flags['image_dim'], flags['image_dim'], 1))
             labels = np.zeros((flags['batch_size']))
             image = pickle.load(basefile)
-            label = breast[inds][4]
+            label = self.breast[inds][4]
             dims = image.shape
             for b in range(flags['batch_size']):
                 # Randomly select 28x28 patch from breast image
@@ -31,4 +35,4 @@ def generate_breast_patch(flags, image_dict):
                 img = img / img.max()
                 patches[b, :, :, 0] = img - img.mean()
                 labels[b] = label
-    return labels, patches
+        return labels, patches

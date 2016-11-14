@@ -8,7 +8,7 @@ import numpy as np
 from functions.record import print_log
 from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIST
 from data.MNIST import load_data_MNIST, generate_MNIST
-from data.SAGE import generate_breast_patch
+from data.BREAST import generate_breast_patch
 import sys
 import scipy.misc
 
@@ -26,9 +26,9 @@ flags = {
     'vae': 1,
     'image_dim': 128,
     'hidden_size': 128,
-    'batch_size': 32,
+    'batch_size': 128,
     'display_step': 50,
-    'lr_iters': [(0.001, 2000), (0.00075, 2000), (0.0005, 2000), (0.00025, 2000), (0.0001, 2000), (0.00)]
+    'lr_iters': [(0.001, 2000), (0.00075, 2000), (0.0005, 2000), (0.00025, 2000), (0.0001, 2000), (0.00005, 10000)]
 }
 
 
@@ -40,22 +40,10 @@ def main():
     #flags['lr_iters'] = [(lr, 10000)]
     run_num = sys.argv[1]
 
-    if 'Clutter_MNIST' in flags['datasets']:
-        train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
-        bgf = functools.partial(generate_cluttered_MNIST, dims=[flags['image_dim'], flags['image_dim']],
-                                nImages=flags['batch_size'], clutter=0.2, numbers=[], prob=0.5,
-                                train_set=train_set)
-    elif 'MNIST' in flags['datasets']:
-        mnist = load_data_MNIST()
-        bgf = functools.partial(generate_MNIST, mnist, flags['batch_size'])
-    elif 'SAGE' or 'INbreast' in flags['datasets']:
-        print('Using Breast dataset')
-        image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
-        bgf = functools.partial(generate_breast_patch, flags, image_dict)
-    else:
-        bgf = None
-        print('Dataset not defined for batch generation')
-        exit()
+    # train_set, valid_set, test_set = load_data_cluttered_MNIST(flags['data_directory'] + flags['datasets'][0] + '/mnist.pkl.gz')
+    # bgf = functools.partial(generate_cluttered_MNIST, dims=[flags['image_dim'], flags['image_dim']], nImages=flags['batch_size'], clutter=0.2, numbers=[], prob=0.5, train_set=train_set)
+    print('Using Breast dataset')
+    image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
     model_vae = ConvVae(flags, model=run_num)
     # model.save_x(bgf)
     # x_recon = model_vae.output_shape()
@@ -63,7 +51,7 @@ def main():
     print_log("Seed: %d" % flags['seed'])
     print_log("Vae Weights: %d" % flags['vae'])
     print_log("Recon Weight: %d" % flags['recon'])
-    model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
+    model_vae.train(image_dict, model=1)
     #model_vae.restore()
     #model_vae.save_x_gen(bgf, 15)
 

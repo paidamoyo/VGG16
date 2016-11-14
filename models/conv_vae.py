@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import tensorflow as tf
-import matplotlib.pyplot as plt
 import numpy as np
 import logging
 import scipy.misc
@@ -9,6 +8,7 @@ import scipy.misc
 from functions.record import record_metrics, print_log, setup_metrics
 from functions.data import make_directory
 from functions.layers import Layers
+from data.BREAST import generate_training_patch
 
 class ConvVae:
     def __init__(self, flags, model):
@@ -54,31 +54,6 @@ class ConvVae:
         tf.histogram_summary("Stddev", self.stddev)
         tf.image_summary("x", self.x)
         tf.image_summary("x_recon", self.x_recon)
-
-    def _encoder_MNIST(self, x):
-        encoder = Layers(x)
-        encoder.conv2d(5, 32, stride=2)
-        encoder.conv2d(5, 64, stride=2)
-        encoder.conv2d(5, 128, padding='VALID')
-        encoder.flatten(self.keep_prob)
-        encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
-        return encoder.get_output()
-
-    def _decoder_MNIST(self, z):
-        if z is None:
-            mean = None
-            stddev = None
-            input_sample = self.epsilon
-        else:
-            mean, stddev = tf.split(1, 2, z)
-            stddev = tf.sqrt(tf.exp(stddev))
-            input_sample = mean + self.epsilon * stddev
-        decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
-        decoder.deconv2d(3, 128, padding='VALID')
-        decoder.deconv2d(5, 64, padding='VALID')
-        decoder.deconv2d(5, 32, stride=2)
-        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.sigmoid)
-        return decoder.get_output(), mean, stddev
 
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
@@ -194,9 +169,9 @@ class ConvVae:
         self.saver.restore(self.sess, self.flags['restore_directory'] + self.flags['restore_file'])
         print_log("Model restored from %s" % self.flags['restore_file'])
 
-    def train(self, batch_generating_fxn, lr_iters, model):
+    def train(self, image_dict, model):
 
-        setup_metrics(self.flags, lr_iters)
+        setup_metrics(self.flags, self.flags['lr_iters'])
         writer = tf.train.SummaryWriter(self.flags['logging_directory'], self.sess.graph)
         if self.flags['restore'] is True:
             self.restore()
@@ -205,16 +180,16 @@ class ConvVae:
             print_log("Model training from scratch.")
 
         global_step = 1
-        for i in range(len(lr_iters)):
-            lr = lr_iters[i][0]
-            iters = lr_iters[i][1]
+        for i in range(len(self.flags['lr_iters'])):
+            lr = self.flags['lr_iters'][i][0]
+            iters = self.flags['lr_iters'][i][1]
             print_log('Learning Rate: %d' % lr)
             print_log('Iterations: %d' % iters)
             step = 1
             while step < iters:
 
                 print('Batch number: %d' % step)
-                labels_x, batch_x = batch_generating_fxn()
+                labels_x, batch_x = generate_training_patch(self.flags, image_dict, global_step)
                 norm = np.random.standard_normal([self.flags['batch_size'], self.flags['hidden_size']])
 
                 if step % self.flags['display_step'] != 0:
