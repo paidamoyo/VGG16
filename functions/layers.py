@@ -75,7 +75,10 @@ class Layers:
             output_shape = [filter_size, filter_size, output_channels, input_channels]
             w = self.Functions.weight_variable(name='weights', shape=output_shape)
             b = self.Functions.const_variable(name='bias', shape=[output_channels], value=b_value)
-            s = self.Functions.const_variable(name='scale', shape=[output_channels], value=s_value)
+            if s_value == None:
+                s = None
+            else:
+                s = self.Functions.const_variable(name='scale', shape=[output_channels], value=s_value)
             self.input = self.Functions.deconv2d(self.input, w, s, b, stride, padding, activation_fn)
         self.print_log(scope + ' output: ' + str(self.input.get_shape()))
         self.input_shape = output_shape
@@ -190,9 +193,10 @@ class Functions:
         :return: output feature map stack
         """
         x = tf.nn.conv2d(x, w, strides=[1, stride, stride, 1], padding=padding)
-        if b is not None or s is not None:
+        if s is not None:
             x = self.batch_norm(x, s)
-        x = tf.add(x, b)
+        if b is not None:
+            x = tf.add(x, b)
         if act_fn is not None:
             x = act_fn(x)
         return x
@@ -231,9 +235,10 @@ class Functions:
 
         output_shape = tf.pack([batch_size, out_rows, out_cols, out_channels])
         x = tf.nn.conv2d_transpose(x, w, output_shape, [1, stride, stride, 1], padding)
-        if b is not None or s is not None:
+        if s is not None:
             x = self.batch_norm(x, s)
-        x = tf.add(x, b)
+        if b is not None:
+            x = tf.add(x, b)
         if act_fn is not None:
             x = act_fn(x)
         return x
