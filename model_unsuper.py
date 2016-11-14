@@ -22,7 +22,7 @@ flags = {
     'datasets': ['INbreast'],
     'restore': False,
     'restore_file': 'INbreast.ckpt',
-    'recon': 100,
+    'recon': 5,
     'vae': 1,
     'image_dim': 128,
     'hidden_size': 128,
