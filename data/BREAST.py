@@ -15,7 +15,6 @@ class BreastData:
         self.data_directory = flags['data_directory'] + self.dataset + '/Preprocessed/' + flags['previous_processed_directory']
 
     def generate_training_batch(self, global_step):
-        print(self.all_inds)
         inds = self.all_inds[global_step % self.training_num]
         image_path = self.data_directory + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
         with open(image_path, 'rb') as basefile:
