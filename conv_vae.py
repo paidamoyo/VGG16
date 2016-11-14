@@ -190,7 +190,7 @@ class ConvVae:
             print_log("Model training from scratch.")
 
         global_step = 1
-        data = BreastData.generate_training_batch(self.flags, image_dict)
+        data = BreastData(self.flags, image_dict)
         for i in range(len(self.flags['lr_iters'])):
             lr = self.flags['lr_iters'][i][0]
             iters = self.flags['lr_iters'][i][1]

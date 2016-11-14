@@ -5,7 +5,7 @@ from functions.aux import check_str
 
 
 class BreastData:
-    def __init__(self, image_dict, flags):
+    def __init__(self, flags, image_dict):
         self.pdict = pd.DataFrame(image_dict)
         self.dataset = flags['datasets'][0]
         self.flags = flags
