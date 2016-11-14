@@ -22,13 +22,13 @@ flags = {
     'datasets': ['INbreast'],
     'restore': False,
     'restore_file': 'INbreast.ckpt',
-    'recon': 100000,
-    'vae': 0.000001,
+    'recon': 10000,
+    'vae': 0.00001,
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 16,
     'display_step': 50,
-    'lr_iters': [(0.00009, 2500), (0.0007, 500), (0.0003, 750), (0.0001, 2000), (0.0004, 500)]
+    'lr_iters': [(0.001, 2500), (0.0007, 500), (0.0003, 750), (0.0001, 2000), (0.0004, 500)]
 }
 
 
