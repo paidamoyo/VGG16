@@ -176,10 +176,10 @@ class ConvVae:
     def save_x_gen(self, image_generating_fxn, num):
         labels, x = image_generating_fxn()
         print(self.flags['logging_directory'])
-        means = list()
         for i in range(num):
             scipy.misc.imsave(self.flags['logging_directory'] + 'x_' + str(i) +'.png', np.squeeze(x[i]))
-            means = self.transform(x[0:num, :, :, :])
+            means, stddevs = self.transform(x[0:num, :, :, :])
+            print(stddevs)
             norm = np.random.normal(loc=means)
         images = self.sess.run(self.x_gen, feed_dict={self.x: x[1:num, :, :, :], self.keep_prob: 1.0, self.epsilon: norm})
         for i in range(num):
@@ -187,7 +187,7 @@ class ConvVae:
 
     def transform(self, x):
         """Transform data by mapping it into the latent space."""
-        return self.sess.run(self.mean, feed_dict={self.x: x, self.keep_prob: 1.0})
+        return self.sess.run([self.mean, self.epsilon], feed_dict={self.x: x, self.keep_prob: 1.0})
 
     def restore(self):
         self.saver.restore(self.sess, self.flags['restore_directory'] + self.flags['restore_file'])

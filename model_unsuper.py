@@ -28,7 +28,7 @@ flags = {
     'hidden_size': 128,
     'batch_size': 32,
     'display_step': 50,
-    'lr_iters': [(0.0005, 2500), (0.0007, 500), (0.0003, 750), (0.0001, 2000), (0.0004, 500)]
+    'lr_iters': [(0.0005, 100)]
 }
 
 
@@ -63,7 +63,7 @@ def main():
     #print_log("Seed: %d" % flags['seed'])
     model_vae.train(bgf, lr_iters=flags['lr_iters'], model=1)
     #model_vae.restore()
-    #model_vae.save_x_gen(bgf, 15)
+    model_vae.save_x_gen(bgf, 15)
 
 
 
