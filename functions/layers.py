@@ -181,7 +181,7 @@ class Functions:
         return tf.nn.max_pool(x, ksize=[1, k, k, 1], strides=[1, k, k, 1],
                               padding='SAME')
 
-    def conv2d(self, x, w, b, s, stride, padding, act_fn):
+    def conv2d(self, x, w, s, b, stride, padding, act_fn):
         """
         :param x: input feature map stack
         :param w: 4D tf variable
@@ -201,7 +201,7 @@ class Functions:
             x = act_fn(x)
         return x
 
-    def deconv2d(self, x, w, b, s, stride, padding, act_fn):
+    def deconv2d(self, x, w, s, b, stride, padding, act_fn):
         """
         :param x: input feature map stack
         :param w: 4D tf variable
