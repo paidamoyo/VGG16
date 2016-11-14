@@ -10,11 +10,12 @@ class BreastData:
         self.dataset = flags['datasets'][0]
         self.flags = flags
         self.training_num = len(image_dict) - 80
-        self.breast = self.pdict[self.dataset]
-        self.all_inds = self.breast.columns.values
+        breast = self.pdict[self.dataset]
+        self.all_inds = breast.columns.values
         self.data_directory = flags['data_directory'] + self.dataset + '/Preprocessed/' + flags['previous_processed_directory']
 
     def generate_training_batch(self, global_step):
+        print(self.all_inds)
         inds = self.all_inds[global_step % self.training_num][0]
         image_path = self.data_directory + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
         with open(image_path, 'rb') as basefile:
