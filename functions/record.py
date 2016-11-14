@@ -4,8 +4,9 @@ import numpy as np
 from sklearn import metrics
 import logging
 import datetime
+import os
 
-from functions.aux import make_directory, check_str
+from functions.aux import check_str
 
 
 def error_rate(predictions, labels):
@@ -58,3 +59,7 @@ def setup_metrics(flags, lr_iters):
         print_log('EPOCH %d' % l)
         print_log('Learning Rate: ' + str(lr_iters[l][0]))
         print_log('Iterations: ' + str(lr_iters[l][1]))
+
+def make_directory(folder_path):
+    if not os.path.exists(folder_path):
+        os.makedirs(folder_path)

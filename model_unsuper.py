@@ -24,7 +24,7 @@ flags = {
     'restore_file': 'INbreast.ckpt',
     'image_dim': 128,
     'hidden_size': 128,
-    'batch_size': 32,
+    'batch_size': 16,
     'display_step': 50,
     'lr_iters': [(0.0009, 250), (0.0007, 500), (0.0003, 750), (0.0001, 2000), (0.0004, 500)]
 }
