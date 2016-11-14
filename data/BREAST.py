@@ -9,9 +9,9 @@ class BreastData:
         self.pdict = pd.DataFrame(image_dict)
         self.dataset = flags['datasets'][0]
         self.flags = flags
-        self.training_num = len(image_dict) - 80
         self.breast = self.pdict[self.dataset]
         self.all_inds = self.breast.columns.values
+        self.training_num = len(self.all_inds) - 40
         self.data_directory = flags['data_directory'] + self.dataset + '/Preprocessed/' + flags['previous_processed_directory']
 
     def generate_training_batch(self, global_step):
