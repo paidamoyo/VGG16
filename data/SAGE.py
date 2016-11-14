@@ -9,7 +9,7 @@ def generate_breast_patch(flags, image_dict):
     for dataset in flags['datasets']:
         breast = pdict[dataset]
         all_inds = breast.columns.values
-        batch_ind = np.random.randint(low=0, high=len(all_inds), size=1)
+        batch_ind = np.random.randint(low=0, high=len(all_inds) - 80, size=1)
         inds = all_inds[batch_ind][0]
         data_directory = flags['data_directory'] + dataset +'/Preprocessed/' + flags['previous_processed_directory']
         image_path = data_directory + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
