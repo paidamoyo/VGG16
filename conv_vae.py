@@ -200,7 +200,7 @@ class ConvVae:
             while step < iters:
 
                 print('Batch number: %d' % step)
-                labels_x, batch_x = data.generate_training_batch
+                labels_x, batch_x = data.generate_training_batch(global_step)
                 norm = np.random.standard_normal([self.flags['batch_size'], self.flags['hidden_size']])
 
                 if step % self.flags['display_step'] != 0:
