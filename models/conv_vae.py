@@ -4,11 +4,33 @@ import tensorflow as tf
 import numpy as np
 import logging
 import scipy.misc
+import pickle
+import sys
 
 from functions.record import record_metrics, print_log, setup_metrics
 from functions.data import make_directory
 from functions.layers import Layers
-from data.BREAST import generate_training_patch
+from data.BREAST import BreastData
+
+
+# Global Dictionary of Flags
+flags = {
+    'data_directory': '../../../Data/',  # in relationship to the code_directory
+    'previous_processed_directory': 'Smart_Crop/',
+    'aux_directory': 'aux/',
+    'model_directory': 'conv_vae/',
+    'datasets': ['INbreast'],
+    'restore': False,
+    'restore_file': 'INbreast.ckpt',
+    'recon': 1,
+    'vae': 1,
+    'image_dim': 128,
+    'hidden_size': 128,
+    'batch_size': 128,
+    'display_step': 50,
+    'lr_iters': [(0.001, 2000), (0.00075, 2000), (0.0005, 2000), (0.00025, 2000), (0.0001, 2000), (0.00005, 10000)]
+}
+
 
 class ConvVae:
     def __init__(self, flags, model):
@@ -112,10 +134,7 @@ class ConvVae:
         return x_recon, mean, stddev, x_gen, latent
 
     def _create_loss_optimizer(self, epsilon=1e-8):
-        #if 'SAGE' in self.flags['datasets']:
         recon = self.flags['recon'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
-        #else:
-        # recon = (tf.reduce_sum(-self.x * tf.log(self.x_recon + epsilon) - (1.0 - self.x) * tf.log(1.0 - self.x_recon + epsilon)))
         vae = self.flags['vae'] * -0.5 * tf.reduce_sum(1 -tf.square(self.mean) - tf.square(self.stddev) + tf.log(tf.square(self.stddev) + epsilon))
         cost = tf.reduce_sum(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
@@ -161,7 +180,6 @@ class ConvVae:
             scipy.misc.imsave(self.flags['logging_directory'] + 'x_gen' + str(i) + '.png', np.squeeze(images[i]))
 
     def transform(self, x):
-        """Transform data by mapping it into the latent space."""
         norm = np.random.normal(size=[x.shape[0], self.flags['hidden_size']])
         return self.sess.run([self.mean, self.epsilon], feed_dict={self.x: x, self.epsilon: norm, self.keep_prob: 1.0})
 
@@ -180,6 +198,7 @@ class ConvVae:
             print_log("Model training from scratch.")
 
         global_step = 1
+        data = BreastData.generate_training_patch(self.flags, image_dict)
         for i in range(len(self.flags['lr_iters'])):
             lr = self.flags['lr_iters'][i][0]
             iters = self.flags['lr_iters'][i][1]
@@ -189,7 +208,7 @@ class ConvVae:
             while step < iters:
 
                 print('Batch number: %d' % step)
-                labels_x, batch_x = generate_training_patch(self.flags, image_dict, global_step)
+                labels_x, batch_x = data.generate_training_batch
                 norm = np.random.standard_normal([self.flags['batch_size'], self.flags['hidden_size']])
 
                 if step % self.flags['display_step'] != 0:
@@ -220,3 +239,26 @@ class ConvVae:
             print("Model saved in file: %s" % save_path)
 
     # def test(self, test_data, test_labels):
+
+
+def main():
+    o = np.random.randint(1, 1000, 1)
+    flags['seed'] = 107  # o[0]
+    # a = np.random.uniform(-5.5, -3.5, 1)
+    # lr = 0.0001 #np.power(10, a[0])
+    # flags['lr_iters'] = [(lr, 10000)]
+    run_num = sys.argv[1]
+    image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
+    model_vae = ConvVae(flags, model=run_num)
+    # model.save_x(bgf)
+    # x_recon = model_vae.output_shape()
+    # print(x_recon.shape)
+    print_log("Seed: %d" % flags['seed'])
+    print_log("Vae Weights: %d" % flags['vae'])
+    print_log("Recon Weight: %d" % flags['recon'])
+    model_vae.train(image_dict, model=1)
+    # model_vae.restore()
+    # model_vae.save_x_gen(bgf, 15)
+
+if __name__ == "__main__":
+    main()

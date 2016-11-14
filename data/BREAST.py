@@ -1,7 +1,7 @@
 import pickle
 import numpy as np
 import pandas as pd
-from functions.aux import check_str, make_directory
+from functions.aux import check_str
 
 
 class BreastData:
@@ -14,22 +14,22 @@ class BreastData:
         self.all_inds = self.breast.columns.values
         self.data_directory = flags['data_directory'] + self.dataset + '/Preprocessed/' + flags['previous_processed_directory']
 
-    def generate_training_patch(self, flags, image_dict, global_step):
+    def generate_training_patch(self, global_step):
         inds = self.all_inds[global_step % self.training_num][0]
         image_path = self.data_directory + check_str(inds[0]) + '_' + check_str(inds[1]) + '.pickle'
         with open(image_path, 'rb') as basefile:
-            patches = np.zeros((flags['batch_size'], flags['image_dim'], flags['image_dim'], 1))
-            labels = np.zeros((flags['batch_size']))
+            patches = np.zeros((self.flags['batch_size'], self.flags['image_dim'], self.flags['image_dim'], 1))
+            labels = np.zeros((self.flags['batch_size']))
             image = pickle.load(basefile)
             label = self.breast[inds][4]
             dims = image.shape
-            for b in range(flags['batch_size']):
+            for b in range(self.flags['batch_size']):
                 # Randomly select 28x28 patch from breast image
                 successful = False
                 while not successful:
-                    x = np.random.randint(low=0, high=dims[0] - flags['image_dim'])
-                    y = np.random.randint(low=0, high=dims[1] - flags['image_dim'])
-                    img = image[x:x + flags['image_dim'], y:y + flags['image_dim']]
+                    x = np.random.randint(low=0, high=dims[0] - self.flags['image_dim'])
+                    y = np.random.randint(low=0, high=dims[1] - self.flags['image_dim'])
+                    img = image[x:x + self.flags['image_dim'], y:y + self.flags['image_dim']]
                     if img.max() > 5:
                         successful = True
                 img = img / img.max()
