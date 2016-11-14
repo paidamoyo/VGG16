@@ -23,7 +23,7 @@ flags = {
     'restore': False,
     'restore_file': 'INbreast.ckpt',
     'recon': 1,
-    'vae': 10000000000,
+    'vae': 10,
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 32,
