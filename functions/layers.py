@@ -37,7 +37,7 @@ class Layers:
         self.count = {'conv': 1, 'deconv': 1, 'fc': 1, 'flat': 1, 'mp': 1, 'up': 1}
         self.Functions = Functions()
 
-    def conv2d(self, filter_size, output_channels, stride=1, padding='SAME', activation_fn=tf.nn.relu, b_value=0.0, s_value=0.0):
+    def conv2d(self, filter_size, output_channels, stride=1, padding='SAME', activation_fn=tf.nn.relu, b_value=0.0, s_value=1.0):
         """
         :param filter_size: int. assumes square filter
         :param output_channels: int
