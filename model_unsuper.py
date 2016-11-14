@@ -1,17 +1,12 @@
 #!/usr/bin/env python
 
-import functools
-
-from models.conv_vae import ConvVae
 import pickle
-import numpy as np
-from functions.record import print_log
-from data.clutterMNIST import load_data_cluttered_MNIST, generate_cluttered_MNIST
-from data.MNIST import load_data_MNIST, generate_MNIST
-from data.BREAST import generate_breast_patch
 import sys
-import scipy.misc
 
+import numpy as np
+
+from conv_vae import ConvVae
+from functions.record import print_log
 
 # Global Dictionary of Flags
 flags = {
