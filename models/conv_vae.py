@@ -187,7 +187,9 @@ class ConvVae:
 
     def transform(self, x):
         """Transform data by mapping it into the latent space."""
+        print(x.shape)
         norm = np.random.normal([x.shape[0], self.flags['hidden_size']])
+        print(norm)
         return self.sess.run([self.mean, self.epsilon], feed_dict={self.x: x, self.epsilon: norm, self.keep_prob: 1.0})
 
     def restore(self):
