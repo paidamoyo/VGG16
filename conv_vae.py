@@ -20,7 +20,7 @@ flags = {
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
     'datasets': ['INbreast'],
-    'restore': False,
+    'restore': True,
     'restore_file': 'INbreast.ckpt',
     'recon': 10000000,
     'vae': 0.00001,
