@@ -26,9 +26,9 @@ flags = {
     'vae': 0.00001,
     'image_dim': 128,
     'hidden_size': 128,
-    'batch_size': 64,
+    'batch_size': 72,
     'display_step': 100,
-    'lr_iters': [(0.00001, 2500), (0.000075, 5000), (0.000005, 15000)]
+    'lr_iters': [(0.00005, 1000), (0.00002, 1000), (0.00001, 1000), (0.000075, 5000), (0.000005, 15000)]
 }
 
 
@@ -90,6 +90,9 @@ class ConvVae:
         encoder.maxpool()
         encoder.conv2d(3, 256)
         encoder.conv2d(3, 256)
+        encoder.maxpool()
+        encoder.conv2d(3, 384)
+        encoder.conv2d(3, 384)
         encoder.maxpool()
         encoder.conv2d(3, 512)
         encoder.conv2d(3, 512)
