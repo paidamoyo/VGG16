@@ -238,7 +238,7 @@ class ConvVae:
 
 def main():
     o = np.random.randint(1, 1000, 1)
-    flags['seed'] = 107  # o[0]
+    flags['seed'] = 324  # o[0]
     # a = np.random.uniform(-5.5, -3.5, 1)
     # lr = 0.0001 #np.power(10, a[0])
     # flags['lr_iters'] = [(lr, 10000)]
