@@ -26,7 +26,7 @@ flags = {
     'vae': 0.00001,
     'image_dim': 128,
     'hidden_size': 128,
-    'batch_size': 72,
+    'batch_size': 64,
     'display_step': 100,
     'lr_iters': [(0.0005, 1000), (0.0002, 1000), (0.0001, 1000), (0.00075, 5000), (0.00005, 5000)]
 }
@@ -118,7 +118,7 @@ class ConvVae:
         decoder.deconv2d(5, 96, stride=2)
         decoder.deconv2d(3, 72, stride=2)
         decoder.deconv2d(3, 72)
-        decoder.deconv2d(1, 1, activation_fn=tf.nn.tanh, s_value=None)
+        decoder.deconv2d(1, 1, activation_fn=tf.nn.tanh)
         return decoder.get_output(), mean, stddev
 
     def _create_network_BREAST(self):
