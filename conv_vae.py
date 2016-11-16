@@ -19,7 +19,7 @@ flags = {
     'previous_processed_directory': 'Smart_Crop/',
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
-    'datasets': ['INbreast'],
+    'datasets': ['SAGE'],
     'restore': False,
     'restore_file': 'INbreast.ckpt',
     'recon': 10000000,
@@ -28,7 +28,7 @@ flags = {
     'hidden_size': 128,
     'batch_size': 72,
     'display_step': 100,
-    'lr_iters': [(0.00005, 1000), (0.00002, 1000), (0.00001, 1000), (0.000075, 5000), (0.000005, 15000)]
+    'lr_iters': [(0.0005, 1000), (0.0002, 1000), (0.0001, 1000), (0.00075, 5000), (0.00005, 5000)]
 }
 
 

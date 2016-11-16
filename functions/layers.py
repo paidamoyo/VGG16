@@ -37,7 +37,7 @@ class Layers:
         self.count = {'conv': 1, 'deconv': 1, 'fc': 1, 'flat': 1, 'mp': 1, 'up': 1}
         self.Functions = Functions()
 
-    def conv2d(self, filter_size, output_channels, stride=1, padding='SAME', activation_fn=tf.nn.relu, b_value=0.0, s_value=1.0):
+    def conv2d(self, filter_size, output_channels, stride=1, padding='SAME', activation_fn=tf.nn.relu, b_value=0.0, s_value=None):
         """
         :param filter_size: int. assumes square filter
         :param output_channels: int
@@ -75,7 +75,7 @@ class Layers:
             output_shape = [filter_size, filter_size, output_channels, input_channels]
             w = self.Functions.weight_variable(name='weights', shape=output_shape)
             b = self.Functions.const_variable(name='bias', shape=[output_channels], value=b_value)
-            if s_value == None:
+            if s_value is None:
                 s = None
             else:
                 s = self.Functions.const_variable(name='scale', shape=[output_channels], value=s_value)
