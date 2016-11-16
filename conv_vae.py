@@ -22,13 +22,13 @@ flags = {
     'datasets': ['SAGE'],
     'restore': False,
     'restore_file': 'INbreast.ckpt',
-    'recon': 10000000,
-    'vae': 0.00001,
+    'recon': 1,
+    'vae': 1,
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 64,
     'display_step': 100,
-    'lr_iters': [(0.001, 500), (0.0005, 1000), (0.0003, 1000), (0.000075, 5000), (0.00005, 5000)]
+    'lr_iters': [(0.01, 1000), (0.005, 2000), (0.003, 5000), (0.00075, 5000), (0.0005, 5000)]
 }
 
 
@@ -129,9 +129,10 @@ class ConvVae:
         return x_recon, mean, stddev, x_gen, latent
 
     def _create_loss_optimizer(self, epsilon=1e-8):
-        recon = self.flags['recon'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
-        vae = self.flags['vae'] * -0.5 * tf.reduce_sum(1 -tf.square(self.mean) - tf.square(self.stddev) + tf.log(tf.square(self.stddev) + epsilon))
-        cost = tf.reduce_sum(vae + recon)
+        const = 1/self.flags['batch_size'] * 1/(self.flags['image_dim'] * self.flags['image_dim'])
+        recon = const * self.flags['recon'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
+        vae = const * self.flags['vae'] * -0.5 * tf.reduce_sum(1 - tf.square(self.mean) - tf.square(self.stddev) + 2 * tf.log(self.stddev + epsilon))
+        cost = tf.reduce_mean(vae + recon)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
         return vae, recon, cost, optimizer
 
