@@ -116,9 +116,8 @@ class ConvVae:
         decoder.deconv2d(5, 144, stride=2)
         decoder.deconv2d(5, 128, stride=2)
         decoder.deconv2d(5, 96, stride=2)
-        decoder.deconv2d(3, 72, stride=2)
-        decoder.deconv2d(3, 72)
-        decoder.deconv2d(1, 1, activation_fn=tf.nn.tanh)
+        decoder.deconv2d(5, 72, stride=2)
+        decoder.deconv2d(3, 1, activation_fn=tf.nn.tanh)
         return decoder.get_output(), mean, stddev
 
     def _create_network_BREAST(self):
