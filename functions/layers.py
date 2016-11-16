@@ -77,6 +77,8 @@ class Layers:
             b = self.Functions.const_variable(name='bias', shape=[output_channels], value=b_value)
             if s_value is None:
                 s = None
+            elif s_value is 'CONST':
+                s = 1
             else:
                 s = self.Functions.const_variable(name='scale', shape=[output_channels], value=s_value)
             self.input = self.Functions.deconv2d(self.input, w, s, b, stride, padding, activation_fn)
