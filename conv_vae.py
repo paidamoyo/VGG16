@@ -23,14 +23,14 @@ flags = {
     'restore': False,
     'restore_file': 'INbreast.ckpt',
     'recon': 1,
-    'vae': 1e-10,
+    'vae': 1,
     'image_dim': 128,
-    'hidden_size': 256,
+    'hidden_size': 128,
     'batch_size': 32,
     'display_step': 100,
     'weight_decay': 5e-5,
     'lr_decay': 0.99,
-    'lr_iters': [(0.01, 750), (0.005, 1000), (0.001, 1500), (0.0005, 2000), (0.0001, 3000)]
+    'lr_iters': [(0.000001, 750), (0.0000005, 1000), (0.0000001, 1500), (0.00000005, 2000), (0.00000001, 3000)]
 }
 
 
@@ -56,7 +56,7 @@ class ConvVae:
         else:  # breast patches of 128
             print_log('Using 128x128 Architecture')
             self.x_recon, self.mean, self.stddev, self.x_gen, self.latent = self._create_network_BREAST()
-        self.vae, self.recon, self.cost, self.optimizer = self._create_loss_optimizer()
+        self.vae, self.recon, self.weight, self.cost, self.optimizer = self._create_loss_optimizer()
 
         self._summary()
         self.merged = tf.merge_all_summaries()
@@ -74,6 +74,7 @@ class ConvVae:
         tf.scalar_summary("Total Loss", self.cost)
         tf.scalar_summary("Reconstruction Loss", self.recon)
         tf.scalar_summary("VAE Loss", self.vae)
+        tf.scalar_summary("VAE Loss", self.weight)
         tf.histogram_summary("Mean", self.mean)
         tf.histogram_summary("Stddev", self.stddev)
         tf.image_summary("x", self.x)
@@ -136,7 +137,7 @@ class ConvVae:
         weight = self.flags['weight_decay'] * tf.add_n(tf.get_collection('weight_losses'))
         cost = tf.reduce_sum(vae + recon + weight)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
-        return vae, recon, cost, optimizer
+        return vae, recon, weight, cost, optimizer
 
     def print_variable(self, var):
         self.sess.run(tf.initialize_all_variables())
