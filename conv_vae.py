@@ -103,6 +103,7 @@ class ConvVae:
             stddev = None
             input_sample = self.epsilon
         else:
+            print(z.get_shape())
             mean, stddev = tf.split(1, 2, z)
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
