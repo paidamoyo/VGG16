@@ -243,7 +243,7 @@ class Layers:
         :return: tf variable
         """
         w = tf.get_variable(name=name, shape=shape, initializer=init.variance_scaling_initializer())
-        weights_norm = tf.reduce_sum(input_tensor=tf.pack([tf.nn.l2_loss(i) for i in tf.get_collection(name)]),
+        weights_norm = tf.reduce_sum(tf.nn.l2_loss(w),
                                      name=name + '_norm')
         tf.add_to_collection('weight_losses', weights_norm)
         return w
