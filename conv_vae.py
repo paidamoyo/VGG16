@@ -28,9 +28,9 @@ flags = {
     'hidden_size': 128,
     'batch_size': 32,
     'display_step': 100,
-    'weight_decay': 5e-7,
+    'weight_decay': 5e-6,
     'lr_decay': 0.99,
-    'lr_iters': [(0.00007, 1500), (0.00003, 1500), (0.00001, 1500), (0.00005, 3000), (0.00001, 5000)]
+    'lr_iters': [(0.00004, 1500), (0.00002, 1500), (0.00001, 1500), (0.00005, 3000), (0.00001, 5000)]
 }
 
 
@@ -82,11 +82,9 @@ class ConvVae:
 
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
-        encoder.conv2d(5, 16)
+        encoder.conv2d(5, 32)
         encoder.maxpool()
-        encoder.conv2d(3, 16)
-        encoder.conv2d(3, 16)
-        encoder.conv2d(3, 32, stride=2)
+        encoder.conv2d(3, 32)
         encoder.conv2d(3, 32)
         encoder.conv2d(3, 64, stride=2)
         encoder.conv2d(3, 64)
@@ -94,6 +92,8 @@ class ConvVae:
         encoder.conv2d(3, 128)
         encoder.conv2d(3, 256, stride=2)
         encoder.conv2d(3, 256)
+        encoder.conv2d(3, 512, stride=2)
+        encoder.conv2d(3, 512)
         encoder.conv2d(1, self.flags['hidden_size'] * 2, activation_fn=None)
         encoder.avgpool(globe=True)
         return encoder.get_output()
@@ -110,7 +110,9 @@ class ConvVae:
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
-        decoder.deconv2d(4, 256, padding='VALID')
+        decoder.deconv2d(4, 512, padding='VALID')
+        decoder.deconv2d(3, 512)
+        decoder.deconv2d(3, 256, stride=2)
         decoder.deconv2d(3, 256)
         decoder.deconv2d(3, 128, stride=2)
         decoder.deconv2d(3, 128)
@@ -118,9 +120,7 @@ class ConvVae:
         decoder.deconv2d(3, 64)
         decoder.deconv2d(3, 32, stride=2)
         decoder.deconv2d(3, 32)
-        decoder.deconv2d(3, 16, stride=2)
-        decoder.deconv2d(3, 16)
-        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.tanh)
+        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.tanh, b_value=None, s_value=None)
         return decoder.get_output(), mean, stddev
 
     def _create_network_BREAST(self):
