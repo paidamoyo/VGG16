@@ -60,7 +60,7 @@ class Layers:
                 self.input = tf.add(self.input, b)
             if activation_fn is not None:
                 self.input = activation_fn(self.input)
-        self.print_log(scope + ' output: ' + str(self.input.get_shape())))
+        self.print_log(scope + ' output: ' + str(self.input.get_shape()))
         
         self.count['conv'] += 1
 
@@ -107,7 +107,7 @@ class Layers:
                 self.input = tf.add(self.input, b)
             if activation_fn is not None:
                 self.input = activation_fn(self.input)
-        self.print_log(scope + ' output: ' + str(self.input.get_shape())))
+        self.print_log(scope + ' output: ' + str(self.input.get_shape()))
         
         self.count['deconv'] += 1
 
@@ -122,7 +122,7 @@ class Layers:
             self.input = tf.reshape(self.input, output_shape)
             if keep_prob != 1:
                 self.input = tf.nn.dropout(self.input, keep_prob=keep_prob)
-        self.print_log(scope + ' output: ' + str(self.input.get_shape())))
+        self.print_log(scope + ' output: ' + str(self.input.get_shape()))
         self.count['flat'] += 1
 
     def fc(self, output_nodes, keep_prob=1, activation_fn=tf.nn.relu, b_value=0.0):
@@ -144,7 +144,7 @@ class Layers:
                 self.input = activation_fn(self.input)
             if keep_prob != 1:
                 self.input = tf.nn.dropout(self.input, keep_prob=keep_prob)
-        self.print_log(scope + ' output: ' + str(self.input.get_shape())))
+        self.print_log(scope + ' output: ' + str(self.input.get_shape()))
         self.count['fc'] += 1
 
     def unpool(self, k=2):
@@ -210,7 +210,7 @@ class Layers:
             padding = 'SAME'
         with tf.variable_scope(scope):
             self.input = tf.nn.max_pool(self.input, ksize=[1, k1, k2, 1], strides=[1, s1, s2, 1], padding=padding)
-        self.print_log(scope + ' output: ' + str(self.input.get_shape())))
+        self.print_log(scope + ' output: ' + str(self.input.get_shape()))
         self.count['mp'] += 1
 
     def avgpool(self, k=2, globe=False):
@@ -233,7 +233,7 @@ class Layers:
             padding = 'SAME'
         with tf.variable_scope(scope):
             self.input = tf.nn.avg_pool(self.input, ksize=[1, k1, k2, 1], strides=[1, s1, s2, 1], padding=padding)
-        self.print_log(scope + ' output: ' + str(self.input.get_shape())))
+        self.print_log(scope + ' output: ' + str(self.input.get_shape()))
         self.count['ap'] += 1
 
     def weight_variable(self, name, shape):
