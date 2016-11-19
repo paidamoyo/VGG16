@@ -28,9 +28,9 @@ flags = {
     'hidden_size': 128,
     'batch_size': 32,
     'display_step': 100,
-    'weight_decay': 5e-5,
+    'weight_decay': 5e-7,
     'lr_decay': 0.99,
-    'lr_iters': [(0.0001, 1500), (0.0001, 1500), (0.0001, 1500), (0.0001, 1500), (0.0001, 1500)]
+    'lr_iters': [(0.00007, 1500), (0.00003, 1500), (0.00001, 1500), (0.00005, 3000), (0.00001, 5000)]
 }
 
 
@@ -120,7 +120,7 @@ class ConvVae:
         decoder.deconv2d(3, 32)
         decoder.deconv2d(3, 16, stride=2)
         decoder.deconv2d(3, 16)
-        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.tanh, s_value=None)
+        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.tanh)
         return decoder.get_output(), mean, stddev
 
     def _create_network_BREAST(self):
