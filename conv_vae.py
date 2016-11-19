@@ -20,7 +20,7 @@ flags = {
     'aux_directory': 'aux/',
     'model_directory': 'conv_vae/',
     'datasets': ['SAGE'],
-    'restore': False,
+    'restore': True,
     'restore_file': 'start.ckpt',
     'recon': 1,
     'vae': 1,
