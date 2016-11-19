@@ -25,10 +25,12 @@ flags = {
     'recon': 1,
     'vae': 0.000001,
     'image_dim': 128,
-    'hidden_size': 128,
+    'hidden_size': 256,
     'batch_size': 32,
     'display_step': 100,
-    'lr_iters': [(0.00075, 750), (0.00005, 1000), (0.000025, 1500), (0.00001, 2000), (0.0000075, 3000)]
+    'weight_decay': 5e-5,
+    'lr_decay': 0.99,
+    'lr_iters': [(0.01, 750), (0.005, 1000), (0.001, 1500), (0.0005, 2000), (0.0001, 3000)]
 }
 
 
@@ -79,26 +81,20 @@ class ConvVae:
 
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
-        encoder.conv2d(3, 72)
-        encoder.conv2d(3, 72)
+        encoder.conv2d(5, 64)
         encoder.maxpool()
-        encoder.conv2d(3, 96)
-        encoder.conv2d(3, 96)
-        encoder.maxpool()
+        encoder.conv2d(3, 64)
+        encoder.conv2d(3, 64)
+        encoder.conv2d(3, 128, stride=2)
         encoder.conv2d(3, 128)
-        encoder.conv2d(3, 128)
-        encoder.maxpool()
+        encoder.conv2d(3, 256, stride=2)
         encoder.conv2d(3, 256)
-        encoder.conv2d(3, 256)
-        encoder.maxpool()
-        encoder.conv2d(3, 384)
-        encoder.conv2d(3, 384)
-        encoder.maxpool()
+        encoder.conv2d(3, 512, stride=2)
         encoder.conv2d(3, 512)
-        encoder.conv2d(3, 512)
-        encoder.maxpool()
-        encoder.flatten(self.keep_prob)
-        encoder.fc(self.flags['hidden_size'] * 2, activation_fn=None)
+        encoder.conv2d(3, 1024, stride=2)
+        encoder.conv2d(3, 1024)
+        encoder.conv2d(1, self.flags['hidden_size'] * 2, activation_fn=None)
+        encoder.avgpool(globe=True)
         return encoder.get_output()
 
     def _decoder_BREAST(self, z):
@@ -111,13 +107,16 @@ class ConvVae:
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
-        decoder.deconv2d(4, 512, padding='VALID')
-        decoder.deconv2d(3, 256, stride=2)
-        decoder.deconv2d(5, 144, stride=2)
-        decoder.deconv2d(5, 128, stride=2)
-        decoder.deconv2d(5, 96, stride=2)
-        decoder.deconv2d(5, 72, stride=2)
-        decoder.deconv2d(5, 1, activation_fn=tf.nn.tanh, s_value=None)
+        decoder.deconv2d(4, 1024, padding='VALID')
+        decoder.deconv2d(3, 1024)
+        decoder.deconv2d(3, 512, stride=2)
+        decoder.deconv2d(3, 512)
+        decoder.deconv2d(3, 128, stride=2)
+        decoder.deconv2d(3, 128)
+        decoder.deconv2d(3, 64, stride=2)
+        decoder.deconv2d(3, 64)
+        decoder.deconv2d(3, 64, stride=2)
+        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.tanh, s_value=None)
         return decoder.get_output(), mean, stddev
 
     def _create_network_BREAST(self):
@@ -131,8 +130,9 @@ class ConvVae:
     def _create_loss_optimizer(self, epsilon=1e-8):
         const = 1/self.flags['batch_size'] * 1/(self.flags['image_dim'] * self.flags['image_dim'])
         recon = const * self.flags['recon'] * tf.reduce_sum(tf.squared_difference(self.x, self.x_recon))
-        vae = const * self.flags['vae'] * -0.5 * tf.reduce_sum(1 - tf.square(self.mean) - tf.square(self.stddev) + 2 * tf.log(self.stddev + epsilon))
-        cost = tf.reduce_mean(vae + recon)
+        vae = const * self.flags['vae'] * -0.5 * tf.reduce_sum(1.0 - tf.square(self.mean) - tf.square(self.stddev) + 2.0 * tf.log(self.stddev + epsilon))
+        weight = self.flags['weight_decay'] * tf.add_n(tf.get_collection('weight_losses'))
+        cost = tf.reduce_sum(vae + recon + weight)
         optimizer = tf.train.AdamOptimizer(learning_rate=self.lr).minimize(cost)
         return vae, recon, cost, optimizer
 
@@ -209,8 +209,8 @@ class ConvVae:
 
                 if step % self.flags['display_step'] != 0:
                     summary, _ = self.sess.run([self.merged, self.optimizer],
-                                               feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm,
-                                                          self.lr: lr})
+                                               feed_dict={self.x: batch_x, self.keep_prob: 1.0, self.epsilon: norm,
+                                                          self.lr: lr * self.flags['lr_decay']})
                 else:
                     summary, loss, x_recon, latent, _ = self.sess.run([self.merged, self.cost, self.x_recon, self.latent, self.optimizer], feed_dict={self.x: batch_x, self.keep_prob: 0.9, self.epsilon: norm, self.lr: lr})
                     for j in range(1):
@@ -227,7 +227,6 @@ class ConvVae:
                 writer.add_summary(summary=summary, global_step=global_step)
                 step += 1
                 global_step += 1
-
 
             print("Optimization Finished!")
             checkpoint_name = self.flags['logging_directory'] + 'Model' + str(model) + 'epoch_%d' % i + '.ckpt'
