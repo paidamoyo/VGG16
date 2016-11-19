@@ -21,16 +21,16 @@ flags = {
     'model_directory': 'conv_vae/',
     'datasets': ['SAGE'],
     'restore': False,
-    'restore_file': 'INbreast.ckpt',
+    'restore_file': 'start.ckpt',
     'recon': 1,
-    'vae': 1e-2,
+    'vae': 1,
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 16,
     'display_step': 100,
-    'weight_decay': 1e-6,
+    'weight_decay': 1e-7,
     'lr_decay': 0.999,
-    'lr_iters': [(1e-3, 1000), (1e-4, 1000), (1e-5, 1000), (1e-6, 1000)]
+    'lr_iters': [(1e-6, 20000)]
 }
 
 
