@@ -48,7 +48,7 @@ class Layers:
         """
         scope = 'conv_' + str(self.count['conv'])
         with tf.variable_scope(scope):
-            input_channels = self.input_shape[3]
+            input_channels = self.input.get_shape()[3]
             output_shape = [filter_size, filter_size, input_channels, output_channels]
             w = self.weight_variable(name='weights', shape=output_shape)
             self.input = tf.nn.conv2d(self.input, w, strides=[1, stride, stride, 1], padding=padding)
@@ -61,7 +61,7 @@ class Layers:
             if activation_fn is not None:
                 self.input = activation_fn(self.input)
         self.print_log(scope + ' output: ' + str(self.input_shape))
-        self.input_shape = output_shape
+        
         self.count['conv'] += 1
 
     def deconv2d(self, filter_size, output_channels, stride=1, padding='SAME', activation_fn=tf.nn.relu, b_value=0.0, s_value=1.0):
@@ -76,7 +76,7 @@ class Layers:
         """
         scope = 'deconv_' + str(self.count['deconv'])
         with tf.variable_scope(scope):
-            input_channels = self.input_shape[3]
+            input_channels = self.input.get_shape()[3]
             output_shape = [filter_size, filter_size, output_channels, input_channels]
             w = self.weight_variable(name='weights', shape=output_shape)
 
@@ -108,7 +108,7 @@ class Layers:
             if activation_fn is not None:
                 self.input = activation_fn(self.input)
         self.print_log(scope + ' output: ' + str(self.input_shape))
-        self.input_shape = output_shape
+        
         self.count['deconv'] += 1
 
     def flatten(self, keep_prob=1):
@@ -117,13 +117,12 @@ class Layers:
         """
         scope = 'flat_' + str(self.count['flat'])
         with tf.variable_scope(scope):
-            input_nodes = tf.Dimension(self.input_shape[1] * self.input_shape[2] * self.input_shape[3])
+            input_nodes = tf.Dimension(self.input.get_shape()[1] * self.input.get_shape()[2] * self.input.get_shape()[3])
             output_shape = tf.pack([-1, input_nodes])
             self.input = tf.reshape(self.input, output_shape)
             if keep_prob != 1:
                 self.input = tf.nn.dropout(self.input, keep_prob=keep_prob)
         self.print_log(scope + ' output: ' + str(self.input_shape))
-        self.input_shape = output_shape
         self.count['flat'] += 1
 
     def fc(self, output_nodes, keep_prob=1, activation_fn=tf.nn.relu, b_value=0.0):
@@ -134,7 +133,7 @@ class Layers:
         """
         scope = 'fc_' + str(self.count['fc'])
         with tf.variable_scope(scope):
-            input_nodes = self.input_shape[1]
+            input_nodes = self.input.get_shape()[1]
             output_shape = [input_nodes, output_nodes]
             w = self.weight_variable(name='weights', shape=output_shape)
             self.input = tf.matmul(self.input, w)
@@ -146,7 +145,6 @@ class Layers:
             if keep_prob != 1:
                 self.input = tf.nn.dropout(self.input, keep_prob=keep_prob)
         self.print_log(scope + ' output: ' + str(self.input_shape))
-        self.input_shape = output_shape
         self.count['fc'] += 1
 
     def unpool(self, k=2):
@@ -199,8 +197,8 @@ class Layers:
         """
         scope = 'maxpool_' + str(self.count['mp'])
         if globe is True:  # self.input must be a 4D image stack
-            k1 = self.input_shape[1]
-            k2 = self.input_shape[2]
+            k1 = self.input.get_shape()[1]
+            k2 = self.input.get_shape()[2]
             s1 = 1
             s2 = 1
             padding = 'VALID'
@@ -222,8 +220,8 @@ class Layers:
          """
         scope = 'avgpool_' + str(self.count['mp'])
         if globe is True:  # self.input must be a 4D image stack
-            k1 = self.input_shape[1]
-            k2 = self.input_shape[2]
+            k1 = self.input.get_shape()[1]
+            k2 = self.input.get_shape()[2]
             s1 = 1
             s2 = 1
             padding = 'VALID'
