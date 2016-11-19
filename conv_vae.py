@@ -74,7 +74,7 @@ class ConvVae:
         tf.scalar_summary("Total Loss", self.cost)
         tf.scalar_summary("Reconstruction Loss", self.recon)
         tf.scalar_summary("VAE Loss", self.vae)
-        tf.scalar_summary("VAE Loss", self.weight)
+        tf.scalar_summary("Weight Decay Loss", self.weight)
         tf.histogram_summary("Mean", self.mean)
         tf.histogram_summary("Stddev", self.stddev)
         tf.image_summary("x", self.x)
