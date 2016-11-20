@@ -22,14 +22,14 @@ flags = {
     'datasets': ['SAGE'],
     'restore': False,
     'restore_file': 'start.ckpt',
-    'recon': 10000,
+    'recon': 100000000,
     'vae': 1,
     'image_dim': 128,
     'hidden_size': 128,
     'batch_size': 16,
     'display_step': 100,
-    'weight_decay': 1e-7,
-    'lr_decay': 0.999,
+    'weight_decay': 1e-4,
+    'lr_decay': 0.9999,
     'lr_iters': [(1e-3, 10000), (1e-4, 10000), (1e-5, 10000), (1e-6, 10000), (1e-7, 10000), (1e-8, 100000)]
 }
 
@@ -106,17 +106,17 @@ class ConvVae:
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
-        decoder.deconv2d(4, 64, padding='VALID')
-        decoder.deconv2d(3, 64)
-        decoder.deconv2d(3, 128, stride=2)
-        decoder.deconv2d(3, 128)
-        decoder.deconv2d(3, 256, stride=2)
-        decoder.deconv2d(3, 256)
+        decoder.deconv2d(4, 1024, padding='VALID')
+        decoder.deconv2d(3, 1024)
         decoder.deconv2d(3, 512, stride=2)
         decoder.deconv2d(3, 512)
-        decoder.deconv2d(3, 1024, stride=2)
-        decoder.deconv2d(3, 1024)
-        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.tanh, b_value=None, s_value=None)
+        decoder.deconv2d(3, 256, stride=2)
+        decoder.deconv2d(3, 256)
+        decoder.deconv2d(3, 128, stride=2)
+        decoder.deconv2d(3, 128)
+        decoder.deconv2d(3, 64, stride=2)
+        decoder.deconv2d(3, 64)
+        decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.tanh)
         return decoder.get_output(), mean, stddev
 
     def _create_network_BREAST(self):
