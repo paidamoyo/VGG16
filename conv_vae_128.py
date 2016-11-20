@@ -22,11 +22,11 @@ flags = {
     'datasets': ['SAGE'],
     'restore': False,
     'restore_file': 'start.ckpt',
-    'recon': 1000000,
+    'recon': 100000000,
     'vae': 1,
     'image_dim': 128,
-    'hidden_size': 256,
-    'batch_size': 8,
+    'hidden_size': 128,
+    'batch_size': 16,
     'display_step': 100,
     'weight_decay': 1e-4,
     'lr_decay': 0.9999,
@@ -90,8 +90,6 @@ class ConvVae:
         encoder.conv2d(3, 512)
         encoder.conv2d(3, 1024, stride=2)
         encoder.conv2d(3, 1024)
-        encoder.conv2d(3, 2048, stride=2)
-        encoder.conv2d(3, 2048)
         encoder.conv2d(1, self.flags['hidden_size'] * 2, activation_fn=None)
         encoder.avgpool(globe=True)
         return encoder.get_output()
@@ -108,9 +106,7 @@ class ConvVae:
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
-        decoder.deconv2d(4, 2048, padding='VALID')
-        decoder.deconv2d(3, 2048)
-        decoder.deconv2d(3, 1024, stride=2)
+        decoder.deconv2d(4, 1024, padding='VALID')
         decoder.deconv2d(3, 1024)
         decoder.deconv2d(3, 512, stride=2)
         decoder.deconv2d(3, 512)
