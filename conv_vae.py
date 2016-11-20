@@ -189,7 +189,7 @@ class ConvVae:
 
     def train(self, image_dict, model):
 
-        setup_metrics(self.flags, self.flags['lr_iters'])
+        setup_metrics(self.flags)
         writer = tf.train.SummaryWriter(self.flags['logging_directory'], self.sess.graph)
         if self.flags['restore'] is True:
             self.restore()

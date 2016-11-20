@@ -46,18 +46,18 @@ def record_metrics(loss, acc, batch_y, step, split, flags):
         print("Training Split: ", split)
 
 
-def setup_metrics(self):
-    self.print_log('Date: ' + str(datetime.datetime.now()).split('.')[0])
+def setup_metrics(flags):
+    print_log('Date: ' + str(datetime.datetime.now()).split('.')[0])
     datasets = 'Datasets: '
-    for d in self.flags['datasets']:
+    for d in flags['datasets']:
         datasets += d + ', '
-    self.print_log(datasets)
-    self.print_log('Batch_size: ' + self.check_str(self.flags['batch_size']))
-    self.print_log('Model: ' + self.check_str(self.flags['model_directory']))
-    for l in range(len(self.flags['lr_iters'])):
-        self.print_log('EPOCH %d' % l)
-        self.print_log('Learning Rate: ' + str(self.flags['lr_iters'][l][0]))
-        self.print_log('Iterations: ' + str(self.flags['lr_iters'][l][1]))
+    print_log(datasets)
+    print_log('Batch_size: ' + check_str(flags['batch_size']))
+    print_log('Model: ' + check_str(flags['model_directory']))
+    for l in range(len(flags['lr_iters'])):
+        print_log('EPOCH %d' % l)
+        print_log('Learning Rate: ' + str(flags['lr_iters'][l][0]))
+        print_log('Iterations: ' + str(flags['lr_iters'][l][1]))
 
 
 def make_directory(folder_path):
