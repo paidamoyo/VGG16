@@ -255,7 +255,7 @@ def main():
     print_log("Seed: %d" % flags['seed'])
     print_log("Vae Weights: %f" % flags['vae'])
     print_log("Recon Weight: %d" % flags['recon'])
-    model_vae.train(image_dict, model=1)
+    # model_vae.train(image_dict, model=1)
     # model_vae.restore()
     # model_vae.save_x_gen(bgf, 15)
 
