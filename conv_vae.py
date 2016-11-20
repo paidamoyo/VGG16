@@ -22,7 +22,7 @@ flags = {
     'datasets': ['SAGE'],
     'restore': True,
     'restore_file': 'start.ckpt',
-    'recon': 1,
+    'recon': 10000,
     'vae': 1,
     'image_dim': 128,
     'hidden_size': 128,
@@ -30,7 +30,7 @@ flags = {
     'display_step': 100,
     'weight_decay': 1e-7,
     'lr_decay': 0.999,
-    'lr_iters': [(1e-6, 20000)]
+    'lr_iters': [(1e-3, 10000), (1e-4, 10000), (1e-5, 10000), (1e-6, 10000), (1e-7, 10000), (1e-8, 100000)]
 }
 
 
@@ -50,12 +50,8 @@ class ConvVae:
         logging.basicConfig(filename=flags['logging_directory'] + 'ModelInformation.log', level=logging.INFO)
 
         self._set_seed()
-        if flags['image_dim'] == 28:
-            print_log('Using 28x28 Architecture')
-            self.x_recon, self.mean, self.stddev, self.x_gen, self.latent = self._create_network_MNIST()
-        else:  # breast patches of 128
-            print_log('Using 128x128 Architecture')
-            self.x_recon, self.mean, self.stddev, self.x_gen, self.latent = self._create_network_BREAST()
+        print_log('Using 128x128 Architecture')
+        self.x_recon, self.mean, self.stddev, self.x_gen, self.latent = self._create_network_BREAST()
         self.vae, self.recon, self.weight, self.cost, self.optimizer = self._create_loss_optimizer()
 
         self._summary()
@@ -82,11 +78,9 @@ class ConvVae:
 
     def _encoder_BREAST(self, x):
         encoder = Layers(x)
-        encoder.conv2d(5, 32)
+        encoder.conv2d(5, 64)
         encoder.maxpool()
-        encoder.conv2d(3, 32)
-        encoder.conv2d(3, 32)
-        encoder.conv2d(3, 64, stride=2)
+        encoder.conv2d(3, 64)
         encoder.conv2d(3, 64)
         encoder.conv2d(3, 128, stride=2)
         encoder.conv2d(3, 128)
@@ -94,6 +88,8 @@ class ConvVae:
         encoder.conv2d(3, 256)
         encoder.conv2d(3, 512, stride=2)
         encoder.conv2d(3, 512)
+        encoder.conv2d(3, 1024, stride=2)
+        encoder.conv2d(3, 1024)
         encoder.conv2d(1, self.flags['hidden_size'] * 2, activation_fn=None)
         encoder.avgpool(globe=True)
         return encoder.get_output()
@@ -110,16 +106,16 @@ class ConvVae:
             stddev = tf.sqrt(tf.exp(stddev))
             input_sample = mean + self.epsilon * stddev
         decoder = Layers(tf.expand_dims(tf.expand_dims(input_sample, 1), 1))
-        decoder.deconv2d(4, 512, padding='VALID')
-        decoder.deconv2d(3, 512)
-        decoder.deconv2d(3, 256, stride=2)
-        decoder.deconv2d(3, 256)
+        decoder.deconv2d(4, 64, padding='VALID')
+        decoder.deconv2d(3, 64)
         decoder.deconv2d(3, 128, stride=2)
         decoder.deconv2d(3, 128)
-        decoder.deconv2d(3, 64, stride=2)
-        decoder.deconv2d(3, 64)
-        decoder.deconv2d(3, 32, stride=2)
-        decoder.deconv2d(3, 32)
+        decoder.deconv2d(3, 256, stride=2)
+        decoder.deconv2d(3, 256)
+        decoder.deconv2d(3, 512, stride=2)
+        decoder.deconv2d(3, 512)
+        decoder.deconv2d(3, 1024, stride=2)
+        decoder.deconv2d(3, 1024)
         decoder.deconv2d(5, 1, stride=2, activation_fn=tf.nn.tanh, b_value=None, s_value=None)
         return decoder.get_output(), mean, stddev
 
