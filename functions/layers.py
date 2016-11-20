@@ -24,7 +24,7 @@ import logging
 import tensorflow.contrib.layers as init
 
 
-class Layers:
+class NNLayers:
     def __init__(self, x):
         """
         Initialize model Layers.
