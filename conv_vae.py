@@ -24,7 +24,7 @@ flags = {
     'restore_file': 'start.ckpt',
     'recon': 1000000,
     'vae': 1,
-    'image_dim': 128,
+    'image_dim': 256,
     'hidden_size': 256,
     'batch_size': 8,
     'display_step': 100,
@@ -250,12 +250,12 @@ def main():
     image_dict = pickle.load(open(flags['aux_directory'] + 'preprocessed_image_dict.pickle', 'rb'))
     model_vae = ConvVae(flags, model=run_num)
     # model.save_x(bgf)
-    x_recon = model_vae.output_shape()
-    print(x_recon.shape)
+    #x_recon = model_vae.output_shape()
+    #print(x_recon.shape)
     print_log("Seed: %d" % flags['seed'])
     print_log("Vae Weights: %f" % flags['vae'])
     print_log("Recon Weight: %d" % flags['recon'])
-    # model_vae.train(image_dict, model=1)
+    model_vae.train(image_dict, model=1)
     # model_vae.restore()
     # model_vae.save_x_gen(bgf, 15)
 
