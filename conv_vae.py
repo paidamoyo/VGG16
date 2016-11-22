@@ -22,14 +22,14 @@ flags = {
     'datasets': ['SAGE'],
     'restore': False,
     'restore_file': 'start.ckpt',
-    'recon': 1000000,
-    'vae': 1,
+    'recon': 1,
+    'vae': 1e-6,
     'image_dim': 256,
     'hidden_size': 256,
     'batch_size': 8,
     'display_step': 100,
-    'weight_decay': 1e-4,
-    'lr_decay': 0.9999,
+    'weight_decay': 1e-5,
+    'lr_decay': 0.999,
     'lr_iters': [(1e-3, 10000), (1e-4, 10000), (1e-5, 10000), (1e-6, 10000), (1e-7, 10000), (1e-8, 100000)]
 }
 
