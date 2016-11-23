@@ -28,7 +28,7 @@ flags = {
     'hidden_size': 256,
     'batch_size': 16,
     'display_step': 100,
-    'weight_decay': 1e-6,
+    'weight_decay': 1e-7,
     'lr_decay': 0.99,
     'lr_iters': [(1e-5, 10000), (1e-5, 10000), (1e-6, 10000), (1e-6, 10000), (1e-7, 10000), (1e-7, 100000)]
 }
